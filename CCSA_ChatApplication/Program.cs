@@ -1,5 +1,5 @@
 using CCSA_ChatApp.Authentication.Services;
-
+using CCSA_ChatApp.Db;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<SessionFactory>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 
 var app = builder.Build();
