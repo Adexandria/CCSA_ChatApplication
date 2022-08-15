@@ -8,10 +8,10 @@ namespace CCSA_ChatApp.Domain.Models
 {
     public class MessageHistory
     {
-        public Guid Id { get; set; }
-        public User SenderUser { get; set; }
-        public User ReceiverUser { get; set; }
-        public GroupChat GroupChatUser { get; set; }
-        public Message Message { get; set; }
+        public virtual Guid Id { get; set; }
+        public virtual User Sender { get; set; }
+        public virtual User Receiver { get; set; }
+        public virtual GroupChat GroupChatUser { get; set; }
+        public virtual Message Message { get; set; }
     }
 }

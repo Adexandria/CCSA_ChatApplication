@@ -8,13 +8,13 @@ namespace CCSA_ChatApp.Domain.Models
 {
     public class User
     {
-        public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public List<User> Users{ get; set; }
-        public List<MessageHistory> Histories { get; set; }
-        public List<GroupChat> GroupChats { get; set; }
+        public virtual Guid Id { get; set; }
+        public virtual string FirstName { get; set; }
+        public virtual string LastName { get; set; }
+        public virtual string Password { get; set; }
+        public virtual string Email { get; set; }
+        public virtual List<User> Users{ get; set; }
+        public virtual List<MessageHistory> Histories { get; set; }
+        public virtual List<GroupChat> GroupChats { get; set; }
     }
 }
