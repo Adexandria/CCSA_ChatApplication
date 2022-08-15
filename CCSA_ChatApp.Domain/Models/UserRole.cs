@@ -2,8 +2,8 @@
 {
     public class UserRole
     {
-        public Guid RoleId { get; set; }
-        public string Role { get; set; }
-        public User User { get; set; }
+        public virtual Guid RoleId { get; set; }
+        public virtual string Role { get; set; }
+        public virtual User User { get; set; }
     }
 }
