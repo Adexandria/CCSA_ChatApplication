@@ -1,9 +1,10 @@
 ﻿using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Microsoft.Extensions.Configuration;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
-using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,12 +13,12 @@ namespace CCSA_ChatApp.Db
 {
     public class SessionFactory
     {
-        public SessionFactory()
+        public SessionFactory(IConfiguration configuration)
         {
             if (_sessionFactory is null)
             {
-                
-                _sessionFactory = BuildSessionFactory(connectionString);
+                string _connectionString = configuration.GetConnectionString("ChatApp");
+                _sessionFactory = BuildSessionFactory(_connectionString);
             }
         }
 
@@ -37,6 +38,7 @@ namespace CCSA_ChatApp.Db
             return configuration.BuildSessionFactory();
         }
 
-        private readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\ADMIN\\Desktop\\Group 2-Iruoma and Adeola ChatApp\\CCSA_ChatApplication\\CCSA_ChatApp.Db\\ChatAppDB.mdf;Integrated Security=True;Connect Timeout=30";
+       
     }
 }
+
