@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Cfg;
+﻿using CCSA_ChatApp.Db.Mappings;
+using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.Configuration;
 using NHibernate;
@@ -30,7 +31,7 @@ namespace CCSA_ChatApp.Db
         {
             FluentConfiguration configuration = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2012.ConnectionString(connectionString))
-                .Mappings(m => m.FluentMappings.AddFromAssembly(typeof().Assembly))
+                .Mappings(m => m.FluentMappings.AddFromAssembly(typeof(UserMap).Assembly))
                 .ExposeConfiguration(cfg =>
                 {
                     new SchemaUpdate(cfg).Execute(true, true);
