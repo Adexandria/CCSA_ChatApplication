@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace CCSA_ChatApp.Domain.Models
 {
-    internal class Message
+    public class Message
     {
+        public Guid Id { get; set; }
+        public string Text { get; set; }
+        public DateTime MessageCreated { get; set; }
     }
 }
