@@ -13,7 +13,7 @@ namespace CCSA_ChatApp.Db.Mappings
         public MessageMap()
         {
             Table("Messages");
-            Id(message => message.MessageId);
+            Id(message => message.MessageId).GeneratedBy.Guid();
             Map(message => message.TextMessage);
             Map(message => message.MessageCreated);
 
