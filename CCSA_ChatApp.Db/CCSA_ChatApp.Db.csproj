@@ -10,6 +10,7 @@
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <ProjectReference Include="..\CCSA_ChatApp.Domain\CCSA_ChatApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>
