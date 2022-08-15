@@ -23,11 +23,11 @@ namespace CCSA_ChatApp.Authentication.Services
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = _jwtKey.GetSection("validIssuer").Value,
                     ValidAudience = _jwtKey.GetSection("validAudience").Value,
                     AuthenticationType = "Bearer",
+                    ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtKey.GetSection("securityKey").Value))
                 };
 
