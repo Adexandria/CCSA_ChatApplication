@@ -14,4 +14,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CCSA_ChatApp.Authentication\CCSA_ChatApp.Authentication.csproj" />
+  </ItemGroup>
+
 </Project>
