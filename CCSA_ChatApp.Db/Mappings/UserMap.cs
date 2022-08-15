@@ -13,14 +13,13 @@ namespace CCSA_ChatApp.Db.Mappings
         public UserMap()
         {
             Table("Users");
-            Id(user => user.UserId);
+            Id(user => user.UserId).GeneratedBy.Guid();
             Map(user => user.FirstName);
             Map(user => user.MiddleName);
             Map(user => user.LastName);
             Map(user => user.Email);
-            HasMany(user => user.Contacts);
             HasMany(user => user.Histories);
-            HasMany(user => user.GroupChats);
+            HasManyToMany(user => user.GroupChats).Cascade.All().Table("GroupChatMember");
 
         }
     }

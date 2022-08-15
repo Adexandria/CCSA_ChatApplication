@@ -13,10 +13,10 @@ namespace CCSA_ChatApp.Db.Mappings
         public MessageHistoryMap()
         {
             Table("MessageHistories");
-            Id(hist => hist.HistoryId);
-            References(hist => hist.Sender);
+            Id(hist => hist.HistoryId).GeneratedBy.Guid();
+            References(hist => hist.Sender).Not.Nullable();
             References(hist => hist.Receiver);
-            References(hist => hist.Message);
+            References(hist => hist.Message).Unique();
             References(hist => hist.GroupChatUser);
         }
     }
