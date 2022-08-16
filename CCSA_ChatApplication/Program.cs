@@ -21,7 +21,7 @@ builder.Services.AddScoped<MessageHistoryRepository>();
 
 builder.Services.AddScoped<ITokenCredential, TokenCredential>();
 builder.Services.AddScoped<AuthRepository>();
-builder.Services.AddScoped<AuthService, AuthService>();
+builder.Services.AddScoped<IAuth, AuthService>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 builder.Services.AddAuthorization(opt =>
 {
