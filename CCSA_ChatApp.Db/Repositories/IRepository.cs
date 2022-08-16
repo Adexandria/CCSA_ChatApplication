@@ -1,4 +1,3 @@
-﻿using CCSA_ChatApp.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,6 @@ namespace CCSA_ChatApp.Db.Repositories
         void Create(T entity);
         void Delete(T entity);
         IEnumerable<T> GetAll();
-        void Update(T obj);
-
+        void Update(T obj);  
     }
 }

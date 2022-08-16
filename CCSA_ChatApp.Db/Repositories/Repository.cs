@@ -1,7 +1,5 @@
-﻿using CCSA_ChatApp.Domain.Models;
-using Microsoft.AspNetCore.Http;
 using NHibernate;
-using System;
+usng System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,45 +11,47 @@ namespace CCSA_ChatApp.Db.Repositories
     {
         public Repository(SessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory;
+            _sessionFactory = sessionFactory.GetSession();
         }
-
         
-
+        protected readonly ISession _session;
+        
         public void Create(T entity)
         {
-            _sessionFactory.GetSession().Save(entity);
+            _session.Save(entity);
             Commit();
         }
-
-
+        
         public IEnumerable<T> GetAll()
         {
-            var collection = _sessionFactory.GetSession().Query<T>();
+            var collection = _session.Query<T>();
             return collection;
         }
 
         public void Update(T obj)
         {
-            _sessionFactory.GetSession().Update(obj);
+            _session.Update(obj);
             Commit();
         }
+      
 
-
-        public void Delete(T obj)
+        public void Delete(T entity)
         {
-            _sessionFactory.GetSession().Delete(obj);
+            _session.Delete(entity);
             Commit();
         }
-
-        protected bool Commit()
+        
+        
+         protected bool Commit()
         {
-            using var transction = _sessionFactory.GetSession().BeginTransaction();
+            using var transction = _session.BeginTransaction();
+
             try
             {
                 if (transction.IsActive)
                 {
-                    _sessionFactory.GetSession().Flush();
+
+                    _session.Flush();
                     transction.Commit();
                 }
                 return true;
@@ -62,17 +62,6 @@ namespace CCSA_ChatApp.Db.Repositories
                 return false;
             }
         }
-
-
-        private ITransaction OpenTransaction()
-        {
-            return _sessionFactory.GetSession().BeginTransaction();
-        }
-
-        
-
-        protected readonly SessionFactory _sessionFactory;
-
 
     }
 }

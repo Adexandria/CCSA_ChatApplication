@@ -14,7 +14,8 @@ namespace CCSA_ChatApp.Domain.Models
         public virtual string LastName { get; set; }
         public virtual string Password { get; set; }
         public virtual string Email { get; set; }
-        //public virtual IList<User> Contacts { get; set; } = new List<User>();
+        public virtual UserProfile Profile { get; set; }
+        public virtual UserRole Role { get; set; }
         public virtual IList<MessageHistory> Histories { get; set; } = new List<MessageHistory>();
         public virtual IList<GroupChat> GroupChats { get; set; } = new List<GroupChat>();
     }
