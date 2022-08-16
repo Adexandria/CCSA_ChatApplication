@@ -18,9 +18,9 @@ namespace CCSA_ChatApp.Db.Repositories
 
         
 
-        public void Add(T obj)
+        public void Create(T entity)
         {
-            _sessionFactory.GetSession().Save(obj);
+            _sessionFactory.GetSession().Save(entity);
             Commit();
         }
 
@@ -68,6 +68,8 @@ namespace CCSA_ChatApp.Db.Repositories
         {
             return _sessionFactory.GetSession().BeginTransaction();
         }
+
+        
 
         protected readonly SessionFactory _sessionFactory;
 
