@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CCSA_ChatApp.Domain\CCSA_ChatApp.Domain.csproj" />
+    <ProjectReference Include="..\CCSA_ChatApp.Infrastructure\CCSA_ChatApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
