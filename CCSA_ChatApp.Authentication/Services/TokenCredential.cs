@@ -64,15 +64,6 @@ namespace CCSA_ChatApp.Authentication.Services
             return refreshToken;
         }
 
-        /*private void EncodedAlgorithm(byte[] randomNumber) 
-        {
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-        }*/
-
-        
-
-
         public string GeneratePasswordResetToken(Guid userId)
         {
             var passwordSecretKey = _config.GetSection("PasswordSecretKey").Value + $"Id {userId}";
@@ -103,7 +94,9 @@ namespace CCSA_ChatApp.Authentication.Services
             {
                 claims.Add(new Claim(ClaimTypes.Role, item.Role));
             }
-            claims.Add(new Claim(ClaimTypes.Name, $"{currentUser.FirstName} {currentUser.MiddleName} {currentUser.LastName}"));
+            claims.Add(new Claim(ClaimTypes.Name, currentUser.FirstName));
+            claims.Add(new Claim(ClaimTypes.Name, currentUser.MiddleName ));
+            claims.Add(new Claim(ClaimTypes.Name, currentUser.LastName));
             claims.Add(new Claim(ClaimTypes.Email, currentUser.Email));
             claims.Add(new Claim(ClaimTypes.NameIdentifier,$"{currentUser.UserId}"));
             return claims;
