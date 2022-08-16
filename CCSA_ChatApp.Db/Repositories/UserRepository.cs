@@ -35,10 +35,9 @@ namespace CCSA_ChatApp.Db.Repositories
             return await _session.GetAsync<User>(userId);
         }
         
-        public override async Task UpdateEmail(string email)
+        public override async Task UpdateEmail(Guid userId,string email)
         {
-            User currentUser = await _session.Query<User>().Where(x => x.Email.Equals(email)).FirstOrDefaultAsync();
-            if(currentUser is not null)
+            User currentUser = await GetUserById(userId);
             {
                 currentUser.Email = email;
                 await _session.UpdateAsync(currentUser);
@@ -46,20 +45,20 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public override async Task UpdateFirstName(string firstName)
+        public override async Task UpdateFirstName(Guid userId, string firstName)
         {
-            User currentUser = await _session.Query<User>().Where(x => x.FirstName.Equals(firstName)).FirstOrDefaultAsync();
+            User currentUser = await GetUserById(userId);
             if (currentUser is not null)
             {
-                currentUser.Email = firstName;
+                currentUser.FirstName = firstName;
                 await _session.UpdateAsync(currentUser);
                 await Commit();
             }
         }
 
-        public override async Task UpdateLastName(string lastName)
+        public override async Task UpdateLastName(Guid userId, string lastName)
         {
-            User currentUser = await _session.Query<User>().Where(x => x.LastName.Equals(lastName)).FirstOrDefaultAsync();
+            User currentUser = await GetUserById(userId);
             if (currentUser is not null)
             {
                 currentUser.LastName = lastName;
@@ -68,9 +67,9 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public override async Task UpdateMiddleName(string middleName)
+        public override async Task UpdateMiddleName(Guid userId, string middleName)
         {
-            User currentUser = await _session.Query<User>().Where(x => x.MiddleName.Equals(middleName)).FirstOrDefaultAsync();
+            User currentUser = await GetUserById(userId);
             if (currentUser is not null)
             {
                 currentUser.MiddleName = middleName;
@@ -79,9 +78,9 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public override async Task UpdatePassword(string oldPassword, string newPassword)
+        public override async Task UpdatePassword(Guid userId, string oldPassword, string newPassword)
         {
-            var currentUser = await GetUser(oldPassword);
+            var currentUser = await GetUser(userId,oldPassword);
             if (currentUser is not null)
             {
                 EncodePassword(newPassword);
@@ -91,10 +90,10 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public override async Task<bool> VerifyPassword(string password)
+        public override async Task<bool> VerifyPassword(Guid userId, string password)
         {
             EncodePassword(password);
-            var currentUser = await GetUser(password);
+            var currentUser = await GetUser(userId,password);
             if (currentUser is not null)
             {
                 return true;
@@ -141,10 +140,14 @@ namespace CCSA_ChatApp.Db.Repositories
         }
 
         
-        private async Task<User> GetUser(string password)
+        private async Task<User> GetUser(Guid userId, string password)
         {
-            User currentUser = await _session.Query<User>().Where(x => x.Password.Equals(password)).FirstOrDefaultAsync();
-            return currentUser;
+            User currentUser = await GetUserById(userId);
+            if (currentUser.Password == password)
+            {
+                return currentUser;
+            }
+            return default;
         }
     }
 }
