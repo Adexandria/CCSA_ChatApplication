@@ -1,5 +1,6 @@
 using CCSA_ChatApp.Authentication.Services;
 using CCSA_ChatApp.Db;
+using CCSA_ChatApp.Db.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<SessionFactory>();
+builder.Services.AddScoped<SessionFactory>(); 
+builder.Services.AddScoped<GroupChatRepository>();
+builder.Services.AddScoped<UserProfileRepository>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 
 var app = builder.Build();
