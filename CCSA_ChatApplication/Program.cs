@@ -22,6 +22,7 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<ITokenCredential, TokenCredential>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<IAuth, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 builder.Services.AddAuthorization(opt =>
 {
