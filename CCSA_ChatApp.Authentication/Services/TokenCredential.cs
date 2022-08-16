@@ -46,19 +46,44 @@ namespace CCSA_ChatApp.Authentication.Services
         public RefreshToken GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            var refreshToken = new RefreshToken
             {
-                rng.GetBytes(randomNumber);
-                var refreshToken = new RefreshToken
-                {
-                    Token = Convert.ToBase64String(randomNumber),
-                    ExpiryDate = DateTime.Now.AddHours(1)
-                };
-                return refreshToken;
-            }
+                Token = Convert.ToBase64String(randomNumber),
+                ExpiryDate = DateTime.Now.AddHours(1)
+            };
+            return refreshToken;
         }
 
-       
+        /*private void EncodedAlgorithm(byte[] randomNumber) 
+        {
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+        }*/
+
+        
+
+
+        public string GeneratePasswordResetToken(Guid userId)
+        {
+            var passwordSecretKey = _config.GetSection("PasswordSecretKey").Value + $"Id {userId}";
+            var encodedKey = Encoding.ASCII.GetBytes(passwordSecretKey);
+            var token = Convert.ToBase64String(encodedKey);
+            return token;
+        }
+
+        public bool DecodePasswordResetToken(string token, Guid userId) 
+        {
+            var encodeKey = Convert.FromBase64String(token);
+            var decodedKey = Encoding.ASCII.GetString(encodeKey);
+            if (decodedKey.Contains(userId.ToString()))
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         private async Task<List<Claim>> GetUserClaim(User currentUser)
         { 
@@ -91,6 +116,7 @@ namespace CCSA_ChatApp.Authentication.Services
             signingCredentials: GetSigningCredentials());
             return tokenOptions;
         }
-        
+
+       
     }
 }
