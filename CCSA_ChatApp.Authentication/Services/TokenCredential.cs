@@ -1,5 +1,8 @@
-﻿using CCSA_ChatApp.Domain.DTOs;
+﻿using CCSA_ChatApp.Db;
+using CCSA_ChatApp.Domain.DTOs;
+using CCSA_ChatApp.Domain.DTOs.UserDTOs;
 using CCSA_ChatApp.Domain.Models;
+using CCSA_ChatApp.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -16,19 +19,24 @@ namespace CCSA_ChatApp.Authentication.Services
     public class TokenCredential : ITokenCredential
     {
         private readonly IConfiguration _config;
-        public TokenCredential(IConfiguration config)
+        private readonly IAuth _authRepository;
+        public TokenCredential(IConfiguration config, IAuth authRepository)
         {
             _config = config.GetSection("JWTSettings");
+            _authRepository = authRepository;
         }
 
         //Generate token for user using refresh token
 
         public async Task<RefreshTokenDTO> GenerateToken(User currentUser, string refreshToken)
         {
-            //Get existing token
-            //check if the date has expired
-            string token = await GenerateToken(currentUser);
-            return new RefreshTokenDTO { AccessToken = token};           
+            var currentToken = await _authRepository.GetExistingToken(currentUser.UserId);
+            if (currentToken.ExpiryDate < DateTime.Now)
+            {
+                string accessToken = await GenerateToken(currentUser);
+                return new RefreshTokenDTO { AccessToken = accessToken};
+            }
+            return default;     
         }
         
         //Generate token for user
@@ -86,17 +94,18 @@ namespace CCSA_ChatApp.Authentication.Services
 
 
         private async Task<List<Claim>> GetUserClaim(User currentUser)
-        { 
+        {
             //get user roles
-            /*UserRole role = await _user.GetUserRole(currentUser.Username);*/
+            IEnumerable <UserRoleDTO> roles = _authRepository.GetUserRole(currentUser.UserId);
             //add user claim
-            List<Claim> claims = new()
+            List<Claim> claims = new();
+            foreach (var item in roles)
             {
-                 /*new Claim(ClaimTypes.Name, $"{currentUser.Username}"),
-                 new Claim(ClaimTypes.Role,$"{role.Name}")*/
-            };
-            claims.Add(new Claim(ClaimTypes.Name, $"{currentUser.FirstName} {currentUser.LastName}"));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier,$"{currentUser.Id}"));
+                claims.Add(new Claim(ClaimTypes.Role, item.Role));
+            }
+            claims.Add(new Claim(ClaimTypes.Name, $"{currentUser.FirstName} {currentUser.MiddleName} {currentUser.LastName}"));
+            claims.Add(new Claim(ClaimTypes.Email, currentUser.Email));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier,$"{currentUser.UserId}"));
             return claims;
         }
 

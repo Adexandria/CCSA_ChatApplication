@@ -8,7 +8,7 @@ namespace CCSA_ChatApp.Domain.Models
 {
     public class Message
     {
-        public virtual Guid Id { get; set; }
+        public virtual Guid MessageId { get; protected set; }
         public virtual string TextMessage { get; set; }
         public virtual DateTime MessageCreated { get; set; }
     }

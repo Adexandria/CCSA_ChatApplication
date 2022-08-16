@@ -11,11 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\CCSA_ChatApp.Authentication\CCSA_ChatApp.Authentication.csproj" />
+    <ProjectReference Include="..\CCSA_ChatApp.Db\CCSA_ChatApp.Db.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CCSA_ChatApp.Authentication\CCSA_ChatApp.Authentication.csproj" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
