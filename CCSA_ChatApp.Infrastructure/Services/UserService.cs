@@ -33,29 +33,29 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return user.Adapt<UserDTO>();
         }
 
-        public async Task UpdateEmail(string email)
+        public async Task UpdateEmail(Guid userId,string email)
         {
-            await _userRepository.UpdateEmail(email);
+            await _userRepository.UpdateEmail(userId,email);
         }
 
-        public async Task UpdateFirstName(string firstName)
+        public async Task UpdateFirstName(Guid userId, string firstName)
         {
-            await _userRepository.UpdateFirstName(firstName);
+            await _userRepository.UpdateFirstName(userId,firstName);
         }
 
-        public async Task UpdateLastName(string lastName)
+        public async Task UpdateLastName(Guid userId, string lastName)
         {
-            await _userRepository.UpdateLastName(lastName);
+            await _userRepository.UpdateLastName(userId,lastName);
         }
 
-        public async Task UpdateMiddleName(string middleName)
+        public async Task UpdateMiddleName(Guid userId, string middleName)
         {
-            await _userRepository.UpdateMiddleName(middleName);
+            await _userRepository.UpdateMiddleName(userId,middleName);
         }
 
-        public async Task UpdatePassword(string oldPassword, string newPassword)
+        public async Task UpdatePassword(Guid userId, string oldPassword, string newPassword)
         {
-            await _userRepository.UpdatePassword(oldPassword, newPassword);
+            await _userRepository.UpdatePassword(userId,oldPassword, newPassword);
         }
 
         public async Task DeleteByUserId(Guid userId)
@@ -63,9 +63,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
            await  _userRepository.DeleteByUserId(userId);
         }
 
-        public async Task<bool> VerifyPassword(string password)
+        public async Task<bool> VerifyPassword(Guid userId, string password)
         {
-            return await _userRepository.VerifyPassword(password);
+            return await _userRepository.VerifyPassword(userId,password);
         }
     }
 }
