@@ -8,8 +8,8 @@ namespace CCSA_ChatApp.Db.Repositories
 {
     public interface IRepository<T>
     {
+        
         void Create(T entity);
-        void Update(T entity);
         void Delete(T entity);
     }
 }

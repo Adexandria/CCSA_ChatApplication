@@ -8,53 +8,45 @@ using System.Threading.Tasks;
 
 namespace CCSA_ChatApp.Db.Repositories
 {
-    public class MessageRepository 
+    public class MessageRepository : Repository<Message>
     {
-        public MessageRepository(SessionFactory sessionFactory)
+        public MessageRepository(SessionFactory sessionFactory, MessageHistoryRepository messageHistoryRepository) : base(sessionFactory)
         {
-            _session = sessionFactory.GetSession();
+            _messageHistoryRepository = messageHistoryRepository;
         }
-        protected readonly ISession _session;
 
-        protected bool Commit()
-        {
-            using var transction = _session.BeginTransaction();
-            try
-            {
-                if (transction.IsActive)
-                {
-                    _session.Flush();
-                    transction.Commit();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                transction.Rollback();
-                return false;
-            }
-        }
+        private readonly MessageHistoryRepository _messageHistoryRepository;
         
-        public void CreateMessage(Message message)
+        public void CreateMessage(Message message, MessageHistory messageHistory)
         {
             _session.Save(message);
+            _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
+        }
+
+        
+        public Message? GetMessageById(Guid messageId)
+        {
+            var message = _session.Query<Message>().FirstOrDefault(m => m.MessageId == messageId);
+            return (message);
+        }
+
+       
+
+        public void DeleteMessageById(Guid messageId)
+        {
+            var message = GetMessageById(messageId);
+            if (message != null)
+            {
+                _session.Delete(message);
+                Commit();
+            }
+
+        }
+
+        public void UpdateMessage(Message message)
+        {
+            _session.Update(message);
             Commit();
-            CreateMessageHistory(message);
-        }
-
-        public void CreateMessageHistory(Message message,)
-        {
-
-        }
-
-        public void Delete(Message entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Message entity)
-        {
-            throw new NotImplementedException();
         }
     }
 }
