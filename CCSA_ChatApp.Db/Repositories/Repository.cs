@@ -1,4 +1,4 @@
-﻿using NHibernate;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +13,44 @@ namespace CCSA_ChatApp.Db.Repositories
         {
             _session = sessionFactory.GetSession();
         }
+        
         protected readonly ISession _session;
+        
+        public void Create(T entity)
+        {
+            _session.Save(entity);
+            Commit();
+        }
+        
+        public IEnumerable<T> GetAll()
+        {
+            var collection = _session.Query<T>();
+            return collection;
+        }
 
-        protected bool Commit()
+        public void Update(T obj)
+        {
+            _session.Update(obj);
+            Commit();
+        }
+      
+
+        public void Delete(T entity)
+        {
+            _session.Delete(entity);
+            Commit();
+        }
+        
+        
+         protected bool Commit()
         {
             using var transction = _session.BeginTransaction();
+
             try
             {
                 if (transction.IsActive)
                 {
+
                     _session.Flush();
                     transction.Commit();
                 }
@@ -33,16 +62,6 @@ namespace CCSA_ChatApp.Db.Repositories
                 return false;
             }
         }
-        public void Create(T entity)
-        {
-            _session.Save(entity);
-            Commit();
-        }
 
-        public void Delete(T entity)
-        {
-            _session.Delete(entity);
-            Commit();
-        }
     }
 }
