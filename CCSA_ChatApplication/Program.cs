@@ -14,11 +14,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddSingleton<IAuthorizationHandler, AdminHandler>();
 builder.Services.AddScoped<SessionFactory>();
 builder.Services.AddScoped<MessageHistoryRepository>();
 builder.Services.AddScoped<MessageRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<GroupChatRepository>();
+builder.Services.AddScoped<UserProfileRepository>();
 builder.Services.AddScoped<ITokenCredential, TokenCredential>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<IAuth, AuthService>();
