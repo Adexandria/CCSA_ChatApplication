@@ -1,5 +1,5 @@
 using NHibernate;
-usng System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace CCSA_ChatApp.Db.Repositories
     {
         public Repository(SessionFactory sessionFactory)
         {
-            _sessionFactory = sessionFactory.GetSession();
+            _session = sessionFactory.GetSession();
         }
         
         protected readonly ISession _session;

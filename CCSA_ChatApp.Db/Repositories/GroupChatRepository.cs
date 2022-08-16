@@ -17,30 +17,30 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public void CreateGroupChat(GroupChat group)
         {
-            _sessionFactory.GetSession().Save(group);
+            _session.Save(group);
         }
 
         public void UpdateGroupChatByName(GroupChat name)
         {
-            _sessionFactory.GetSession().Update(name);
+            _session.Update(name);
             Commit();
         }
 
         public void UpdateGroupChatByPicture(GroupChat picture)
         {
-            _sessionFactory.GetSession().Update(picture);
+            _session.Update(picture);
             Commit();
         }
 
         public void UpdateGroupChatByDescription(GroupChat description)
         {
-            _sessionFactory.GetSession().Update(description);
+            _session.Update(description);
             Commit();
         }
 
         public GroupChat? GetGroupChatById(Guid groupChatId)
         {
-            var groupChat = _sessionFactory.GetSession().Query<GroupChat>().FirstOrDefault(x => x.GroupId == groupChatId);
+            var groupChat = _session.Query<GroupChat>().FirstOrDefault(x => x.GroupId == groupChatId);
             return groupChat;
         }
 
@@ -49,7 +49,7 @@ namespace CCSA_ChatApp.Db.Repositories
             var groupChat = GetGroupChatById(groupChatId);
             if (groupChat != null)
             {
-                _sessionFactory.GetSession().Delete(groupChatId);
+                _session.Delete(groupChatId);
                 Commit();
             }
         }
