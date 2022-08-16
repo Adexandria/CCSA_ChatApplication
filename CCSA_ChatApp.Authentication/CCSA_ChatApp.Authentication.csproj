@@ -12,4 +12,9 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CCSA_ChatApp.Domain\CCSA_ChatApp.Domain.csproj" />
+    <ProjectReference Include="..\CCSA_ChatApp.Infrastructure\CCSA_ChatApp.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
