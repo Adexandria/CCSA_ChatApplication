@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IAuthorizationHandler, AdminHandler>();
 builder.Services.AddScoped<SessionFactory>();
 builder.Services.AddScoped<MessageHistoryRepository>();
+builder.Services.AddScoped<MessageRepository>();
+builder.Services.AddScoped<UserRepository>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 builder.Services.AddAuthorization(opt =>
 {
