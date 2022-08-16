@@ -1,6 +1,7 @@
 using CCSA_ChatApp.Authentication.Services;
 using CCSA_ChatApp.Db;
 using CCSA_ChatApp.Db.Repositories;
+using CCSA_ChatApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using AuthenticationService = CCSA_ChatApp.Authentication.Services.AuthenticationService;
@@ -18,6 +19,9 @@ builder.Services.AddScoped<SessionFactory>();
 builder.Services.AddScoped<MessageHistoryRepository>();
 builder.Services.AddScoped<MessageRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<ITokenCredential, TokenCredential>();
+builder.Services.AddScoped<AuthRepository>();
+builder.Services.AddScoped<IAuth, AuthService>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 builder.Services.AddAuthorization(opt =>
 {
