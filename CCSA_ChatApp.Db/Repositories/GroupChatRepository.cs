@@ -16,9 +16,9 @@ namespace CCSA_ChatApp.Db.Repositories
 
         }
 
-        public void CreateGroupChat(GroupChat group)
+        public async Task CreateGroupChat(GroupChat group)
         {
-            _session.Save(group);
+             await _session.SaveAsync(group);
             Commit();
         }
        
@@ -28,12 +28,12 @@ namespace CCSA_ChatApp.Db.Repositories
             return groupChat;
         }
 
-        public void DeleteGroupChat(Guid groupChatId)
+        public async Task DeleteGroupChat(Guid groupChatId)
         {
             var groupChat = GetGroupChatById(groupChatId);
             if (groupChat != null)
             {
-                _session.Delete(groupChatId);
+                await _session.DeleteAsync(groupChatId);
                 Commit();
             }
         }
