@@ -34,8 +34,8 @@ namespace CCSA_ChatApp.Domain.DTOs.UserDTOs
         public string ConfirmPassword { get; set; }
 
 
-      /*  [Required(AllowEmptyStrings= true)]
-        public IFormFile Picture { get; set; }*/
+        [Required(AllowEmptyStrings = true)]
+        public IFormFile ProfilePicture { get; set; }
 
     }
 }
