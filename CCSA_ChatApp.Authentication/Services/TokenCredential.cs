@@ -58,6 +58,7 @@ namespace CCSA_ChatApp.Authentication.Services
             rng.GetBytes(randomNumber);
             var refreshToken = new RefreshToken
             {
+                TokenId = Guid.NewGuid(),
                 Token = Convert.ToBase64String(randomNumber),
                 ExpiryDate = DateTime.Now.AddHours(1)
             };

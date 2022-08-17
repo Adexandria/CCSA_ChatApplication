@@ -18,7 +18,9 @@ namespace CCSA_ChatApp.Db.Mappings
             Map(user => user.MiddleName);
             Map(user => user.LastName);
             Map(user => user.Email);
-            References(s => s.Profile);
+            Map(x => x.Password);
+            HasOne(s=>s.Profile).PropertyRef(s=>s.User);
+            HasOne(s => s.Role).PropertyRef(s => s.User);
             HasMany(user => user.Histories);
             HasManyToMany(user => user.GroupChats).Cascade.All().Table("GroupChatMember");
 
