@@ -13,7 +13,7 @@ namespace CCSA_ChatApp.Db.Mappings
             Map(s => s.Country).CustomType<Country>();
             Map(s => s.Username);
             Map(s => s.Picture);
-            HasOne(s => s.User);
+            References(s=>s.User).Unique();
         }
     }
 }

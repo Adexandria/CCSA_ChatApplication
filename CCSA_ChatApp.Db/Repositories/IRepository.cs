@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +8,9 @@ namespace CCSA_ChatApp.Db.Repositories
 {
     public interface IRepository<T>
     {
-        
         void Create(T entity);
         void Delete(T entity);
+        IEnumerable<T> GetAll();
+        void Update(T obj);  
     }
 }
