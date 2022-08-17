@@ -13,6 +13,6 @@ namespace CCSA_ChatApp.Infrastructure.Services
         Task AddUserRole(UserRole role);
         IEnumerable<UserRoleDTO> GetUserRole(Guid id);
         Task SaveRefreshToken(RefreshToken token);
-        Task<RefreshToken> GetExistingToken(Guid userId);
+        Task<RefreshToken> GetExistingToken(Guid userId,string refreshToken);
     }
 }
