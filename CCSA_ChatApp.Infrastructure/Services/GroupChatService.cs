@@ -1,4 +1,4 @@
-﻿using CCSA_ChatApp.Db.Repositories;
+using CCSA_ChatApp.Db.Repositories;
 using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
 using CCSA_ChatApp.Domain.Models;
 using Mapster;
@@ -13,14 +13,14 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             _groupChatRepository = groupChatRepository;
         }
-        public void CreateGroupChat(GroupChat group)
+        public async Task CreateGroupChat(GroupChat group)
         {
-            _groupChatRepository.CreateGroupChat(group);
+             await _groupChatRepository.CreateGroupChat(group);
         }
 
-        public void Delete(Guid groupId)
+        public async Task Delete(Guid groupId)
         {
-            GroupChat currentGroupChat = _groupChatRepository.GetGroupChatById(groupId);
+            GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if(currentGroupChat is not null)
             {
                 _groupChatRepository.Delete(currentGroupChat);
@@ -33,9 +33,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return groupChats.Adapt<IEnumerable<GroupChatDTO>>();
         }
 
-        public void UpdateGroupDescription(Guid groupId,string description)
+        public async Task UpdateGroupDescription(Guid groupId,string description)
         {
-            GroupChat currentGroupChat = _groupChatRepository.GetGroupChatById(groupId);
+            GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if (currentGroupChat is not null)
             {
                 currentGroupChat.GroupDescription = description;
@@ -43,9 +43,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
         }
         
-        public void UpdateGroupName(Guid groupId,string name)
+        public async Task UpdateGroupName(Guid groupId,string name)
         {
-            GroupChat currentGroupChat = _groupChatRepository.GetGroupChatById(groupId);
+            GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if (currentGroupChat is not null)
             {
                 currentGroupChat.GroupName = name;

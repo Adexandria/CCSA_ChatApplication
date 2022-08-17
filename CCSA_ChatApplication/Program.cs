@@ -28,6 +28,8 @@ builder.Services.AddScoped<UserProfileRepository>();
 builder.Services.AddScoped<ITokenCredential, TokenCredential>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<IGroupChatService, GroupChatService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IMessageHistoryService, MessageHistoryService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
