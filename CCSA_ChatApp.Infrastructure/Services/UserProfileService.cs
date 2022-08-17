@@ -56,15 +56,17 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
         }
 
-        public void UpdateUserPicture(IFormFile picture, UserProfile user)
+        public void UpdateUserPicture(IFormFile picture, Guid userId)
         {
+            var user = _userProfileRepository.GetUserProfileById(userId);
             var image = ConvertFromImageToByte(picture);
             user.Picture = image;
             _userProfileRepository.Update(user);
         }
 
-        public void DeleteUserPicture(UserProfile user)
+        public void DeleteUserPicture(Guid userId)
         {
+            var user = _userProfileRepository.GetUserProfileById(userId);
             user.Picture = null;
             _userProfileRepository.Update(user);
         }
