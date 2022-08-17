@@ -30,16 +30,22 @@ namespace CCSA_ChatApplication.Controllers
         public IUserService _userService { get; }
 
         [HttpPost("create-group")]
-        public async Task<IActionResult> CreateGroupChat(NewGroupChatDTO newGroupChat, string accessToken)
+        public async Task<IActionResult> CreateGroupChat([FromForm]NewGroupChatDTO newGroupChat)
         {
             try
             {
-                await _groupChatService.CreateGroupChat(newGroupChat);
-                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-                var token = await _tokenCredential.GenerateToken(user, accessToken);
-                return Ok(token.AccessToken);
-                //return Ok($"{newGroupChat.GroupName} Created");
+                User user = newGroupChat.Adapt<User>();
+                UserProfile userProfile = newGroupChat.Adapt<UserProfile>();
+
+                return Ok();
+                //var user = new UserProfile();
+                //await _userService.GetUserByUsername(user.Username);
+
+
+                //await _authService.AddUserRole(new UserRole { Role = "User"});
+                //var token = await _tokenCredential.GenerateToken(user.User);
+                //await _groupChatService.CreateGroupChat(newGroupChat);
+                //return Ok($"{token} with {newGroupChat.GroupName} has been created");
             }
             catch (Exception ex)
             {
@@ -47,6 +53,9 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+
 
 
 
