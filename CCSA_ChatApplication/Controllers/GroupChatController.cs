@@ -54,7 +54,7 @@ namespace CCSA_ChatApplication.Controllers
         [HttpDelete("groupchat/{groupchatId}")]
         public async Task<IActionResult> DeleteGroupChatById(Guid groupChatId)
         {
-            await _groupChatService.Delete(groupChatId);
+            await _groupChatService.DeleteGroupChatById(groupChatId);
             return Ok("Successful");
         }
 
