@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
       <ProjectReference Include="..\CCSA_ChatApp.Db\CCSA_ChatApp.Db.csproj" />
     <ProjectReference Include="..\CCSA_ChatApp.Domain\CCSA_ChatApp.Domain.csproj" />
     <PackageReference Include="Mapster" Version="7.3.0" />

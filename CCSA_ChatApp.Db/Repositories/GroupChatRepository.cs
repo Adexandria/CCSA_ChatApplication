@@ -19,25 +19,7 @@ namespace CCSA_ChatApp.Db.Repositories
         {
             _session.Save(group);
         }
-
-        public void UpdateGroupChatByName(GroupChat name)
-        {
-            _session.Update(name);
-            Commit();
-        }
-
-        public void UpdateGroupChatByPicture(GroupChat picture)
-        {
-            _session.Update(picture);
-            Commit();
-        }
-
-        public void UpdateGroupChatByDescription(GroupChat description)
-        {
-            _session.Update(description);
-            Commit();
-        }
-
+       
         public GroupChat? GetGroupChatById(Guid groupChatId)
         {
             var groupChat = _session.Query<GroupChat>().FirstOrDefault(x => x.GroupId == groupChatId);
@@ -53,6 +35,24 @@ namespace CCSA_ChatApp.Db.Repositories
                 Commit();
             }
         }
+
+        /* public void UpdateGroupChatByName(GroupChat name)
+        {
+            _session.Update(name);
+            Commit();
+        }
+
+        public void UpdateGroupChatByPicture(GroupChat picture)
+        {
+            _session.Update(picture);
+            Commit();
+        }
+
+        public void UpdateGroupChatByDescription(GroupChat description)
+        {
+            _session.Update(description);
+            Commit();
+        }*/
 
 
     }

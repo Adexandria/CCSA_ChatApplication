@@ -20,11 +20,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IAuthorizationHandler, AdminHandler>();
 builder.Services.AddScoped<SessionFactory>();
 builder.Services.AddScoped<MessageHistoryRepository>();
+builder.Services.AddScoped<MessageRepository>();
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<GroupChatRepository>();
 builder.Services.AddScoped<UserProfileRepository>();
 builder.Services.AddScoped<ITokenCredential, TokenCredential>();
 builder.Services.AddScoped<AuthRepository>();
+builder.Services.AddScoped<IGroupChatService, GroupChatService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IAuth, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 builder.Services.AddAuthorization(opt =>
 {
