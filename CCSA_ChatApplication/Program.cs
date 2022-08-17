@@ -25,7 +25,6 @@ builder.Services.AddScoped<MessageRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<GroupChatRepository>();
 builder.Services.AddScoped<UserProfileRepository>();
-/*builder.Services.AddScoped<IRepository<GroupChat>, Repository<Chat>>();*/
 builder.Services.AddScoped<ITokenCredential, TokenCredential>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<IGroupChatService, GroupChatService>();
