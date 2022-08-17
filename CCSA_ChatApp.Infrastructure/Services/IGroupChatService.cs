@@ -23,5 +23,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         void UpdateGroupPicture(IFormFile picture, GroupChat group);
         void DeleteGroupPicture(GroupChat group);
         byte[] ConvertFromImageToByte(IFormFile picture);
+        IEnumerable<GroupChatDTO> GetGroupById(Guid groupId);
+        Task UpdateGroupName(Guid groupId, string name);
     }
 }

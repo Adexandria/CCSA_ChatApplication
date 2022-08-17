@@ -51,6 +51,8 @@ namespace CCSA_ChatApplication.Controllers
             }
         }
 
+
+        [Authorize(Policy ="GroupAdmin")]
         [HttpDelete("groupchat/{groupchatId}")]
         public async Task<IActionResult> DeleteGroupChatById(Guid groupChatId)
         {
@@ -58,6 +60,61 @@ namespace CCSA_ChatApplication.Controllers
             return Ok("Successful");
         }
 
+        [HttpGet]
+        public IActionResult GetGroupChatsByid()
+        {
+            var groupId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var groupChats = _groupChatService.GetGroupById(new Guid(groupId));
+            return Ok(groupChats);
+        }
+
+        [Authorize(Policy = "GroupAdmin")]
+        [HttpPut("updatePicture/id/{groupChatId}")]
+        public async Task<IActionResult> UpdateGroupPicture(Guid groupId, string picture)
+        {
+            try
+            {
+                _groupChatService.UpdateGroupPicture(groupId, picture);
+                return Ok("Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "GroupAdmin")]
+        [HttpPut("updateName/id/{groupChatId}")]
+        public async Task<IActionResult> UpdateGroupName(Guid groupId, string name)
+        {
+            try
+            {
+                _groupChatService.UpdateGroupName(groupId, name);
+                return Ok("Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "GroupAdmin")]
+        [HttpPut("updateDescription/id/{groupChatId}")]
+        public async Task<IActionResult> UpdateGroupDescription(Guid groupId, string description)
+        {
+            try
+            {
+                _groupChatService.UpdateGroupDescription(groupId, description);
+                return Ok("Name Updated scuuessfully");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

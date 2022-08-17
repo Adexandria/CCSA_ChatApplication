@@ -50,6 +50,12 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return groupChats.Adapt<IEnumerable<GroupChatDTO>>();
         }
 
+        public IEnumerable<GroupChatDTO> GetGroupById(Guid groupId)
+        {
+            var groups = _groupChatRepository.GetGroupChatById(groupId);
+            return groups.Adapt<IEnumerable<GroupChatDTO>>();
+        }
+
         public async Task UpdateGroupDescription(Guid groupId,string description)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
@@ -76,7 +82,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             _groupChatRepository.Update(group);
         }
 
-        //public async Task UpdateGroupPicture(Guid groupId, string picture)
+        
         public void DeleteGroupPicture(GroupChat group)
         {
             group.Picture = null;
