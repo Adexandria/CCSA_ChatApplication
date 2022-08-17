@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Domain.Models;
 using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,24 +16,24 @@ namespace CCSA_ChatApp.Db.Repositories
 
         }
 
-        public void CreateGroupChat(GroupChat group)
+        public async Task CreateGroupChat(GroupChat group)
         {
-            _session.Save(group);
+             await _session.SaveAsync(group);
             Commit();
         }
        
-        public GroupChat? GetGroupChatById(Guid groupChatId)
+        public async Task<GroupChat> GetGroupChatById(Guid groupChatId)
         {
-            var groupChat = _session.Query<GroupChat>().FirstOrDefault(x => x.GroupId == groupChatId);
+            var groupChat = await _session.Query<GroupChat>().FirstOrDefaultAsync(x => x.GroupId == groupChatId);
             return groupChat;
         }
 
-        public void DeleteGroupChat(Guid groupChatId)
+        public async Task DeleteGroupChat(Guid groupChatId)
         {
             var groupChat = GetGroupChatById(groupChatId);
             if (groupChat != null)
             {
-                _session.Delete(groupChatId);
+                await _session.DeleteAsync(groupChatId);
                 Commit();
             }
         }

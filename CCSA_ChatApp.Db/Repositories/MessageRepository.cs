@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Domain.Models;
 using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,43 +11,94 @@ namespace CCSA_ChatApp.Db.Repositories
 {
     public class MessageRepository : Repository<Message>
     {
-        public MessageRepository(SessionFactory sessionFactory, MessageHistoryRepository messageHistoryRepository) : base(sessionFactory)
+        public MessageRepository(SessionFactory sessionFactory, MessageHistoryRepository messageHistoryRepo, UserRepository userRepo, GroupChatRepository groupChatRepo) : base(sessionFactory)
         {
-            _messageHistoryRepository = messageHistoryRepository;
+            _messageHistoryRepository = messageHistoryRepo;
+            _userRepository = userRepo;
+            _groupChatRepository = groupChatRepo;
         }
 
         private readonly MessageHistoryRepository _messageHistoryRepository;
-        
-        public void CreateMessage(Message message, MessageHistory messageHistory)
+        private readonly UserRepository _userRepository;
+        private readonly GroupChatRepository _groupChatRepository;
+
+
+        private async new Task  Commit()
         {
-            _session.Save(message);
-            _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
+            using var transction =  _session.BeginTransaction();
+            try
+            {
+                if (transction.IsActive)
+                {
+                    await transction.CommitAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                transction.Rollback();
+            }
         }
 
-        
-        public Message? GetMessageById(Guid messageId)
+        public async Task CreateMessage(Message message, string senderUsername, string receiverUsername)
         {
-            var message = _session.Query<Message>().FirstOrDefault(m => m.MessageId == messageId);
-            return (message);
+            var sender = await _userRepository.GetUserByUsername(senderUsername);
+            var reciever = await _userRepository.GetUserByUsername(receiverUsername);
+            if (sender != null)
+            {
+                if (reciever != null)
+                {
+                    var messageHistory = new MessageHistory { Receiver = reciever, Sender = sender };
+                    _session.Save(message);
+                    _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
+                }
+                throw new Exception("This user doesn't exist");
+            }
+        }
+
+        public async Task CreateMessageForGroup(Message message, string senderUsername, Guid groupId)
+        {
+            var sender = await _userRepository.GetUserByUsername(senderUsername);
+            var groupChat = await _groupChatRepository.GetGroupChatById(groupId);
+            
+            if (sender != null)
+            {
+                if (groupChat != null)
+                {
+                    var messageHistory = new MessageHistory { GroupChatUser = groupChat, Sender = sender };
+                    _session.Save(message);
+                    _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
+                }
+                throw new Exception("This group doesn't exist yet");
+            }
+        }
+
+        public async Task<Message> GetMessageById(Guid messageId)
+        {
+            var message = await _session.Query<Message>().FirstOrDefaultAsync(m => m.MessageId == messageId);
+            if (message != null)
+            {
+                return (message);
+            }
+            throw new Exception("Message does not exist");
         }
 
        
 
-        public void DeleteMessageById(Guid messageId)
+        public async Task DeleteMessageById(Guid messageId)
         {
             var message = GetMessageById(messageId);
             if (message != null)
             {
-                _session.Delete(message);
-                Commit();
+                await _session.DeleteAsync(message);
+                await Commit();
             }
 
         }
 
-        public void UpdateMessage(Message message)
+        public async Task UpdateMessage(Message message)
         {
-            _session.Update(message);
-            Commit();
+            await _session.UpdateAsync(message);
+            await Commit();
         }
     }
 }
