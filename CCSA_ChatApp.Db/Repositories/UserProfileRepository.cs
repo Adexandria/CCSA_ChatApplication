@@ -14,7 +14,7 @@ namespace CCSA_ChatApp.Db.Repositories
 
         }
 
-        public void CreateExistingUserProfile(User user)
+        public void CreateExistingUserProfile(UserProfile user)
         {
             _session.Save(user);
         }
@@ -22,6 +22,12 @@ namespace CCSA_ChatApp.Db.Repositories
         public UserProfile? GetUserProfileById(Guid userProfileId)
         {
             var userProfile = _session.Query<UserProfile>().FirstOrDefault(x => x.ProfileId == userProfileId);
+            return userProfile;
+        }
+
+        public UserProfile GetUserProfileByUsername(string username)
+        {
+            var userProfile = _session.Query<UserProfile>().FirstOrDefault(x => x.Username == username);
             return userProfile;
         }
 
