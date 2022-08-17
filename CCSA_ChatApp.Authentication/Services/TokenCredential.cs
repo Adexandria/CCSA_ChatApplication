@@ -30,8 +30,8 @@ namespace CCSA_ChatApp.Authentication.Services
 
         public async Task<RefreshTokenDTO> GenerateToken(User currentUser, string refreshToken)
         {
-            var currentToken = await _authRepository.GetExistingToken(currentUser.UserId);
-            if (currentToken is not null && currentToken.ExpiryDate < DateTime.Now)
+            var currentToken = await _authRepository.GetExistingToken(currentUser.UserId,refreshToken);
+            if (currentToken is not null && currentToken.ExpiryDate > DateTime.Now)
             {
                 string accessToken = await GenerateToken(currentUser);
                 return new RefreshTokenDTO { AccessToken = accessToken};
@@ -48,10 +48,10 @@ namespace CCSA_ChatApp.Authentication.Services
             string token = new JwtSecurityTokenHandler().WriteToken(tokenOption);
             return token;
         }
-        
+
 
         //Generate refreshToken
-        public async Task<RefreshToken> GenerateRefreshToken()
+        public async Task<RefreshToken> GenerateRefreshToken(User currentUser)
         {
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();
@@ -60,7 +60,8 @@ namespace CCSA_ChatApp.Authentication.Services
             {
                 TokenId = Guid.NewGuid(),
                 Token = Convert.ToBase64String(randomNumber),
-                ExpiryDate = DateTime.Now.AddHours(1)
+                ExpiryDate = DateTime.Now.AddHours(1),
+                User = currentUser
             };
             await _authRepository.SaveRefreshToken(refreshToken);
             return refreshToken;
@@ -68,7 +69,7 @@ namespace CCSA_ChatApp.Authentication.Services
 
         public string GeneratePasswordResetToken(Guid userId)
         {
-            var passwordSecretKey = _config.GetSection("PasswordSecretKey").Value + $" {userId} {DateTime.Now}";
+            var passwordSecretKey = _config.GetSection("PasswordSecretKey").Value + $" {userId} {DateTime.Now.AddMinutes(5)}";
             var encodedKey = Encoding.ASCII.GetBytes(passwordSecretKey);
             var token = Convert.ToBase64String(encodedKey);
             return token;
@@ -79,8 +80,8 @@ namespace CCSA_ChatApp.Authentication.Services
             var encodeKey = Convert.FromBase64String(token);
             var decodedKey = Encoding.ASCII.GetString(encodeKey);
             var decodedKeys = decodedKey.Split(' ');
-            var date = DateTime.Parse(decodedKeys[3]);
-            if (date < DateTime.Now && decodedKey.Contains(userId.ToString()))
+            var date = DateTime.Parse($"{decodedKeys[3]} {decodedKeys[4]}");
+            if (date > DateTime.Now && decodedKey.Contains(userId.ToString()))
             {
                 return true;
             }

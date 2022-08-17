@@ -11,7 +11,7 @@ namespace CCSA_ChatApp.Db.Mappings
             Table("UserRole");
             Id(s => s.RoleId).GeneratedBy.Guid();
             Map(s => s.Role);
-            References(s=>s.User).Unique();
+            References(s=>s.User).Cascade.Delete().Unique();
         }
     }
 }

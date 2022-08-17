@@ -22,7 +22,7 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public UserProfile? GetUserProfileById(Guid userProfileId)
         {
-            var userProfile = _session.Query<UserProfile>().FirstOrDefault(x => x.ProfileId == userProfileId);
+            var userProfile = _session.Query<UserProfile>().FirstOrDefault(x => x.User.UserId == userProfileId);
             return userProfile;
         }
 

@@ -10,7 +10,7 @@ namespace CCSA_ChatApp.Domain.DTOs.UserDTOs
         [Password, StringLength(7, ErrorMessage = "Password must be more than 4 and less than 7 characters", MinimumLength = 4)]
         public string NewPassword { get; set; }
 
-        [Compare("Password", ErrorMessage = "Password and ConfirmPassword do not match")]
+        [Compare("NewPassword", ErrorMessage = "Password and ConfirmPassword do not match")]
         public string ConfirmPassword { get; set; }
     }
 }

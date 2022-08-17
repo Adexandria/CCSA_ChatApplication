@@ -1,6 +1,7 @@
 using CCSA_ChatApp.Authentication.Services;
 using CCSA_ChatApp.Db;
 using CCSA_ChatApp.Db.Repositories;
+using CCSA_ChatApp.Domain.Models;
 using CCSA_ChatApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +33,6 @@ builder.Services.AddScoped<IMessageHistoryService, MessageHistoryService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<PictureService>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 builder.Services.AddAuthorization(opt =>
 {
