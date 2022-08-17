@@ -23,17 +23,17 @@ namespace CCSA_ChatApp.Infrastructure.Services
            await _messageRepository.DeleteMessageById(messageId);
         }
 
-        public async Task SendMessage(string text, string senderUsername, string receiverUsername)
+        public async Task SendMessage(string text, Guid senderId, string receiverUsername)
         {
              var message = new Message { TextMessage = text, MessageCreated = DateTime.Now };
-             await _messageRepository.CreateMessage(message, senderUsername, receiverUsername);
+             await _messageRepository.CreateMessage(message, senderId, receiverUsername);
             
         }
 
-        public async Task SendMessageToGroup(string text, string senderUsername, Guid groupId)
+        public async Task SendMessageToGroup(string text, Guid senderId, Guid groupId)
         {
             var message = new Message { TextMessage = text, MessageCreated = DateTime.Now };
-            await _messageRepository.CreateMessageForGroup(message, senderUsername, groupId);
+            await _messageRepository.CreateMessageForGroup(message, senderId, groupId);
         }
 
         public async Task UpdateMessageById(string text, Guid messageId)

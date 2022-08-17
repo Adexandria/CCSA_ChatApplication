@@ -6,9 +6,9 @@ namespace CCSA_ChatApp.Domain.DTOs.MessageHistoryDTOs
 {
     public class MessageHistoryDTO
     {
-        public virtual UserDTO Sender { get; set; }
-        public virtual UserDTO? Receiver { get; set; }
-        public virtual GroupChatDTO? GroupChatUser { get; set; }
-        public virtual MessageDTO Message { get; set; }
+        public UserDTO Sender { get; set; }
+        public UserDTO? Receiver { get; set; }
+        public GroupChatDTO? GroupChatUser { get; set; }
+        public MessageDTO Message { get; set; }
     }
 }
