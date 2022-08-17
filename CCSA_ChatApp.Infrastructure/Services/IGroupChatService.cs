@@ -10,11 +10,11 @@ namespace CCSA_ChatApp.Infrastructure.Services
 {
     public interface IGroupChatService
     {
-        void CreateGroupChat(GroupChat group);
-        void Delete(Guid groupId);
+        Task CreateGroupChat(GroupChat group);
+        Task Delete(Guid groupId);
         IEnumerable<GroupChatDTO> GetAll();
-        void UpdateGroupName(Guid groupId,string name);
-        void UpdateGroupDescription(Guid groupId,string description);
-        void UpdateGroupPicture(Guid groupId,string picture);
+        Task UpdateGroupName(Guid groupId,string name);
+        Task UpdateGroupDescription(Guid groupId,string description);
+        Task UpdateGroupPicture(Guid groupId,string picture);
     }
 }
