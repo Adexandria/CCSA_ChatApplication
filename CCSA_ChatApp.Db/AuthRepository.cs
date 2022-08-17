@@ -18,9 +18,9 @@ namespace CCSA_ChatApp.Db
             await Commit();
         }
 
-        public override async Task<RefreshToken> GetExistingToken(Guid userId)
+        public override async Task<RefreshToken> GetExistingToken(Guid userId,string refreshToken)
         {
-            var token = await _session.Query<RefreshToken>().FirstOrDefaultAsync(x => x.User.UserId == userId);
+            var token = await _session.Query<RefreshToken>().FirstOrDefaultAsync(x => x.User.UserId == userId && x.Token == refreshToken);
             return token;
         }
         

@@ -2,6 +2,7 @@
 using CCSA_ChatApp.Domain.DTOs.UserProfileDTOs;
 using CCSA_ChatApp.Domain.Models;
 using Mapster;
+using Microsoft.AspNetCore.Http;
 
 namespace CCSA_ChatApp.Infrastructure.Services
 {
@@ -55,15 +56,34 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
         }
 
-        public void UpdateUserProfilePicture(Guid profileId, byte[] picture)
+        public void UpdateUserPicture(IFormFile picture, UserProfile user)
         {
-            var userProfile = _userProfileRepository.GetUserProfileById(profileId);
-            if (userProfile is not null)
-            {
-                userProfile.Picture = picture;
-                _userProfileRepository.Update(userProfile);
-            }
+            var image = ConvertFromImageToByte(picture);
+            user.Picture = image;
+            _userProfileRepository.Update(user);
         }
+
+        public void DeleteUserPicture(UserProfile user)
+        {
+            user.Picture = null;
+            _userProfileRepository.Update(user);
+        }
+
+
+        public byte[] ConvertFromImageToByte(IFormFile picture)
+        {
+            if (picture.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    picture.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    return fileBytes;
+                }
+            }
+            return default;
+        }
+
     }
 
 }

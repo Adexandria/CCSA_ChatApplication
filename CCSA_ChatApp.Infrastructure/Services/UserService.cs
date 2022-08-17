@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Db.Repositories;
 using CCSA_ChatApp.Domain.DTOs.UserDTOs;
+using CCSA_ChatApp.Domain.DTOs.UserProfileDTOs;
 using CCSA_ChatApp.Domain.Models;
 using Mapster;
 
@@ -30,13 +31,19 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public async Task<UserDTO> GetUserById(Guid userId)
         {
            User user = await _userRepository.GetUserById(userId);
-            return user.Adapt<UserDTO>();
+            UserProfileDTO userProfile = user.Profile.Adapt<UserProfileDTO>();
+            UserDTO mappedUser = user.Adapt<UserDTO>();
+            mappedUser.UserProfile = userProfile;
+            return mappedUser;
         }
 
         public async Task<UserDTO> GetUserByUsername(string username)
         {
             User user = await _userRepository.GetUserByUsername(username);
-            return user.Adapt<UserDTO>();
+            UserProfileDTO userProfile = user.Profile.Adapt<UserProfileDTO>();
+            UserDTO mappedUser = user.Adapt<UserDTO>();
+            mappedUser.UserProfile = userProfile;
+            return mappedUser;
         }
         public async Task UpdateEmail(Guid userId,string email)
         {

@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Domain.DTOs.UserProfileDTOs;
 using CCSA_ChatApp.Domain.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
         void CreateExistingUserProfile(UserProfile user);
         void DeleteUserProfileById(Guid userProfileId);
         UserProfileDTO GetUserProfileByUsername(string username);
-        void UpdateUserProfilePicture(Guid profileId, byte[] picture);
+        void UpdateUserPicture(IFormFile picture, UserProfile user);
+        void DeleteUserPicture(UserProfile user);
         void UpdateUsername(Guid profileId, string username);
         void UpdateCountry(Guid profileId, Country country);
+        byte[] ConvertFromImageToByte(IFormFile picture);
     }
 }

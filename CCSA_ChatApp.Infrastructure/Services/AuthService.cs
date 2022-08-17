@@ -17,9 +17,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
             await _auth.AddUserRole(role);
         }
         
-        public async Task<RefreshToken> GetExistingToken(Guid userId)
+        public async Task<RefreshToken> GetExistingToken(Guid userId,string refreshToken)
         {
-            return await _auth.GetExistingToken(userId);
+            return await _auth.GetExistingToken(userId,refreshToken);
         }
 
         public IEnumerable<UserRoleDTO> GetUserRole(Guid id)
