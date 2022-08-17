@@ -18,7 +18,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
              await _groupChatRepository.CreateGroupChat(group);
         }
 
-        public async Task CreateGroupChat (string name, string groupDescription, string picture)
+        public async Task CreateGroupChat (string name, string groupDescription, byte[] picture)
         {
             await _groupChatRepository.CreateGroupChat(new GroupChat
             {
@@ -28,15 +28,11 @@ namespace CCSA_ChatApp.Infrastructure.Services
             });
         }
 
-        public Task CreateGroupChat(string name, string groupDescription, byte[] picture)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public async Task CreateGroupChat(NewGroupChatDTO newGroupChat)
         {
             await _groupChatRepository.CreateGroupChat(newGroupChat.GroupName, newGroupChat.GroupDescription, newGroupChat.Picture);
-            //throw new NotImplementedException();
         }
 
         public async Task Delete(Guid groupId)
@@ -80,7 +76,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             _groupChatRepository.Update(group);
         }
 
-        public async Task UpdateGroupPicture(Guid groupId, string picture)
+        //public async Task UpdateGroupPicture(Guid groupId, string picture)
         public void DeleteGroupPicture(GroupChat group)
         {
             group.Picture = null;
@@ -99,6 +95,11 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 }
             }
             return default;
+        }
+
+        public Task UpdateGroupPicture(Guid groupId, string picture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
