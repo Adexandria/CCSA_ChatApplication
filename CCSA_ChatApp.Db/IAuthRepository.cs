@@ -12,7 +12,7 @@ namespace CCSA_ChatApp.Db
         public abstract Task AddUserRole(UserRole role);
         public abstract IEnumerable<UserRole> GetUserRole(Guid id);
         public abstract Task SaveRefreshToken(RefreshToken token);
-        public abstract Task<RefreshToken> GetExistingToken(Guid userId);
+        public abstract Task<RefreshToken> GetExistingToken(Guid userId,string refreshToken);
         
     }
 }

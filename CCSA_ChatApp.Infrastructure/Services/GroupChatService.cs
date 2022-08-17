@@ -1,7 +1,8 @@
-﻿using CCSA_ChatApp.Db.Repositories;
+using CCSA_ChatApp.Db.Repositories;
 using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
 using CCSA_ChatApp.Domain.Models;
 using Mapster;
+using Microsoft.AspNetCore.Http;
 
 namespace CCSA_ChatApp.Infrastructure.Services
 {
@@ -72,15 +73,32 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 _groupChatRepository.Update(currentGroupChat);
             }
         }
+        public void UpdateGroupPicture(IFormFile picture, GroupChat group)
+        {
+            var image = ConvertFromImageToByte(picture);
+            group.Picture = image;
+            _groupChatRepository.Update(group);
+        }
 
         public async Task UpdateGroupPicture(Guid groupId, string picture)
+        public void DeleteGroupPicture(GroupChat group)
         {
-            GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
-            if (currentGroupChat is not null)
+            group.Picture = null;
+            _groupChatRepository.Update(group);
+        }
+
+        public byte[] ConvertFromImageToByte(IFormFile picture)
+        {
+            if (picture.Length > 0)
             {
-                currentGroupChat.Picture = picture;
-                _groupChatRepository.Update(currentGroupChat);
+                using (var ms = new MemoryStream())
+                {
+                    picture.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    return fileBytes;
+                }
             }
+            return default;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace CCSA_ChatApp.Db.Repositories
         
         public override async Task CreateUser(User user)
         {
-            EncodePassword(user.Password);
+            user.Password = EncodePassword(user.Password);
             await _session.SaveAsync(user);
             await Commit();
         }
@@ -88,16 +88,16 @@ namespace CCSA_ChatApp.Db.Repositories
             var currentUser = await VerifyUser(user,oldPassword);
             if (currentUser is not null)
             {
-                EncodePassword(newPassword);
+                newPassword = EncodePassword(newPassword);
                 currentUser.Password = newPassword;
-                await _session.UpdateAsync(currentUser);
+                await _session.MergeAsync(currentUser);
                 await Commit();
             }
         }
 
         public override async Task<bool> VerifyPassword(string username, string password)
         {
-            EncodePassword(password);
+            password = EncodePassword(password);
             var currentUser = await VerifyUser(username,password);
             if (currentUser is not null)
             {
@@ -120,10 +120,11 @@ namespace CCSA_ChatApp.Db.Repositories
         
         
 
-        private void EncodePassword(string password)
+        private string EncodePassword(string password)
         {
             var encodedPassword = Encoding.UTF8.GetBytes(password);
             password = Convert.ToBase64String(encodedPassword);
+            return password;
         }
         
         
@@ -134,7 +135,9 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                 if (transction.IsActive)
                 {
+                    await _session.FlushAsync();
                     await transction.CommitAsync();
+                    _session.Close();
                 }
             }
             catch (Exception ex)
@@ -156,9 +159,12 @@ namespace CCSA_ChatApp.Db.Repositories
         private async Task<User> VerifyUser(string username, string password)
         {
             User currentUser = await GetUserByUsername(username);
-            if (currentUser.Password == password)
+            if (currentUser is not null)
             {
-                return currentUser;
+                if (currentUser.Password == password)
+                {
+                    return currentUser;
+                }
             }
             return default;
         }

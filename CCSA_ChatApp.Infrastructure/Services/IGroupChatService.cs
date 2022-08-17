@@ -1,5 +1,6 @@
-﻿using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
+using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
 using CCSA_ChatApp.Domain.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,12 @@ namespace CCSA_ChatApp.Infrastructure.Services
         IEnumerable<GroupChatDTO> GetAll();
         Task UpdateGroupName(Guid groupId,string name);
         Task UpdateGroupDescription(Guid groupId,string description);
+
         Task UpdateGroupPicture(Guid groupId, string picture);
         Task CreateGroupChat(NewGroupChatDTO newGroupChat);
+
+        void UpdateGroupPicture(IFormFile picture, GroupChat group);
+        void DeleteGroupPicture(GroupChat group);
+        byte[] ConvertFromImageToByte(IFormFile picture);
     }
 }
