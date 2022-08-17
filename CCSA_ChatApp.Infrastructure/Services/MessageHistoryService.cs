@@ -30,9 +30,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return messages;
         }
 
-        public IEnumerable<MessageDTO> FetchMessagesByRecieverUsername(string recieverUsername)
+        public IEnumerable<MessageDTO> FetchMessagesByReceiverUsername(string receiverUsername)
         {
-            var histories = _messageHistoryRepo.GetMessageHistoryByRetrieverUsername(recieverUsername);
+            var histories = _messageHistoryRepo.GetMessageHistoryByRetrieverUsername(receiverUsername);
             var messages = new List<MessageDTO>();
             foreach (var history in histories)
             {

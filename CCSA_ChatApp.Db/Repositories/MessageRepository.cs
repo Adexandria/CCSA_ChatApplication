@@ -39,37 +39,34 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public async Task CreateMessage(Message message, string senderUsername, string receiverUsername)
+        public async Task CreateMessage(Message message, Guid senderId, string receiverUsername)
         {
-            var sender = await _userRepository.GetUserByUsername(senderUsername);
+            var sender = await _userRepository.GetUserById(senderId);
             var reciever = await _userRepository.GetUserByUsername(receiverUsername);
-            if (sender != null)
+            if (sender != null && reciever != null)
             {
-                if (reciever != null)
-                {
-                    var messageHistory = new MessageHistory { Receiver = reciever, Sender = sender };
-                    _session.Save(message);
-                    _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
-                }
-                throw new Exception("This user doesn't exist");
+                var messageHistory = new MessageHistory { Receiver = reciever, Sender = sender };
+                await _session.SaveAsync(message);
+                await _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
+                
             }
+            else
+                throw new Exception("You're not a registered user");
         }
 
-        public async Task CreateMessageForGroup(Message message, string senderUsername, Guid groupId)
+        public async Task CreateMessageForGroup(Message message, Guid senderId, Guid groupId)
         {
-            var sender = await _userRepository.GetUserByUsername(senderUsername);
+            var sender = await _userRepository.GetUserById(senderId);
             var groupChat = await _groupChatRepository.GetGroupChatById(groupId);
             
-            if (sender != null)
+            if (sender != null && groupChat != null)
             {
-                if (groupChat != null)
-                {
                     var messageHistory = new MessageHistory { GroupChatUser = groupChat, Sender = sender };
-                    _session.Save(message);
-                    _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
-                }
-                throw new Exception("This group doesn't exist yet");
+                    await _session.SaveAsync(message);
+                    await _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
             }
+            else
+                throw new Exception("You're not a registered user");
         }
 
         public async Task<Message> GetMessageById(Guid messageId)
