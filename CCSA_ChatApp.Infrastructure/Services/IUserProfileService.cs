@@ -14,7 +14,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         void CreateExistingUserProfile(UserProfile user);
         void DeleteUserProfileById(Guid userProfileId);
         UserProfileDTO GetUserProfileByUsername(string username);
-        void UpdateUserProfilePicture(Guid profileId, string picture);
+        void UpdateUserProfilePicture(Guid profileId, byte[] picture);
         void UpdateUsername(Guid profileId, string username);
         void UpdateCountry(Guid profileId, Country country);
     }

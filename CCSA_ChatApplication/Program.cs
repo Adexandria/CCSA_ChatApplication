@@ -30,6 +30,7 @@ builder.Services.AddScoped<IGroupChatService, GroupChatService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<PictureService>();
 AuthenticationService.ConfigureServices(builder.Configuration, builder.Services);
 builder.Services.AddAuthorization(opt =>
 {

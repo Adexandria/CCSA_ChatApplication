@@ -34,7 +34,12 @@ namespace CCSA_ChatApp.Db.Repositories
         {
             return await _session.GetAsync<User>(userId);
         }
-        
+
+        public override async Task<User> GetUserByUsername(string username)
+        {
+            var user = await _session.Query<User>().FirstOrDefaultAsync(s => s.Profile.Username == username);
+            return user;
+        }
         public override async Task UpdateEmail(Guid userId,string email)
         {
             User currentUser = await GetUserById(userId);
@@ -78,9 +83,9 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public override async Task UpdatePassword(Guid userId, string oldPassword, string newPassword)
+        public override async Task UpdatePassword(User user, string oldPassword, string newPassword)
         {
-            var currentUser = await GetUser(userId,oldPassword);
+            var currentUser = await VerifyUser(user,oldPassword);
             if (currentUser is not null)
             {
                 EncodePassword(newPassword);
@@ -90,10 +95,10 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public override async Task<bool> VerifyPassword(Guid userId, string password)
+        public override async Task<bool> VerifyPassword(string username, string password)
         {
             EncodePassword(password);
-            var currentUser = await GetUser(userId,password);
+            var currentUser = await VerifyUser(username,password);
             if (currentUser is not null)
             {
                 return true;
@@ -129,7 +134,6 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                 if (transction.IsActive)
                 {
-                    _session.Flush();
                     await transction.CommitAsync();
                 }
             }
@@ -140,9 +144,18 @@ namespace CCSA_ChatApp.Db.Repositories
         }
 
         
-        private async Task<User> GetUser(Guid userId, string password)
+        private async Task<User> VerifyUser(User currentUser, string password)
         {
-            User currentUser = await GetUserById(userId);
+            if (currentUser.Password == password)
+            {
+                return currentUser;
+            }
+            return default;
+        }
+
+        private async Task<User> VerifyUser(string username, string password)
+        {
+            User currentUser = await GetUserByUsername(username);
             if (currentUser.Password == password)
             {
                 return currentUser;

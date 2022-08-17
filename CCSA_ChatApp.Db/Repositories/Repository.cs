@@ -50,16 +50,13 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                 if (transction.IsActive)
                 {
-
-                    _session.Flush();
                     transction.Commit();
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                transction.Rollback();
-                return false;
+                throw ex;
             }
         }
 

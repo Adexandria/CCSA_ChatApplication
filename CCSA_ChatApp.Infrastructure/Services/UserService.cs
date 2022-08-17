@@ -33,6 +33,11 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return user.Adapt<UserDTO>();
         }
 
+        public async Task<UserDTO> GetUserByUsername(string username)
+        {
+            User user = await _userRepository.GetUserByUsername(username);
+            return user.Adapt<UserDTO>();
+        }
         public async Task UpdateEmail(Guid userId,string email)
         {
             await _userRepository.UpdateEmail(userId,email);
@@ -52,10 +57,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             await _userRepository.UpdateMiddleName(userId,middleName);
         }
-
-        public async Task UpdatePassword(Guid userId, string oldPassword, string newPassword)
+        
+        public async Task UpdatePassword(User user, string oldPassword, string newPassword)
         {
-            await _userRepository.UpdatePassword(userId,oldPassword, newPassword);
+            await _userRepository.UpdatePassword(user,oldPassword, newPassword);
         }
 
         public async Task DeleteByUserId(Guid userId)
@@ -63,9 +68,11 @@ namespace CCSA_ChatApp.Infrastructure.Services
            await  _userRepository.DeleteByUserId(userId);
         }
 
-        public async Task<bool> VerifyPassword(Guid userId, string password)
+        public async Task<bool> VerifyPassword(string username, string password)
         {
-            return await _userRepository.VerifyPassword(userId,password);
+            return await _userRepository.VerifyPassword(username,password);
         }
+
+       
     }
 }

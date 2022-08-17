@@ -18,6 +18,7 @@ namespace CCSA_ChatApp.Db.Repositories
         public void CreateGroupChat(GroupChat group)
         {
             _session.Save(group);
+            Commit();
         }
        
         public GroupChat? GetGroupChatById(Guid groupChatId)
