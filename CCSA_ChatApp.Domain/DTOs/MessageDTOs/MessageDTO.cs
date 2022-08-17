@@ -2,7 +2,7 @@
 {
     public class MessageDTO
     {
-        public virtual string TextMessage { get; set; }
-        public virtual DateTime MessageCreated { get; set; }
+        public string TextMessage { get; set; }
+        public DateTime MessageCreated { get; set; }
     }
 }
