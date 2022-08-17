@@ -27,13 +27,17 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public UserProfileDTO GetUserProfileById(Guid userProfileId)
         {
             var userProfile = _userProfileRepository.GetUserProfileById(userProfileId);
-            return userProfile.Adapt<UserProfileDTO>();
+            var mappedUserProfile = userProfile.Adapt<UserProfileDTO>();
+            /*mappedUserProfile.Picture = ConvertFronByteToString(userProfile.Picture);*/
+            return mappedUserProfile;
         }
 
         public UserProfileDTO GetUserProfileByUsername(string username)
         {
             var userProfile = _userProfileRepository.GetUserProfileByUsername(username);
-            return userProfile.Adapt<UserProfileDTO>();
+            var mappedUserProfile = userProfile.Adapt<UserProfileDTO>();
+            /*mappedUserProfile.Picture = ConvertFronByteToString(userProfile.Picture);*/
+            return mappedUserProfile;
         }
 
         public void UpdateCountry(Guid profileId, Country country)
@@ -82,6 +86,15 @@ namespace CCSA_ChatApp.Infrastructure.Services
                     var fileBytes = ms.ToArray();
                     return fileBytes;
                 }
+            }
+            return default;
+        }
+
+        private string ConvertFronByteToString(byte[] picture)
+        {
+            if (picture is not null)
+            {
+                return Convert.ToBase64String(picture);
             }
             return default;
         }

@@ -64,8 +64,8 @@ namespace CCSA_ChatApplication.Controllers
         public async Task<IActionResult> UpdateUsername(string username)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            UserDTO currentUser = await _userService.GetUserByUsername(username);
-            if (currentUser is not null)
+            var currentUser =  _userProfileService.GetUserProfileByUsername(username);
+            if (currentUser is null)
             {
                 _userProfileService.UpdateUsername(Guid.Parse(userId), username);
                 return Ok("Updated successfully");
@@ -81,15 +81,15 @@ namespace CCSA_ChatApplication.Controllers
             return Ok("Updated successfully");
         }
 
-        [HttpPut("update-group-picture")]
-        public async Task<IActionResult> UpdatePicture(IFormFile groupPicture)
+        [HttpPut("update-picture")]
+        public async Task<IActionResult> UpdatePicture(IFormFile picture)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _userProfileService.UpdateUserPicture(groupPicture, Guid.Parse(userId));
+            _userProfileService.UpdateUserPicture(picture, Guid.Parse(userId));
             return Ok("Updated successfully");
         }
 
-        [HttpDelete("delete-group-picture")]
+        [HttpDelete("delete-picture")]
         public async Task<IActionResult> RemovePicture()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
