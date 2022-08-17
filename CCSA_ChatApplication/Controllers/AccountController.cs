@@ -105,7 +105,7 @@ namespace CCSA_ChatApplication.Controllers
             return Ok(token);
         }
 
-       [HttpPost("password-reset")]
+       [HttpPut("password-reset")]
         public async Task<IActionResult> ResetPassword(string token,PasswordDTO passwordReset)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
