@@ -1,4 +1,5 @@
 ﻿using CCSA_ChatApp.Domain.Models;
+using Microsoft.AspNetCore.Http;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -36,6 +37,12 @@ namespace CCSA_ChatApp.Db.Repositories
                 await _session.DeleteAsync(groupChatId);
                 Commit();
             }
+        }
+
+        public async Task CreateGroupChat(string groupName, string groupDescription, IFormFile picture)
+        {
+            await _session.SaveAsync(groupName, groupDescription, picture);
+            Commit();
         }
     }
 }

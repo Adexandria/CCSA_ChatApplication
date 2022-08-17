@@ -24,9 +24,9 @@ namespace CCSA_ChatApplication.Controllers
 
 
         [HttpPost("create-group")]
-        public async Task<IActionResult> CreateGroupChat([FromBody] GroupChatDTO newGroupChat)
+        public async Task<IActionResult> CreateGroupChat(NewGroupChatDTO newGroupChat)
         {
-            await _groupChatService.CreateGroupChat(newGroupChat.GroupName,newGroupChat.GroupDescription,newGroupChat.Picture);
+            await _groupChatService.CreateGroupChat(newGroupChat);
             return Ok($"{ newGroupChat.GroupName} Created");
         }
     }

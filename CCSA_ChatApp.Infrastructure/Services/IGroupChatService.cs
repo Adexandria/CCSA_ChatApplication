@@ -15,7 +15,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         IEnumerable<GroupChatDTO> GetAll();
         Task UpdateGroupName(Guid groupId,string name);
         Task UpdateGroupDescription(Guid groupId,string description);
-        Task UpdateGroupPicture(Guid groupId, byte[] picture);
-        Task CreateGroupChat(string name, string groupDescription, byte[] picture);
+        Task UpdateGroupPicture(Guid groupId, string picture);
+        Task CreateGroupChat(NewGroupChatDTO newGroupChat);
     }
 }

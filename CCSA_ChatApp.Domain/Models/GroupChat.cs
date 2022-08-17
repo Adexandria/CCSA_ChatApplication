@@ -11,7 +11,7 @@ namespace CCSA_ChatApp.Domain.Models
         public virtual Guid GroupId { get; set; }
         public virtual string GroupName { get; set; }
         public virtual string GroupDescription { get; set; }
-        public virtual byte[] Picture { get; set; }
+        public virtual string Picture { get; set; }
         public virtual DateTime CreatedDate { get; protected set; }
         public virtual User CreatedBy { get; set; }
         public virtual IList<User> Members { get; set; } = new List<User>();
