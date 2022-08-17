@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\CCSA_ChatApp.Domain\CCSA_ChatApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>
