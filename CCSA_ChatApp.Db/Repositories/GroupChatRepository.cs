@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Domain.Models;
 using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,9 @@ namespace CCSA_ChatApp.Db.Repositories
             Commit();
         }
        
-        public GroupChat? GetGroupChatById(Guid groupChatId)
+        public async Task<GroupChat> GetGroupChatById(Guid groupChatId)
         {
-            var groupChat = _session.Query<GroupChat>().FirstOrDefault(x => x.GroupId == groupChatId);
+            var groupChat = await _session.Query<GroupChat>().FirstOrDefaultAsync(x => x.GroupId == groupChatId);
             return groupChat;
         }
 
