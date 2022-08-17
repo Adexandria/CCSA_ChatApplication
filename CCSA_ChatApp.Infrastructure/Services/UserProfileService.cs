@@ -15,7 +15,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
 
         public void CreateExistingUserProfile(UserProfile user)
         {
-            _userProfileRepository.CreateExistingUserProfile(user);
+            _userProfileRepository.Create(user);
         }
 
         public void DeleteUserProfileById(Guid userProfileId)
@@ -55,7 +55,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
         }
 
-        public void UpdateUserProfilePicture(Guid profileId, string picture)
+        public void UpdateUserProfilePicture(Guid profileId, byte[] picture)
         {
             var userProfile = _userProfileRepository.GetUserProfileById(profileId);
             if (userProfile is not null)

@@ -12,7 +12,7 @@ namespace CCSA_ChatApp.Authentication.Services
     {
         Task<RefreshTokenDTO> GenerateToken(User currentUser,string refreshToken);
         Task<string> GenerateToken(User currentUser);
-        RefreshToken GenerateRefreshToken();
+        Task<RefreshToken> GenerateRefreshToken();
         string GeneratePasswordResetToken(Guid userId);
         bool DecodePasswordResetToken(string token, Guid userId);
 

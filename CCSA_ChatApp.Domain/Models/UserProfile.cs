@@ -11,7 +11,7 @@ namespace CCSA_ChatApp.Domain.Models
         public virtual Guid ProfileId { get; set; }
         public virtual Country Country { get; set; }
         public virtual string Username { get; set; }
-        public virtual string Picture { get; set; }
+        public virtual byte[] Picture { get; set; }
         public virtual User User { get; set; }
     }
 }

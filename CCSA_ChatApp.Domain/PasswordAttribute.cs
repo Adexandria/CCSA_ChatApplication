@@ -9,8 +9,8 @@ namespace CCSA_ChatApp.Domain
         {
             switch (true)
             {
-                case bool _ when Regex.IsMatch(value.ToString(), "[a-zA-Z_0-9$!&*^]"):
-                    return ValidationResult.Success;
+                case bool _ when !Regex.IsMatch(value.ToString(), "[$!&*^]"):
+                    return new ValidationResult("Password must have at least one special character eg $!&*^");
                 case bool _ when !Regex.IsMatch(value.ToString(), "[A-Z]"):
                     return new ValidationResult("Password must have at least one capital letter");
                 case bool _ when !Regex.IsMatch(value.ToString(), "[a-z]"):
@@ -18,7 +18,7 @@ namespace CCSA_ChatApp.Domain
                 case bool _ when !Regex.IsMatch(value.ToString(), "[0-9]"):
                     return new ValidationResult("Password must have at least one number");
                 default:
-                    return new ValidationResult("Password must have at least one special character eg $!&*^");
+                    return ValidationResult.Success;
             }
 
         }

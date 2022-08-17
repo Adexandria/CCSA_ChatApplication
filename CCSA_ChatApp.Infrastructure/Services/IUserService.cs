@@ -12,12 +12,13 @@ namespace CCSA_ChatApp.Infrastructure.Services
     {
          Task CreateUser(User user);
          Task<UserDTO> GetUserById(Guid userId);
+         Task<UserDTO> GetUserByUsername(string username);
         IEnumerable<UsersDTO> GetUsers { get; }
          Task UpdateFirstName(Guid userId, string firstName);
          Task UpdateMiddleName(Guid userId, string middleName);
          Task UpdateLastName(Guid userId, string lastName);
-         Task UpdatePassword(Guid userId, string oldPassword, string newPassword);
-         Task<bool> VerifyPassword(Guid userId, string password);
+         Task UpdatePassword(User user, string oldPassword, string newPassword);
+         Task<bool> VerifyPassword(string username, string password);
          Task UpdateEmail(Guid userId, string email);
          Task DeleteByUserId(Guid userId);
     }

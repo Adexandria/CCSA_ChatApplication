@@ -31,7 +31,7 @@ namespace CCSA_ChatApp.Authentication.Services
         public async Task<RefreshTokenDTO> GenerateToken(User currentUser, string refreshToken)
         {
             var currentToken = await _authRepository.GetExistingToken(currentUser.UserId);
-            if (currentToken.ExpiryDate < DateTime.Now)
+            if (currentToken is not null && currentToken.ExpiryDate < DateTime.Now)
             {
                 string accessToken = await GenerateToken(currentUser);
                 return new RefreshTokenDTO { AccessToken = accessToken};
@@ -51,22 +51,24 @@ namespace CCSA_ChatApp.Authentication.Services
         
 
         //Generate refreshToken
-        public RefreshToken GenerateRefreshToken()
+        public async Task<RefreshToken> GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
             var refreshToken = new RefreshToken
             {
+                TokenId = Guid.NewGuid(),
                 Token = Convert.ToBase64String(randomNumber),
                 ExpiryDate = DateTime.Now.AddHours(1)
             };
+            await _authRepository.SaveRefreshToken(refreshToken);
             return refreshToken;
         }
 
         public string GeneratePasswordResetToken(Guid userId)
         {
-            var passwordSecretKey = _config.GetSection("PasswordSecretKey").Value + $"Id {userId}";
+            var passwordSecretKey = _config.GetSection("PasswordSecretKey").Value + $" {userId} {DateTime.Now}";
             var encodedKey = Encoding.ASCII.GetBytes(passwordSecretKey);
             var token = Convert.ToBase64String(encodedKey);
             return token;
@@ -76,7 +78,9 @@ namespace CCSA_ChatApp.Authentication.Services
         {
             var encodeKey = Convert.FromBase64String(token);
             var decodedKey = Encoding.ASCII.GetString(encodeKey);
-            if (decodedKey.Contains(userId.ToString()))
+            var decodedKeys = decodedKey.Split(' ');
+            var date = DateTime.Parse(decodedKeys[3]);
+            if (date < DateTime.Now && decodedKey.Contains(userId.ToString()))
             {
                 return true;
             }
