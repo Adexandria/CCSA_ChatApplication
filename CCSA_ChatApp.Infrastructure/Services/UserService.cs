@@ -18,7 +18,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             get
             {
                 IEnumerable<User> users = _userRepository.GetUsers;
-                return users.Adapt<IEnumerable<UsersDTO>>();
+                return users.Adapt<IEnumerable<UsersDTO>>(MappingService.UsersMappingService());
             }
         }
 
