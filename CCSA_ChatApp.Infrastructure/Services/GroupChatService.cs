@@ -35,7 +35,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             await _groupChatRepository.CreateGroupChat(newGroupChat.GroupName, newGroupChat.GroupDescription, newGroupChat.Picture);
         }
 
-        public async Task Delete(Guid groupId)
+        public async Task DeleteGroupChatById(Guid groupId)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if(currentGroupChat is not null)

@@ -12,7 +12,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
     public interface IGroupChatService
     {
         Task CreateGroupChat(GroupChat group);
-        Task Delete(Guid groupId);
+        Task DeleteGroupChatById(Guid groupId);
         IEnumerable<GroupChatDTO> GetAll();
         //Task UpdateGroupName(Guid groupId,string name);
         Task UpdateGroupDescription(Guid groupId,string description);

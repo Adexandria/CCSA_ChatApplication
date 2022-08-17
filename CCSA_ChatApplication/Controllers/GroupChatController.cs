@@ -30,22 +30,19 @@ namespace CCSA_ChatApplication.Controllers
         public IUserService _userService { get; }
 
         [HttpPost("create-group")]
-        public async Task<IActionResult> CreateGroupChat([FromForm]NewGroupChatDTO newGroupChat)
+        public async Task<IActionResult> CreateGroupChat([FromForm] NewGroupChatDTO newGroupChat)
         {
             try
             {
-                User user = newGroupChat.Adapt<User>();
-                UserProfile userProfile = newGroupChat.Adapt<UserProfile>();
 
-                return Ok();
-                //var user = new UserProfile();
-                //await _userService.GetUserByUsername(user.Username);
+                var user = new UserProfile();
+                await _userService.GetUserByUsername(user.Username);
 
 
-                //await _authService.AddUserRole(new UserRole { Role = "User"});
-                //var token = await _tokenCredential.GenerateToken(user.User);
-                //await _groupChatService.CreateGroupChat(newGroupChat);
-                //return Ok($"{token} with {newGroupChat.GroupName} has been created");
+                await _authService.AddUserRole(new UserRole { Role = "User" });
+                var token = await _tokenCredential.GenerateToken(user.User);
+                await _groupChatService.CreateGroupChat(newGroupChat);
+                return Ok($"{token} with {newGroupChat.GroupName} has been created");
             }
             catch (Exception ex)
             {
@@ -54,7 +51,12 @@ namespace CCSA_ChatApplication.Controllers
             }
         }
 
-
+        [HttpDelete("groupchat/{groupchatId}")]
+        public async Task<IActionResult> DeleteGroupChatById(Guid groupChatId)
+        {
+            await _groupChatService.Delete(groupChatId);
+            return Ok("Successful");
+        }
 
 
 
