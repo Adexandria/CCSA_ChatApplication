@@ -12,8 +12,8 @@ namespace CCSA_ChatApp.Db.Mappings
             Id(s => s.ProfileId).GeneratedBy.Guid() ;
             Map(s => s.Country).CustomType<Country>();
             Map(s => s.Username);
-            Map(s => s.Picture);
-            References(s=>s.User).Unique();
+            Map(s => s.Picture).Length(int.MaxValue);
+            References(s=>s.User).Cascade.Delete().Unique();
         }
     }
 }
