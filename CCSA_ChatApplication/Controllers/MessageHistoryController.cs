@@ -9,31 +9,31 @@ namespace CCSA_ChatApplication.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class MessageAndHistoryController : ControllerBase
+    public class MessageHistoryController : ControllerBase
     {
         private readonly MessageService _messageService;
         private readonly MessageHistoryService _messageHistoryService;
-        public MessageAndHistoryController(MessageService messageService, MessageHistoryService messageHistoryService)
+        public MessageHistoryController(MessageService messageService, MessageHistoryService messageHistoryService)
         {
             _messageService = messageService;
             _messageHistoryService = messageHistoryService;
         }
 
-        [HttpDelete("message")]
+        [HttpDelete("message/{messageid}")]
         public async Task<IActionResult> DeleteMessageByMessageId(Guid messageId)
         {
            await _messageService.DeleteMessageByMessageId(messageId);
            return Ok("Message has been deleted successfully");
         }
 
-        [HttpGet("messages/group")]
+        [HttpGet("messages/group/{groupId}")]
         public IActionResult FetchGroupChatMessagesByGroupId(Guid groupId)
         {
             
             var messages = _messageHistoryService.FetchGroupChatMessagesByGroupId(groupId);
             return Ok(messages);
         }
-        [HttpGet("messages/receiver")]
+        [HttpGet("messages/receiver/{receiverusername}")]
         public IActionResult FetchMessagesByReceiverUsername(string receiverUsername)
         {
             var messages = _messageHistoryService.FetchMessagesByReceiverUsername(receiverUsername);
@@ -46,7 +46,7 @@ namespace CCSA_ChatApplication.Controllers
             var messages = _messageHistoryService.FetchMessagesBySenderId(new Guid(userId));
             return Ok(messages);
         }
-        [HttpPost("message/Receiver")]
+        [HttpPost("message/Receiver/{receiverusername}")]
         public async Task<IActionResult> SendMessage([FromBody]string text, string receiverUsername)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -62,7 +62,7 @@ namespace CCSA_ChatApplication.Controllers
 
         }
         [Authorize(Roles = "GroupUser")]
-        [HttpPost("message/group")]
+        [HttpPost("message/group/{groupChatId}")]
         public async Task<IActionResult> SendMessageToGroup([FromBody]string text, Guid groupChatId)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -76,7 +76,7 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("message/message-id")]
+        [HttpPut("message/message-id/{messageId}")]
         public async Task<IActionResult> UpdateMessageById([FromBody]string text, Guid messageId)
         {
             try

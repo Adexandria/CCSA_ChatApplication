@@ -43,17 +43,15 @@ namespace CCSA_ChatApp.Db.Repositories
         {
             var sender = await _userRepository.GetUserById(senderId);
             var reciever = await _userRepository.GetUserByUsername(receiverUsername);
-            if (sender != null)
+            if (sender != null && reciever != null)
             {
-                if (reciever != null)
-                {
-                    var messageHistory = new MessageHistory { Receiver = reciever, Sender = sender };
-                    await _session.SaveAsync(message);
-                    await _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
-                }
-                throw new Exception("This user doesn't exist");
+                var messageHistory = new MessageHistory { Receiver = reciever, Sender = sender };
+                await _session.SaveAsync(message);
+                await _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
+                
             }
-            throw new Exception("You're not a registered user");
+            else
+                throw new Exception("You're not a registered user");
         }
 
         public async Task CreateMessageForGroup(Message message, Guid senderId, Guid groupId)
@@ -61,17 +59,14 @@ namespace CCSA_ChatApp.Db.Repositories
             var sender = await _userRepository.GetUserById(senderId);
             var groupChat = await _groupChatRepository.GetGroupChatById(groupId);
             
-            if (sender != null)
+            if (sender != null && groupChat != null)
             {
-                if (groupChat != null)
-                {
                     var messageHistory = new MessageHistory { GroupChatUser = groupChat, Sender = sender };
                     await _session.SaveAsync(message);
                     await _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
-                }
-                throw new Exception("This group doesn't exist yet");
             }
-            throw new Exception("You're not a registered user");
+            else
+                throw new Exception("You're not a registered user");
         }
 
         public async Task<Message> GetMessageById(Guid messageId)
