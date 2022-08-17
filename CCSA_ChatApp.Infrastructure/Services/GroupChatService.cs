@@ -17,6 +17,16 @@ namespace CCSA_ChatApp.Infrastructure.Services
              await _groupChatRepository.CreateGroupChat(group);
         }
 
+        public async Task CreateGroupChat (string name, string groupDescription, byte[] picture)
+        {
+            await _groupChatRepository.CreateGroupChat(new GroupChat
+            {
+                GroupName = name,
+                GroupDescription = groupDescription,
+                Picture = picture
+            });
+        }
+
         public async Task Delete(Guid groupId)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
@@ -52,7 +62,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
         }
 
-        public async Task UpdateGroupPicture(Guid groupId,string picture)
+        public async Task UpdateGroupPicture(Guid groupId, byte[] picture)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if (currentGroupChat is not null)
