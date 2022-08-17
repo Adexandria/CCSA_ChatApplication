@@ -21,16 +21,14 @@ namespace CCSA_ChatApplication.Controllers
         private readonly IAuth _auth;
         private readonly IUserProfileService _userProfileService;
         private readonly ITokenCredential _tokenCredential;
-        private readonly PictureService _pictureService;
 
-        public AccountController(IUserService userService, IAuth auth, IUserProfileService userProfileService, ITokenCredential tokenCredential, 
-            PictureService pictureService)
+
+        public AccountController(IUserService userService, IAuth auth, IUserProfileService userProfileService, ITokenCredential tokenCredential )
         {
             _userService = userService;
             _auth = auth;
             _userProfileService = userProfileService;
             _tokenCredential = tokenCredential;
-            _pictureService = pictureService;
         }
         
 
@@ -50,8 +48,11 @@ namespace CCSA_ChatApplication.Controllers
             
             //Map newUser properties into user profile model
             UserProfile userProfile = newUser.Adapt<UserProfile>();
+            
             //convert image into string
-          
+            var image = _userProfileService.ConvertFromImageToByte(newUser.ProfilePicture);
+            userProfile.Picture = image;
+            
             //Save user
             await _userService.CreateUser(user);
 
@@ -76,12 +77,13 @@ namespace CCSA_ChatApplication.Controllers
                 var mappedUser = await _userService.GetUserByUsername(newUser.UserName);
                 var user = mappedUser.Adapt<User>();
                 var token = await  _tokenCredential.GenerateToken(user);
-                var refreshToken = await _tokenCredential.GenerateRefreshToken();
+                var refreshToken = await _tokenCredential.GenerateRefreshToken(user);
                 return Ok(new TokenDTO { AccessToken = token,RefreshToken = refreshToken.Token});
             }
             return BadRequest("Username or password incorrect");
         }
 
+        [AllowAnonymous]
         [HttpPost("refresh-token")]
         public async Task<IActionResult>GenerateAccessToken(string refreshToken)
         {
@@ -107,18 +109,14 @@ namespace CCSA_ChatApplication.Controllers
         public async Task<IActionResult> ResetPassword(string token,PasswordDTO passwordReset)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userProfile = _userProfileService.GetUserProfileById(Guid.Parse(userId));
             var user = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
             if (! _tokenCredential.DecodePasswordResetToken(token, Guid.Parse(userId)))
             {
                 return BadRequest("Invalid token");
             }
-            var verifyPassword = await _userService.VerifyPassword(user.Profile.Username, passwordReset.OldPassword);
-            if (verifyPassword)
-            {
-                await _userService.UpdatePassword(user, passwordReset.OldPassword,passwordReset.NewPassword);
-                return Ok("Password reset");
-            }
-            return BadRequest("Old password is incorrect");
+            await _userService.UpdatePassword(user, passwordReset.OldPassword,passwordReset.NewPassword);
+            return Ok("Password Changed");
         }
 
         [HttpDelete]
