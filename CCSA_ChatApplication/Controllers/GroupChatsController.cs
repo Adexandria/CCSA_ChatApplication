@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
-    [Route("GroupChat")]
+    [Route("api/[controller]")]
     [ApiController]
     public class GroupChatsController : ControllerBase
     {
@@ -189,7 +189,7 @@ namespace CCSA_ChatApplication.Controllers
             return Ok("Added Successfully");
         }
 
-        [HttpDelete("{groupName/remove-user")]
+        [HttpDelete("{groupName}/remove-user")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
