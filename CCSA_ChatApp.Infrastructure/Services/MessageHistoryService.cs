@@ -23,6 +23,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             {
                 messages.Add(
                     new MessageDTO { 
+                        MessageId = history.Message.MessageId,
                         MessageCreated = history.Message.MessageCreated, 
                         TextMessage = history.Message.TextMessage 
                     });
@@ -39,6 +40,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 messages.Add(
                     new MessageDTO
                     {
+                        MessageId = history.Message.MessageId,
                         MessageCreated = history.Message.MessageCreated,
                         TextMessage = history.Message.TextMessage
                     });
@@ -55,6 +57,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 messages.Add(
                     new MessageDTO
                     {
+                        MessageId = history.Message.MessageId,
                         MessageCreated = history.Message.MessageCreated,
                         TextMessage = history.Message.TextMessage
                     });

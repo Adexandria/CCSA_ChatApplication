@@ -13,17 +13,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
     {
         Task CreateGroupChat(GroupChat group);
         Task DeleteGroupChatById(Guid groupId);
-        IEnumerable<GroupChatDTO> GetAll();
-        //Task UpdateGroupName(Guid groupId,string name);
-        Task UpdateGroupDescription(Guid groupId,string description);
-
-        Task UpdateGroupPicture(Guid groupId, string picture);
-        Task CreateGroupChat(NewGroupChatDTO newGroupChat);
-
-        void UpdateGroupPicture(IFormFile picture, GroupChat group);
-        void DeleteGroupPicture(GroupChat group);
+        IEnumerable<GroupChatsDTO> GetAll();
+        Task UpdateGroupDescription(Guid groupId, string description);
+        Task UpdateGroupPicture(IFormFile picture, GroupChat group)
+        Task DeleteGroupPicture(GroupChat group);
         byte[] ConvertFromImageToByte(IFormFile picture);
-        IEnumerable<GroupChatDTO> GetGroupById(Guid groupId);
-        Task UpdateGroupName(Guid groupId, string name);
     }
 }

@@ -1,4 +1,4 @@
-﻿using CCSA_ChatApp.Db;
+﻿using CCSA_ChatApp.Db.Repositories;
 using CCSA_ChatApp.Domain.DTOs.UserDTOs;
 using CCSA_ChatApp.Domain.Models;
 using Mapster;
