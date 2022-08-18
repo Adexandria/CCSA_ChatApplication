@@ -30,7 +30,7 @@ namespace CCSA_ChatApplication.Controllers
         public IUserService _userService { get; }
 
         [HttpPost("create-group")]
-        public async Task<IActionResult> CreateGroupChat([FromForm] NewGroupChatDTO newGroupChat)
+        public async Task<IActionResult> CreateGroupChat([FromForm] GroupChatCreateDTO newGroupChat)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace CCSA_ChatApplication.Controllers
 
                 await _authService.AddUserRole(new UserRole { Role = "User" });
                 var token = await _tokenCredential.GenerateToken(user.User);
-                await _groupChatService.CreateGroupChat(newGroupChat);
+                
                 return Ok($"{token} with {newGroupChat.GroupName} has been created");
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace CCSA_ChatApplication.Controllers
         public IActionResult GetGroupChatsByid()
         {
             var groupId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var groupChats = _groupChatService.GetGroupById(new Guid(groupId));
+            var groupChats = _groupChatService.GetGroupChat(new Guid(groupId));
             return Ok(groupChats);
         }
 
@@ -74,7 +74,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                _groupChatService.UpdateGroupPicture(groupId, picture);
+               
                 return Ok("Updated Successfully");
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                _groupChatService.UpdateGroupName(groupId, name);
+               
                 return Ok("Updated Successfully");
             }
             catch (Exception ex)
@@ -106,7 +106,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                _groupChatService.UpdateGroupDescription(groupId, description);
+                await _groupChatService.UpdateGroupDescription(groupId, description);
                 return Ok("Name Updated scuuessfully");
             }
             catch (Exception ex)

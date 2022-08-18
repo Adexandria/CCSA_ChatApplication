@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CCSA_ChatApp.Domain.DTOs.GroupChatDTOs
 {
-    public class NewGroupChatDTO
+    public class GroupChatCreateDTO
     {
         [Required]
         public string GroupName { get; set; }
