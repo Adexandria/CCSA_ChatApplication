@@ -105,15 +105,24 @@ namespace CCSA_ChatApplication.Controllers
        [HttpPut("password-reset")]
         public async Task<IActionResult> ResetPassword(string token,PasswordDTO passwordReset)
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userProfile = _userProfileService.GetUserProfileById(Guid.Parse(userId));
-            var user = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-            if (! _tokenCredential.DecodePasswordResetToken(token, Guid.Parse(userId)))
+            try
             {
-                return BadRequest("Invalid token");
+
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userProfile = _userProfileService.GetUserProfileById(Guid.Parse(userId));
+                var user = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+                if (!_tokenCredential.DecodePasswordResetToken(token, Guid.Parse(userId)))
+                {
+                    return BadRequest("Invalid token");
+                }
+                await _userService.UpdatePassword(user, passwordReset.OldPassword, passwordReset.NewPassword);
+                return Ok("Password Changed");
             }
-            await _userService.UpdatePassword(user, passwordReset.OldPassword,passwordReset.NewPassword);
-            return Ok("Password Changed");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpDelete]

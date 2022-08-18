@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SendMessageController : ControllerBase
@@ -34,7 +35,7 @@ namespace CCSA_ChatApplication.Controllers
 
         }
 
-        [Authorize(Roles = "GroupUser")]
+        [Authorize/*(Roles = "GroupUser")*/]
         [HttpPost("groupName")]
         public async Task<IActionResult> SendMessageToGroup([FromBody] string text, string groupName)
         {

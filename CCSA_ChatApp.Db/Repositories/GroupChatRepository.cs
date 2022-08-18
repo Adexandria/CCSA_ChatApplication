@@ -24,7 +24,7 @@ namespace CCSA_ChatApp.Db.Repositories
         }
         public async Task<GroupChat> GetGroupChatByUsername(string username)
         {
-            var groupChat = await _session.Query<GroupChat>().Where(x => x.CreatedBy.Profile.Username == username).FirstOrDefaultAsync();
+            var groupChat = await _session.Query<GroupChat>().Where(x => x.GroupName == username).FirstOrDefaultAsync();
             return groupChat;
         }
 
@@ -33,7 +33,7 @@ namespace CCSA_ChatApp.Db.Repositories
             var groupChat = await GetGroupChatById(groupChatId);
             if (groupChat != null)
             {
-                await _session.DeleteAsync(groupChatId);
+                await _session.DeleteAsync(groupChat);
                 Commit();
             }
         }
@@ -44,6 +44,7 @@ namespace CCSA_ChatApp.Db.Repositories
             if (groupChat != null)
             {
                 groupChat.Members.Add(currentUser);
+                await _session.SaveAsync(groupChat);
                 Commit();
             }
         }
@@ -54,6 +55,7 @@ namespace CCSA_ChatApp.Db.Repositories
             if (groupChat != null)
             {
                 groupChat.Members.Remove(currentUser);
+                await _session.SaveAsync(groupChat);
                 Commit();
             }
         }

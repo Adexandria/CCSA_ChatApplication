@@ -42,6 +42,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
+                //enable unique groupchat name
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 
                 User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
@@ -56,7 +57,7 @@ namespace CCSA_ChatApplication.Controllers
                 
                 await _groupChatService.CreateGroupChat(groupChat);
                 
-                await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin" });
+                await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin" , User = currentUser});
                 
                 var token = await _tokenCredential.GenerateToken(currentUser);
                 
