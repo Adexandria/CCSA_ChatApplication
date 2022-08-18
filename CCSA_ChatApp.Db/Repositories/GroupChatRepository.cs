@@ -16,7 +16,7 @@ namespace CCSA_ChatApp.Db.Repositories
         {
 
         }
-
+        
         public async Task<GroupChat> GetGroupChatById(Guid groupChatId)
         {
             var groupChat = await _session.Query<GroupChat>().FirstOrDefaultAsync(x => x.GroupId == groupChatId);
@@ -65,6 +65,12 @@ namespace CCSA_ChatApp.Db.Repositories
             var groupChat = _session.Query<GroupChat>().Where(x => x.CreatedBy.UserId == userId);
             return groupChat;
 
+        }
+
+        public GroupChat GetGroupChatByName(string name)
+        {
+            var groupName = _session.Query<GroupChat>().FirstOrDefault(x => x.GroupName == name);
+            return groupName;
         }
     }
 }

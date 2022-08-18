@@ -19,5 +19,6 @@ namespace CCSA_ChatApp.Infrastructure.Services
         Task RemoveUserToGroup(Guid groupId, User currentUser);
         Task DeleteGroupPicture(GroupChat group);
         byte[] ConvertFromImageToByte(IFormFile picture);
+        GroupChatDTO GetGroupChatByName(string name);
     }
 }

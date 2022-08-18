@@ -42,7 +42,12 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                //enable unique groupchat name
+                
+                var currentGroup = _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
+                if(currentGroup != null)
+                {
+                    return BadRequest("GroupName already exist");
+                }
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 
                 User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();

@@ -13,7 +13,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             _groupChatRepository = groupChatRepository;
         }
-        
+
         public async Task CreateGroupChat(GroupChat group)
         {
             var currentUser = group.CreatedBy;
@@ -101,6 +101,13 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
            var groupChat =  await _groupChatRepository.GetGroupChatByUsername(username);
             return groupChat.Adapt<GroupChatDTO>();
+        }
+
+        public GroupChatDTO GetGroupChatByName(string name)
+        {
+            var groupChat = _groupChatRepository.GetGroupChatByName(name);
+            var mappedGroupChat = groupChat.Adapt<GroupChatDTO>();
+            return mappedGroupChat;
         }
     }
 }
