@@ -33,9 +33,9 @@ namespace CCSA_ChatApplication.Controllers
             
             UserDTO currentUser = await _userService.GetUserById(Guid.Parse(userId));
             
-            var currentUsers = _userService.GetUsers.Where(s => s.FullName != fullname);
-            
-            var userProfile = _userProfileService.GetUserProfileById(Guid.Parse(userId));
+            var currentUsers = _userService.GetUsers(fullname);
+
+            var userProfile = currentUser.Adapt<UserProfileDTO>(MappingService.UserProfileMappingService());
             
             userProfile.Contacts = currentUsers.ToList();
             
@@ -50,7 +50,9 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserprofileByUsername(string username)
         {
-            var userProfile = _userProfileService.GetUserProfileByUsername(username).Adapt<UserProfilesDTO>();
+            var userProfile = _userProfileService.GetUserProfileByUsername(username).Adapt<UserProfilesDTO>(MappingService.UsersProfileMappingService());
+            var user = await _userService.GetUserByUsername(username);
+            userProfile.GroupChats = user.GroupChats;
             if (userProfile is null)
             {
                 return NotFound("This user doesn't exist");

@@ -22,7 +22,7 @@ namespace CCSA_ChatApplication.Controllers
         public IActionResult GetAllContacts()
         {
             string name = User.FindFirstValue(ClaimTypes.Name);
-            IEnumerable<UsersDTO> contacts = _usersService.GetUsers.Where(s => s.FullName != name);
+            IEnumerable<UsersDTO> contacts = _usersService.GetUsers(name);
             return Ok(contacts);
         }
 
