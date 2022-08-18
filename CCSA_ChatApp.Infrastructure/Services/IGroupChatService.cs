@@ -14,8 +14,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
         Task CreateGroupChat(GroupChat group);
         Task DeleteGroupChatById(Guid groupId);
         IEnumerable<GroupChatsDTO> GetAll();
+        Task<GroupChatDTO> GetGroupChat(Guid groupId);
         Task UpdateGroupDescription(Guid groupId, string description);
-        Task UpdateGroupPicture(IFormFile picture, GroupChat group)
+        Task UpdateGroupPicture(IFormFile picture, GroupChat group);
         Task DeleteGroupPicture(GroupChat group);
         byte[] ConvertFromImageToByte(IFormFile picture);
     }
