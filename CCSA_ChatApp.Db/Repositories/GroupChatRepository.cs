@@ -22,6 +22,11 @@ namespace CCSA_ChatApp.Db.Repositories
             var groupChat = await _session.Query<GroupChat>().FirstOrDefaultAsync(x => x.GroupId == groupChatId);
             return groupChat;
         }
+        public async Task<GroupChat> GetGroupChatByUsername(string username)
+        {
+            var groupChat = await _session.Query<GroupChat>().Where(x => x.CreatedBy.Profile.Username == username).FirstOrDefaultAsync();
+            return groupChat;
+        }
 
         public async Task DeleteGroupChat(Guid groupChatId)
         {

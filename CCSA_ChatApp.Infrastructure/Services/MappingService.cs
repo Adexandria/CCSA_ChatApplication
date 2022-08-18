@@ -1,4 +1,5 @@
-﻿using CCSA_ChatApp.Domain.DTOs.UserDTOs;
+﻿using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
+using CCSA_ChatApp.Domain.DTOs.UserDTOs;
 using CCSA_ChatApp.Domain.DTOs.UserProfileDTOs;
 using CCSA_ChatApp.Domain.Models;
 using Mapster;
@@ -45,6 +46,14 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 .Map(dest => dest.Username, src => src.Username)
                 .Map(dest => dest.Country, src => src.Country)
                 .Map(dest => dest.GroupChats, src => src.GroupChats)
+                .Config;
+        }
+
+        public static TypeAdapterConfig GroupMappingService()
+        {
+            return TypeAdapterConfig<GroupChat, GroupChatsDTO>.NewConfig()
+                .Map(d=>d.CreatedBy.FullName, src => $"{src.CreatedBy.FirstName} {src.CreatedBy.MiddleName} {src.CreatedBy.LastName}")
+                .Map(d=>d.CreatedBy.Email,s=>s.CreatedBy.Email)
                 .Config;
         }
     }
