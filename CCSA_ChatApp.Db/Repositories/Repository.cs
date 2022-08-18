@@ -28,13 +28,6 @@ namespace CCSA_ChatApp.Db.Repositories
             await _session.UpdateAsync(obj);
             await Commit();
         }
-      
-
-        public async Task Delete(T entity)
-        {
-            await _session.DeleteAsync(entity);
-            await Commit();
-        }
         
         
          protected async Task<bool> Commit()
