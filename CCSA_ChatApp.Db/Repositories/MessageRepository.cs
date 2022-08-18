@@ -23,21 +23,6 @@ namespace CCSA_ChatApp.Db.Repositories
         private readonly GroupChatRepository _groupChatRepository;
 
 
-        private async new Task  Commit()
-        {
-            using var transction =  _session.BeginTransaction();
-            try
-            {
-                if (transction.IsActive)
-                {
-                    await transction.CommitAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                transction.Rollback();
-            }
-        }
 
         public async Task CreateMessage(Message message, Guid senderId, string receiverUsername)
         {
@@ -90,12 +75,6 @@ namespace CCSA_ChatApp.Db.Repositories
                 await Commit();
             }
 
-        }
-
-        public async Task UpdateMessage(Message message)
-        {
-            await _session.UpdateAsync(message);
-            await Commit();
         }
     }
 }

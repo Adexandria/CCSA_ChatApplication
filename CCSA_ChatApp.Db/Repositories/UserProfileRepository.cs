@@ -14,12 +14,6 @@ namespace CCSA_ChatApp.Db.Repositories
 
         }
 
-        public void CreateExistingUserProfile(UserProfile user)
-        {
-            _session.Save(user);
-            Commit();
-        }
-
         public UserProfile? GetUserProfileById(Guid userProfileId)
         {
             var userProfile = _session.Query<UserProfile>().FirstOrDefault(x => x.User.UserId == userProfileId);

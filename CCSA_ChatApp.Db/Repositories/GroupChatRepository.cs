@@ -17,12 +17,6 @@ namespace CCSA_ChatApp.Db.Repositories
 
         }
 
-        public async Task CreateGroupChat(GroupChat group)
-        {
-             await _session.SaveAsync(group);
-            Commit();
-        }
-       
         public async Task<GroupChat> GetGroupChatById(Guid groupChatId)
         {
             var groupChat = await _session.Query<GroupChat>().FirstOrDefaultAsync(x => x.GroupId == groupChatId);
@@ -37,12 +31,6 @@ namespace CCSA_ChatApp.Db.Repositories
                 await _session.DeleteAsync(groupChatId);
                 Commit();
             }
-        }
-
-        public async Task CreateGroupChat(string groupName, string groupDescription, IFormFile picture)
-        {
-            await _session.SaveAsync(groupName, groupDescription, picture);
-            Commit();
         }
     }
 }
