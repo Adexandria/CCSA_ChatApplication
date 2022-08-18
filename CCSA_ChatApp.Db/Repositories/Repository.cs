@@ -1,9 +1,4 @@
 using NHibernate;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CCSA_ChatApp.Db.Repositories
 {
@@ -16,10 +11,10 @@ namespace CCSA_ChatApp.Db.Repositories
         
         protected readonly ISession _session;
         
-        public void Create(T entity)
+        public async Task Create(T entity)
         {
-            _session.Save(entity);
-            Commit();
+            await _session.SaveAsync(entity);
+            await Commit();
         }
         
         public IEnumerable<T> GetAll()
@@ -28,21 +23,14 @@ namespace CCSA_ChatApp.Db.Repositories
             return collection;
         }
 
-        public void Update(T obj)
+        public async Task Update(T obj)
         {
-            _session.Update(obj);
-            Commit();
-        }
-      
-
-        public void Delete(T entity)
-        {
-            _session.Delete(entity);
-            Commit();
+            await _session.UpdateAsync(obj);
+            await Commit();
         }
         
         
-         protected bool Commit()
+         protected async Task<bool> Commit()
         {
             using var transction = _session.BeginTransaction();
 
@@ -50,12 +38,14 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                 if (transction.IsActive)
                 {
-                    transction.Commit();
+                    _session.Flush();
+                    await transction.CommitAsync();
                 }
                 return true;
             }
             catch (Exception ex)
             {
+                transction.Rollback();
                 throw ex;
             }
         }

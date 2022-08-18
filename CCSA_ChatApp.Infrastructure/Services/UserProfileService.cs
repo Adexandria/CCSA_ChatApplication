@@ -14,9 +14,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
             _userProfileRepository = userProfileRepository;
         }
 
-        public void CreateExistingUserProfile(UserProfile user)
+        public async Task CreateExistingUserProfile(UserProfile user)
         {
-            _userProfileRepository.Create(user);
+            await _userProfileRepository.Create(user);
         }
 
         public void DeleteUserProfileById(Guid userProfileId)
@@ -27,46 +27,52 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public UserProfileDTO GetUserProfileById(Guid userProfileId)
         {
             var userProfile = _userProfileRepository.GetUserProfileById(userProfileId);
-            return userProfile.Adapt<UserProfileDTO>();
+            var mappedUserProfile = userProfile.Adapt<UserProfileDTO>();
+            /*mappedUserProfile.Picture = ConvertFronByteToString(userProfile.Picture);*/
+            return mappedUserProfile;
         }
 
         public UserProfileDTO GetUserProfileByUsername(string username)
         {
             var userProfile = _userProfileRepository.GetUserProfileByUsername(username);
-            return userProfile.Adapt<UserProfileDTO>();
+            var mappedUserProfile = userProfile.Adapt<UserProfileDTO>();
+            /*mappedUserProfile.Picture = ConvertFronByteToString(userProfile.Picture);*/
+            return mappedUserProfile;
         }
 
-        public void UpdateCountry(Guid profileId, Country country)
+        public async Task UpdateCountry(Guid profileId, Country country)
         {
             var userProfile = _userProfileRepository.GetUserProfileById(profileId);
             if(userProfile is not null)
             {
                 userProfile.Country = country;
-                _userProfileRepository.Update(userProfile);
+                await _userProfileRepository.Update(userProfile);
             }
         }
 
-        public void UpdateUsername(Guid profileId, string username)
+        public async Task UpdateUsername(Guid profileId, string username)
         {
             var userProfile = _userProfileRepository.GetUserProfileById(profileId);
             if (userProfile is not null)
             {
                 userProfile.Username = username;
-                _userProfileRepository.Update(userProfile);
+                await _userProfileRepository.Update(userProfile);
             }
         }
 
-        public void UpdateUserPicture(IFormFile picture, UserProfile user)
+        public async Task UpdateUserPicture(IFormFile picture, Guid userId)
         {
+            var user = _userProfileRepository.GetUserProfileById(userId);
             var image = ConvertFromImageToByte(picture);
             user.Picture = image;
-            _userProfileRepository.Update(user);
+            await _userProfileRepository.Update(user);
         }
 
-        public void DeleteUserPicture(UserProfile user)
+        public async Task DeleteUserPicture(Guid userId)
         {
+            var user = _userProfileRepository.GetUserProfileById(userId);
             user.Picture = null;
-            _userProfileRepository.Update(user);
+            await _userProfileRepository.Update(user);
         }
 
 
@@ -80,6 +86,15 @@ namespace CCSA_ChatApp.Infrastructure.Services
                     var fileBytes = ms.ToArray();
                     return fileBytes;
                 }
+            }
+            return default;
+        }
+
+        private string ConvertFronByteToString(byte[] picture)
+        {
+            if (picture is not null)
+            {
+                return Convert.ToBase64String(picture);
             }
             return default;
         }

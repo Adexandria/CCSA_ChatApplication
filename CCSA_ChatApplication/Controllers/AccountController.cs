@@ -59,7 +59,7 @@ namespace CCSA_ChatApplication.Controllers
             userProfile.User = user;
             
             //Save user profile
-            _userProfileService.CreateExistingUserProfile(userProfile);
+            await _userProfileService.CreateExistingUserProfile(userProfile);
             
             //Add user role
             await _auth.AddUserRole(new UserRole { Role = "User", User = user });
@@ -85,7 +85,7 @@ namespace CCSA_ChatApplication.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public async Task<IActionResult>GenerateAccessToken(string refreshToken)
+        public async Task<IActionResult> GenerateAccessToken(string refreshToken)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user =  _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
@@ -105,7 +105,7 @@ namespace CCSA_ChatApplication.Controllers
             return Ok(token);
         }
 
-       [HttpPost("password-reset")]
+       [HttpPut("password-reset")]
         public async Task<IActionResult> ResetPassword(string token,PasswordDTO passwordReset)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);

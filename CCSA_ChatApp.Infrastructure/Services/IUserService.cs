@@ -13,7 +13,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
          Task CreateUser(User user);
          Task<UserDTO> GetUserById(Guid userId);
          Task<UserDTO> GetUserByUsername(string username);
-        IEnumerable<UsersDTO> GetUsers { get; }
+        IEnumerable<UsersDTO> GetUsers(string fullname);
          Task UpdateFirstName(Guid userId, string firstName);
          Task UpdateMiddleName(Guid userId, string middleName);
          Task UpdateLastName(Guid userId, string lastName);

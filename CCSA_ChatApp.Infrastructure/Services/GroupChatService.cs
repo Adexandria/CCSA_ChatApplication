@@ -13,33 +13,31 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             _groupChatRepository = groupChatRepository;
         }
+        
         public async Task CreateGroupChat(GroupChat group)
         {
-             await _groupChatRepository.CreateGroupChat(group);
+             await _groupChatRepository.Create(group);
         }
 
-        public async Task Delete(Guid groupId)
+
+        public IEnumerable<GroupChatsDTO> GetAll(Guid userId)
+        {
+            var groupChats = _groupChatRepository.GetAllGroupChatsByUserId(userId);
+            return groupChats.Adapt<IEnumerable<GroupChatsDTO>>();
+        }
+
+        public async Task<GroupChatDTO> GetGroupChat(Guid groupId)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
-            if(currentGroupChat is not null)
-            {
-                _groupChatRepository.Delete(currentGroupChat);
-            }
+            return currentGroupChat.Adapt<GroupChatDTO>();
         }
-
-        public IEnumerable<GroupChatDTO> GetAll()
-        {
-            var groupChats = _groupChatRepository.GetAll();
-            return groupChats.Adapt<IEnumerable<GroupChatDTO>>();
-        }
-
         public async Task UpdateGroupDescription(Guid groupId,string description)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if (currentGroupChat is not null)
             {
                 currentGroupChat.GroupDescription = description;
-                _groupChatRepository.Update(currentGroupChat);
+                await _groupChatRepository.Update(currentGroupChat);
             }
         }
         
@@ -49,22 +47,33 @@ namespace CCSA_ChatApp.Infrastructure.Services
             if (currentGroupChat is not null)
             {
                 currentGroupChat.GroupName = name;
-                _groupChatRepository.Update(currentGroupChat);
+                await _groupChatRepository.Update(currentGroupChat);
             }
         }
-        public void UpdateGroupPicture(IFormFile picture, GroupChat group)
+        public async Task UpdateGroupPicture(IFormFile picture, GroupChat group)
         {
             var image = ConvertFromImageToByte(picture);
             group.Picture = image;
-            _groupChatRepository.Update(group);
+           await  _groupChatRepository.Update(group);
         }
 
-        public void DeleteGroupPicture(GroupChat group)
+        
+        public async Task DeleteGroupPicture(GroupChat group)
         {
             group.Picture = null;
-            _groupChatRepository.Update(group);
+            await _groupChatRepository.Update(group);
         }
 
+        public async Task AddUserToGroup(Guid groupId, User currentUser)
+        {
+            await _groupChatRepository.AddUserToGroup(groupId, currentUser);
+        }
+
+        public async Task RemoveUserToGroup(Guid groupId, User currentUser)
+        {
+            await _groupChatRepository.RemoveUserToGroup(groupId, currentUser);
+        }
+        
         public byte[] ConvertFromImageToByte(IFormFile picture)
         {
             if (picture.Length > 0)
@@ -78,5 +87,12 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
             return default;
         }
+
+        public async Task DeleteGroupChatById(Guid groupId)
+        {
+           await _groupChatRepository.DeleteGroupChat(groupId);
+        }
+
+      
     }
 }

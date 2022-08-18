@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace CCSA_ChatApplication.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/messages")]
     [ApiController]
     public class MessageHistoryController : ControllerBase
     {
@@ -19,26 +19,6 @@ namespace CCSA_ChatApplication.Controllers
             _messageHistoryService = messageHistoryService;
         }
 
-        [HttpDelete("message/{messageid}")]
-        public async Task<IActionResult> DeleteMessageByMessageId(Guid messageId)
-        {
-           await _messageService.DeleteMessageByMessageId(messageId);
-           return Ok("Message has been deleted successfully");
-        }
-
-        [HttpGet("messages/group/{groupId}")]
-        public IActionResult FetchGroupChatMessagesByGroupId(Guid groupId)
-        {
-            
-            var messages = _messageHistoryService.FetchGroupChatMessagesByGroupId(groupId);
-            return Ok(messages);
-        }
-        [HttpGet("messages/receiver/{receiverusername}")]
-        public IActionResult FetchMessagesByReceiverUsername(string receiverUsername)
-        {
-            var messages = _messageHistoryService.FetchMessagesByReceiverUsername(receiverUsername);
-            return Ok(messages);
-        }
         [HttpGet]
         public IActionResult FetchMessagesBySenderId()
         {
@@ -46,13 +26,32 @@ namespace CCSA_ChatApplication.Controllers
             var messages = _messageHistoryService.FetchMessagesBySenderId(new Guid(userId));
             return Ok(messages);
         }
-        [HttpPost("message/Receiver/{receiverusername}")]
-        public async Task<IActionResult> SendMessage([FromBody]string text, string receiverUsername)
+
+       
+        [HttpGet("{groupId}")]
+        public IActionResult FetchGroupChatMessagesByGroupId(Guid groupId)
+        {
+            
+            var messages = _messageHistoryService.FetchGroupChatMessagesByGroupId(groupId);
+            return Ok(messages);
+        }
+        
+
+        //To retrieve messages sent to a user
+        [HttpGet("{username}")]
+        public IActionResult FetchMessagesByReceiverUsername(string username)
+        {
+            var messages = _messageHistoryService.FetchMessagesByReceiverUsername(username);
+            return Ok(messages);
+        }
+      
+        [HttpPost("{username}")]
+        public async Task<IActionResult> SendMessage([FromBody]string text, string username)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {
-                await _messageService.SendMessage(text, new Guid(userId), receiverUsername);
+                await _messageService.SendMessage(text, new Guid(userId), username);
                 return Ok("Message sent");
             }
             catch (Exception ex)
@@ -62,7 +61,7 @@ namespace CCSA_ChatApplication.Controllers
 
         }
         [Authorize(Roles = "GroupUser")]
-        [HttpPost("message/group/{groupChatId}")]
+        [HttpPost("{groupChatId}")]
         public async Task<IActionResult> SendMessageToGroup([FromBody]string text, Guid groupChatId)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -76,7 +75,8 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("message/message-id/{messageId}")]
+        
+        [HttpPut("{messageId}")]
         public async Task<IActionResult> UpdateMessageById([FromBody]string text, Guid messageId)
         {
             try
@@ -89,5 +89,13 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{messageid}")]
+        public async Task<IActionResult> DeleteMessageByMessageId(Guid messageId)
+        {
+            await _messageService.DeleteMessageByMessageId(messageId);
+            return Ok("Message has been deleted successfully");
+        }
+
     }
 }

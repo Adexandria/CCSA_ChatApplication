@@ -2,7 +2,7 @@
 using NHibernate;
 using NHibernate.Linq;
 
-namespace CCSA_ChatApp.Db
+namespace CCSA_ChatApp.Db.Repositories
 {
     public class AuthRepository : IAuthRepository
     {
@@ -18,18 +18,18 @@ namespace CCSA_ChatApp.Db
             await Commit();
         }
 
-        public override async Task<RefreshToken> GetExistingToken(Guid userId,string refreshToken)
+        public override async Task<RefreshToken> GetExistingToken(Guid userId, string refreshToken)
         {
             var token = await _session.Query<RefreshToken>().FirstOrDefaultAsync(x => x.User.UserId == userId && x.Token == refreshToken);
             return token;
         }
-        
+
         public override IEnumerable<UserRole> GetUserRole(Guid id)
         {
             var role = _session.Query<UserRole>().Where(x => x.User.UserId == id);
             return role;
         }
-        
+
         public override async Task SaveRefreshToken(RefreshToken token)
         {
             await _session.SaveAsync(token);

@@ -6,7 +6,6 @@ namespace CCSA_ChatApp.Domain.DTOs.GroupChatDTOs
 {
     public class GroupChatDTO
     {
-        public  Guid GroupId { get; set; }
         public  string GroupName { get; set; }
         public  string GroupDescription { get; set; }
         public  byte[] Picture { get; set; }

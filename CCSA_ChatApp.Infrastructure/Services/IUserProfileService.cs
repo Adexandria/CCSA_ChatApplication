@@ -12,13 +12,13 @@ namespace CCSA_ChatApp.Infrastructure.Services
     public interface IUserProfileService
     {
         UserProfileDTO GetUserProfileById(Guid userProfileId);
-        void CreateExistingUserProfile(UserProfile user);
+        Task CreateExistingUserProfile(UserProfile user);
         void DeleteUserProfileById(Guid userProfileId);
         UserProfileDTO GetUserProfileByUsername(string username);
-        void UpdateUserPicture(IFormFile picture, UserProfile user);
-        void DeleteUserPicture(UserProfile user);
-        void UpdateUsername(Guid profileId, string username);
-        void UpdateCountry(Guid profileId, Country country);
+        Task UpdateUserPicture(IFormFile picture, Guid userId);
+        Task DeleteUserPicture(Guid userId);
+        Task UpdateUsername(Guid profileId, string username);
+        Task UpdateCountry(Guid profileId, Country country);
         byte[] ConvertFromImageToByte(IFormFile picture);
     }
 }
