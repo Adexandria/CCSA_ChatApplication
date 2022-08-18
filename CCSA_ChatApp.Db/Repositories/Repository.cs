@@ -45,6 +45,7 @@ namespace CCSA_ChatApp.Db.Repositories
             }
             catch (Exception ex)
             {
+                transction.Rollback();
                 throw ex;
             }
         }

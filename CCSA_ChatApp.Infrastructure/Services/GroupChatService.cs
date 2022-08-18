@@ -20,9 +20,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
         }
 
 
-        public IEnumerable<GroupChatsDTO> GetAll()
+        public IEnumerable<GroupChatsDTO> GetAll(Guid userId)
         {
-            var groupChats = _groupChatRepository.GetAll();
+            var groupChats = _groupChatRepository.GetAllGroupChatsByUserId(userId);
             return groupChats.Adapt<IEnumerable<GroupChatsDTO>>();
         }
 
@@ -64,6 +64,16 @@ namespace CCSA_ChatApp.Infrastructure.Services
             await _groupChatRepository.Update(group);
         }
 
+        public async Task AddUserToGroup(Guid groupId, User currentUser)
+        {
+            await _groupChatRepository.AddUserToGroup(groupId, currentUser);
+        }
+
+        public async Task RemoveUserToGroup(Guid groupId, User currentUser)
+        {
+            await _groupChatRepository.RemoveUserToGroup(groupId, currentUser);
+        }
+        
         public byte[] ConvertFromImageToByte(IFormFile picture)
         {
             if (picture.Length > 0)
@@ -83,6 +93,6 @@ namespace CCSA_ChatApp.Infrastructure.Services
            await _groupChatRepository.DeleteGroupChat(groupId);
         }
 
-       
+      
     }
 }
