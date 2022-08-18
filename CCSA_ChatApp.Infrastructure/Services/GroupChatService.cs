@@ -18,7 +18,24 @@ namespace CCSA_ChatApp.Infrastructure.Services
              await _groupChatRepository.CreateGroupChat(group);
         }
 
-        public async Task Delete(Guid groupId)
+        public async Task CreateGroupChat (string name, string groupDescription, byte[] picture)
+        {
+            await _groupChatRepository.CreateGroupChat(new GroupChat
+            {
+                GroupName = name,
+                GroupDescription = groupDescription,
+                Picture = picture
+            });
+        }
+
+        
+
+        public async Task CreateGroupChat(NewGroupChatDTO newGroupChat)
+        {
+            await _groupChatRepository.CreateGroupChat(newGroupChat.GroupName, newGroupChat.GroupDescription, newGroupChat.Picture);
+        }
+
+        public async Task DeleteGroupChatById(Guid groupId)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if(currentGroupChat is not null)
@@ -31,6 +48,12 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             var groupChats = _groupChatRepository.GetAll();
             return groupChats.Adapt<IEnumerable<GroupChatDTO>>();
+        }
+
+        public IEnumerable<GroupChatDTO> GetGroupById(Guid groupId)
+        {
+            var groups = _groupChatRepository.GetGroupChatById(groupId);
+            return groups.Adapt<IEnumerable<GroupChatDTO>>();
         }
 
         public async Task UpdateGroupDescription(Guid groupId,string description)
@@ -59,6 +82,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             _groupChatRepository.Update(group);
         }
 
+        
         public void DeleteGroupPicture(GroupChat group)
         {
             group.Picture = null;
@@ -77,6 +101,11 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 }
             }
             return default;
+        }
+
+        public Task UpdateGroupPicture(Guid groupId, string picture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CCSA_ChatApp.Domain.Models;
+using Microsoft.AspNetCore.Http;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -38,24 +39,10 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        /* public void UpdateGroupChatByName(GroupChat name)
+        public async Task CreateGroupChat(string groupName, string groupDescription, IFormFile picture)
         {
-            _session.Update(name);
+            await _session.SaveAsync(groupName, groupDescription, picture);
             Commit();
         }
-
-        public void UpdateGroupChatByPicture(GroupChat picture)
-        {
-            _session.Update(picture);
-            Commit();
-        }
-
-        public void UpdateGroupChatByDescription(GroupChat description)
-        {
-            _session.Update(description);
-            Commit();
-        }*/
-
-
     }
 }
