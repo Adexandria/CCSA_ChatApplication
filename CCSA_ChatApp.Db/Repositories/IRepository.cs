@@ -8,9 +8,9 @@ namespace CCSA_ChatApp.Db.Repositories
 {
     public interface IRepository<T>
     {
-        void Create(T entity);
-        void Delete(T entity);
+        Task Create(T entity);
+        Task Delete(T entity);
         IEnumerable<T> GetAll();
-        void Update(T obj);  
+        Task Update(T obj);  
     }
 }
