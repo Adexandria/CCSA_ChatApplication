@@ -40,7 +40,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             var message = await _messageRepository.GetMessageById(messageId);
             if (message != null)
+            {
+                message.TextMessage = text;
                 await _messageRepository.Update(message);
+            }
             else
                 throw new Exception("This Message does not exist anymore");
         }

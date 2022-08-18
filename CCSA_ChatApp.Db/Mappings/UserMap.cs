@@ -1,10 +1,5 @@
 ﻿using CCSA_ChatApp.Domain.Models;
 using FluentNHibernate.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CCSA_ChatApp.Db.Mappings
 {
@@ -20,7 +15,6 @@ namespace CCSA_ChatApp.Db.Mappings
             Map(user => user.Email);
             Map(x => x.Password);
             HasOne(s=>s.Profile).PropertyRef(s=>s.User);
-            HasOne(s => s.Role).PropertyRef(s => s.User);
             HasMany(user => user.Histories).Cascade.Delete().Inverse();
             HasManyToMany(user => user.GroupChats).Cascade.Delete().Table("GroupChatMember");
 

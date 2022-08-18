@@ -32,6 +32,7 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                 var messageHistory = new MessageHistory { Receiver = reciever, Sender = sender };
                 await _session.SaveAsync(message);
+                await Commit();
                 await _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
                 
             }
@@ -48,6 +49,7 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                     var messageHistory = new MessageHistory { GroupChatUser = groupChat, Sender = sender };
                     await _session.SaveAsync(message);
+                    await Commit();
                     await _messageHistoryRepository.CreateMessageHistory(message, messageHistory);
             }
             else
@@ -68,7 +70,7 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public async Task DeleteMessageById(Guid messageId)
         {
-            var message = GetMessageById(messageId);
+            var message = await GetMessageById(messageId);
             if (message != null)
             {
                 await _session.DeleteAsync(message);

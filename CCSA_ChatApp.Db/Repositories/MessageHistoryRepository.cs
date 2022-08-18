@@ -31,7 +31,8 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public IEnumerable<MessageHistory> GetMessageHistoryByRetrieverUsername(string username)
         {
-            var messageHistory = _session.Query<MessageHistory>().Where(m => m.Sender.Profile.Username == username);
+            var messageHistory1 = _session.Query<MessageHistory>().OrderBy(s=>s.Sender);
+            var messageHistory = _session.Query<MessageHistory>().Where(m => m.Receiver.Profile.Username == username);
             return messageHistory;
         }
 

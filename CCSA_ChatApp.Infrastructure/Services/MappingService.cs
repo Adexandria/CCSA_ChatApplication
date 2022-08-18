@@ -45,7 +45,6 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return TypeAdapterConfig<UserProfileDTO, UserProfilesDTO>.NewConfig()
                 .Map(dest => dest.Username, src => src.Username)
                 .Map(dest => dest.Country, src => src.Country)
-                .Map(dest => dest.GroupChats, src => src.GroupChats)
                 .Config;
         }
 

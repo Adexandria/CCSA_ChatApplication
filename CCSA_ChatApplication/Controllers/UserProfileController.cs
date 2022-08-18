@@ -16,13 +16,15 @@ namespace CCSA_ChatApplication.Controllers
     {
         private readonly IUserProfileService _userProfileService;
         private readonly IUserService _userService;
+        private readonly IGroupChatService _groupChatService;
 
-        public UserProfileController(IUserProfileService userProfileService, IUserService userService)
+        public UserProfileController(IUserProfileService userProfileService, IUserService userService, IGroupChatService groupChatService)
         {
             _userProfileService = userProfileService;
             _userService = userService;
+            _groupChatService = groupChatService;
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> GetUserProfile()
         {
@@ -40,9 +42,9 @@ namespace CCSA_ChatApplication.Controllers
             userProfile.Contacts = currentUsers.ToList();
             
             userProfile.Adapt(currentUser);
-            
-            //get group chats and map
-            
+
+            userProfile.GroupChats = _groupChatService.GetAll(Guid.Parse(userId)).ToList();
+
             return Ok(userProfile);
             
         }
@@ -50,15 +52,12 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserprofileByUsername(string username)
         {
-            var userProfile = _userProfileService.GetUserProfileByUsername(username).Adapt<UserProfilesDTO>(MappingService.UsersProfileMappingService());
-            var user = await _userService.GetUserByUsername(username);
-            userProfile.GroupChats = user.GroupChats;
+            var userProfile = _userProfileService.GetUserProfileByUsername(username).Adapt<UserProfilesDTO>();
             if (userProfile is null)
             {
                 return NotFound("This user doesn't exist");
             }
 
-            //Get froup chats and map
             return Ok(userProfile);
         }
 
@@ -79,7 +78,7 @@ namespace CCSA_ChatApplication.Controllers
         public async Task<IActionResult> UpdateCountry(Country country)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _userProfileService.UpdateCountry(Guid.Parse(userId), country);
+            await _userProfileService.UpdateCountry(Guid.Parse(userId), country);
             return Ok("Updated successfully");
         }
 
@@ -87,7 +86,7 @@ namespace CCSA_ChatApplication.Controllers
         public async Task<IActionResult> UpdatePicture(IFormFile picture)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _userProfileService.UpdateUserPicture(picture, Guid.Parse(userId));
+            await _userProfileService.UpdateUserPicture(picture, Guid.Parse(userId));
             return Ok("Updated successfully");
         }
 
@@ -95,7 +94,7 @@ namespace CCSA_ChatApplication.Controllers
         public async Task<IActionResult> RemovePicture()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _userProfileService.DeleteUserPicture(Guid.Parse(userId));
+            await _userProfileService.DeleteUserPicture(Guid.Parse(userId));
             return Ok("Removed successfully");
         }
     }

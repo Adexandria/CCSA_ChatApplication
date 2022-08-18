@@ -34,6 +34,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             return currentGroupChat.Adapt<GroupChatDTO>();
         }
+        
         public async Task UpdateGroupDescription(Guid groupId,string description)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);

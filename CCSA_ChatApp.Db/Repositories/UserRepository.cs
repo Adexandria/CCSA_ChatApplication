@@ -85,6 +85,7 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public override async Task UpdatePassword(User user, string oldPassword, string newPassword)
         {
+            oldPassword = EncodePassword(oldPassword);
             var currentUser = await VerifyUser(user,oldPassword);
             if (currentUser is not null)
             {
@@ -93,6 +94,11 @@ namespace CCSA_ChatApp.Db.Repositories
                 await _session.MergeAsync(currentUser);
                 await Commit();
             }
+            else
+            {
+                throw new Exception("Password not updated");
+            }
+
         }
 
         public override async Task<bool> VerifyPassword(string username, string password)
