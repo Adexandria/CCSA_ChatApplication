@@ -10,7 +10,6 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
-    [Authorize(Roles = "User")]
     [Route("GroupChat")]
     [ApiController]
     public class GroupChatsController : ControllerBase
@@ -47,9 +46,13 @@ namespace CCSA_ChatApplication.Controllers
                 
                 User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
                 
-                var image = _groupChatService.ConvertFromImageToByte(newGroupChat.Picture);
+                var image = _groupChatService.ConvertFromImageToByte(newGroupChat.GroupPicture);
                 
                 GroupChat groupChat = newGroupChat.Adapt<GroupChat>();
+
+                groupChat.Picture = image;
+                
+                groupChat.CreatedBy = currentUser;
                 
                 await _groupChatService.CreateGroupChat(groupChat);
                 
@@ -67,31 +70,34 @@ namespace CCSA_ChatApplication.Controllers
         }
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpPost("{groupChatId}/add-user")]
-        public async Task<IActionResult> AddUserToGroup(Guid groupChatId,string username)
+        [HttpPost("{groupName}/add-user")]
+        public async Task<IActionResult> AddUserToGroup(string groupName,string username)
         {
             var currentUser =  _userService.GetUserByUsername(username).Result.Adapt<User>();
             if(currentUser is null)
             {
                 return NotFound("User doesn't exist");
+                
             }
-            var groupChat = _groupChatService.GetGroupChat(groupChatId).Result.Adapt<GroupChat>();
+            
+            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound("Group not found");
             }
-            await _groupChatService.AddUserToGroup(groupChatId, currentUser);
+            
+            await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
             return Ok("Added Successfully");
         }
         
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpPut("{groupChatId}/update-picture")]
-        public async Task<IActionResult> UpdateGroupPicture(Guid groupChatId, IFormFile picture)
+        [HttpPut("{groupName}/update-picture")]
+        public async Task<IActionResult> UpdateGroupPicture(string groupName, IFormFile picture)
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChat(groupChatId).Result.Adapt<GroupChat>();
+                var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -105,19 +111,20 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpPut("{groupChatId}/update-name")]
-        public async Task<IActionResult> UpdateGroupName(Guid groupChatId, string name)
+        [HttpPut("{groupName}/update-name")]
+        public async Task<IActionResult> UpdateGroupName(string groupName, string name)
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChat(groupChatId).Result.Adapt<GroupChat>();
-                if(groupChat is null)
+                var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+                if (groupChat is null)
                 {
                     return NotFound();
                 }
-                await _groupChatService.UpdateGroupName(groupChatId, name);
+                await _groupChatService.UpdateGroupName(groupChat.GroupId, name);
                 return Ok("Updated Successfully");
             }
             catch (Exception ex)
@@ -126,19 +133,20 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpPut("{groupChatId}/update-description")]
-        public async Task<IActionResult> UpdateGroupDescription(Guid groupChatId, string description)
+        [HttpPut("{groupName}/update-description")]
+        public async Task<IActionResult> UpdateGroupDescription(string groupName, string description)
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChat(groupChatId).Result.Adapt<GroupChat>();
+                var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
                 if (groupChat is null)
                 {
                     return NotFound();
                 }
-                await _groupChatService.UpdateGroupDescription(groupChatId, description);
+                await _groupChatService.UpdateGroupDescription(groupChat.GroupId, description);
                 return Ok("Name Updated scuuessfully");
             }
             catch (Exception ex)
@@ -150,38 +158,39 @@ namespace CCSA_ChatApplication.Controllers
         
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpDelete("{groupChatId}")]
-        public async Task<IActionResult> DeleteGroupChatById(Guid groupChatId)
+        [HttpDelete("{groupName}")]
+        public async Task<IActionResult> DeleteGroupChatById(string groupName)
         {
-            var groupChat = _groupChatService.GetGroupChat(groupChatId).Result.Adapt<GroupChat>();
+            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound();
             }
-            await _groupChatService.DeleteGroupChatById(groupChatId);
+            await _groupChatService.DeleteGroupChatById(groupChat.GroupId);
             return Ok("Successful");
         }
+        
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpDelete("{groupChatId}/remove-user")]
-        public async Task<IActionResult> RemoveUserFromGroupChat(Guid groupChatId,string username)
+        [HttpDelete("{groupName}/remove-user")]
+        public async Task<IActionResult> RemoveUserFromGroupChat(string groupName,string username)
         {
             var currentUser = _userService.GetUserByUsername(username).Result.Adapt<User>();
             if (currentUser is null)
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChat(groupChatId).Result.Adapt<GroupChat>();
+            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound("Group not found");
             }
-            await _groupChatService.RemoveUserToGroup(groupChatId, currentUser);
+            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
             return Ok("Added Successfully");
         }
 
-        [HttpDelete("{groupChatId}/remove-user")]
-        public async Task<IActionResult> RemoveUserFromGroupChat(Guid groupChatId)
+        [HttpDelete("{groupName/remove-user")]
+        public async Task<IActionResult> RemoveUserFromGroupChat(string groupName)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
@@ -189,12 +198,12 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChat(groupChatId).Result.Adapt<GroupChat>();
+            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound("Group not found");
             }
-            await _groupChatService.RemoveUserToGroup(groupChatId, currentUser);
+            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
             return Ok("Added Successfully");
         }
     }

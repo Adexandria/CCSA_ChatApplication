@@ -16,14 +16,17 @@ namespace CCSA_ChatApp.Infrastructure.Services
         
         public async Task CreateGroupChat(GroupChat group)
         {
-             await _groupChatRepository.Create(group);
+            var currentUser = group.CreatedBy;
+            group.Members.Add(currentUser);
+            await _groupChatRepository.Create(group);
         }
 
 
         public IEnumerable<GroupChatsDTO> GetAll(Guid userId)
         {
             var groupChats = _groupChatRepository.GetAllGroupChatsByUserId(userId);
-            return groupChats.Adapt<IEnumerable<GroupChatsDTO>>();
+            var  mappedgroupChats = groupChats.Adapt<IEnumerable<GroupChatsDTO>>(MappingService.GroupMappingService());
+            return mappedgroupChats;
         }
 
         public async Task<GroupChatDTO> GetGroupChat(Guid groupId)
@@ -92,7 +95,11 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
            await _groupChatRepository.DeleteGroupChat(groupId);
         }
-
-      
+        
+        public async Task<GroupChatDTO> GetGroupChatByUsername(string username)
+        {
+           var groupChat =  await _groupChatRepository.GetGroupChatByUsername(username);
+            return groupChat.Adapt<GroupChatDTO>();
+        }
     }
 }

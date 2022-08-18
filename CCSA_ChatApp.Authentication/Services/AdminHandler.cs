@@ -14,7 +14,7 @@ namespace CCSA_ChatApp.Authentication.Services
                 return;
             }
             var authContext = context.Resource as HttpContext;
-            var groupName = authContext.Request.Query.Where(s => s.Key == "groupName").Select(s=>s.Value).FirstOrDefault();
+            var groupName = authContext.Request.Path.Value;
             if (groupRole.Contains(groupName))
             {
               context.Succeed(requirement);

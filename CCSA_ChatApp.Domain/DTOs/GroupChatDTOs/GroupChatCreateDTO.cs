@@ -17,6 +17,6 @@ namespace CCSA_ChatApp.Domain.DTOs.GroupChatDTOs
         public string GroupDescription { get; set; }
 
         [Required]
-        public IFormFile Picture { get; set; }
+        public IFormFile GroupPicture { get; set; }
     }
 }

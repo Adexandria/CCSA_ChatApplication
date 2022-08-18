@@ -12,7 +12,6 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
-    [Authorize(Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -61,8 +60,6 @@ namespace CCSA_ChatApplication.Controllers
             //Save user profile
             await _userProfileService.CreateExistingUserProfile(userProfile);
             
-            //Add user role
-            await _auth.AddUserRole(new UserRole { Role = "User", User = user });
             
             return Ok($"Welcome {userProfile.Username}");
         }
