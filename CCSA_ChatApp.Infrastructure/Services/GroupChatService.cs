@@ -106,10 +106,19 @@ namespace CCSA_ChatApp.Infrastructure.Services
            await _groupChatRepository.DeleteGroupChat(groupId);
         }
         
-        public async Task<GroupChatDTO> GetGroupChatByName(string username)
+        public async Task<GroupChatDTO> GetGroupChatByName(string name)
         {
-           var groupChat =  await _groupChatRepository.GetGroupChatByName(username);
+           var groupChat =  await _groupChatRepository.GetGroupChatByName(name);
+            if (groupChat != null)
+            {
+                throw new Exception("Group Name Has been used");
+            }
+
             return groupChat.Adapt<GroupChatDTO>();
+            
+            
+
+            
         }
     }
 }

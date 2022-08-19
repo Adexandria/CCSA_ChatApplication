@@ -40,30 +40,34 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateGroupChat([FromForm] GroupChatCreateDTO newGroupChat)
         {
-            var currentGroup = _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
-            if (currentGroup != null)
+            try
             {
-                return BadRequest("GroupName already exist");
+                var currentGroup = await _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+
+                var image = _groupChatService.ConvertFromImageToByte(newGroupChat.GroupPicture);
+
+                GroupChat groupChat = newGroupChat.Adapt<GroupChat>();
+
+                groupChat.Picture = image;
+
+                groupChat.CreatedBy = currentUser;
+
+                await _groupChatService.CreateGroupChat(groupChat);
+
+                await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin", User = currentUser });
+
+                var token = await _tokenCredential.GenerateToken(currentUser);
+
+                return Ok(new { token });
             }
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            catch (Exception e)
+            {
 
-            User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-
-            var image = _groupChatService.ConvertFromImageToByte(newGroupChat.GroupPicture);
-
-            GroupChat groupChat = newGroupChat.Adapt<GroupChat>();
-
-            groupChat.Picture = image;
-
-            groupChat.CreatedBy = currentUser;
-
-            await _groupChatService.CreateGroupChat(groupChat);
-
-            await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin", User = currentUser });
-
-            var token = await _tokenCredential.GenerateToken(currentUser);
-
-            return Ok(new { token });
+                return BadRequest(e.Message);
+            }
         }
 
         [Authorize(Policy = "GroupAdmin")]
