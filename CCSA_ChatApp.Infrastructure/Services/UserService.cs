@@ -29,8 +29,12 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public async Task<UserDTO> GetUserById(Guid userId)
         {
            User user = await _userRepository.GetUserById(userId);
-            UserDTO mappedUser = user.Adapt<UserDTO>(UserProfileMappingService());
-            return mappedUser;
+           if(user is null)
+           {
+                throw new Exception("User not found");
+           }
+           UserDTO mappedUser = user.Adapt<UserDTO>(UserProfileMappingService());
+           return mappedUser;
         }
 
         public async Task<UserDTO> GetUserByUsername(string username)

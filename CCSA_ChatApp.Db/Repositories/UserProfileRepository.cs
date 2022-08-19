@@ -34,6 +34,10 @@ namespace CCSA_ChatApp.Db.Repositories
                 _session.Delete(userProfileId);
                 Commit();
             }
+            else
+            {
+                throw new Exception("User profile not found");
+            }
         }
     }
 }

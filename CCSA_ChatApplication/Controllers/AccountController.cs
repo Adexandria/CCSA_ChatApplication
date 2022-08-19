@@ -6,7 +6,6 @@ using CCSA_ChatApp.Domain.Models;
 using CCSA_ChatApp.Infrastructure.Services;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -68,16 +67,26 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LogInDTO newUser)
         {
-            var verifyPassword = await _userService.VerifyPassword(newUser.UserName,newUser.Password);
-            if (verifyPassword)
+            try
             {
-                var mappedUser = await _userService.GetUserByUsername(newUser.UserName);
-                var user = mappedUser.Adapt<User>();
-                var token = await  _tokenCredential.GenerateToken(user);
-                var refreshToken = await _tokenCredential.GenerateRefreshToken(user);
-                return Ok(new TokenDTO { AccessToken = token,RefreshToken = refreshToken.Token});
+                var verifyPassword = await _userService.VerifyPassword(newUser.UserName, newUser.Password);
+                if (verifyPassword)
+                {
+                    var mappedUser = await _userService.GetUserByUsername(newUser.UserName);
+
+                    var user = mappedUser.Adapt<User>();
+
+                    var token = await _tokenCredential.GenerateToken(user);
+
+                    return Ok(new TokenDTO { AccessToken = token });
+                }
+                return BadRequest("Username or Password is not correct");
             }
-            return BadRequest("Username or password incorrect");
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+
         }
 /*
         [AllowAnonymous]
@@ -97,9 +106,20 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet("password-reset")]
         public async Task<IActionResult> GeneratePasswordResetToken()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var token =  _tokenCredential.GeneratePasswordResetToken(Guid.Parse(userId));
-            return Ok(token);
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                var token = _tokenCredential.GeneratePasswordResetToken(Guid.Parse(userId));
+                
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+            
         }
 
        [HttpPut("password-reset")]
@@ -107,15 +127,19 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 var userProfile = _userProfileService.GetUserProfileById(Guid.Parse(userId));
+                
                 var user = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+                
                 if (!_tokenCredential.DecodePasswordResetToken(token, Guid.Parse(userId)))
                 {
                     return BadRequest("Invalid token");
                 }
+                
                 await _userService.UpdatePassword(user, passwordReset.OldPassword, passwordReset.NewPassword);
+                
                 return Ok("Password Changed");
             }
             catch(Exception ex)
@@ -128,9 +152,18 @@ namespace CCSA_ChatApplication.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAccount()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _userService.DeleteByUserId(Guid.Parse(userId));
-            return Ok("Account deleted");
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _userService.DeleteByUserId(Guid.Parse(userId));
+                return Ok("Account deleted");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+           
         }
     }
 }

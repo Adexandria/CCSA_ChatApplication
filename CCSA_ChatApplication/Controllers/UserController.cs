@@ -21,41 +21,86 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet("contacts")]
         public IActionResult GetAllContacts()
         {
-            string name = User.FindFirstValue(ClaimTypes.Name);
-            IEnumerable<UsersDTO> contacts = _usersService.GetUsers(name);
-            return Ok(contacts);
+            try
+            {
+                string name = User.FindFirstValue(ClaimTypes.Name);
+                IEnumerable<UsersDTO> contacts = _usersService.GetUsers(name);
+                return Ok(contacts);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+           
         }
 
         [HttpPut("update-firstname")]
         public async Task<IActionResult> UpdateFirstName(string firstName)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _usersService.UpdateFirstName(Guid.Parse(userId), firstName);
-            return Ok("Updated successfully");
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _usersService.UpdateFirstName(Guid.Parse(userId), firstName);
+                return Ok("Updated successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            
         }
 
         [HttpPut("update-middelname")]
         public async Task<IActionResult> UpdateMiddleName(string middlename)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _usersService.UpdateMiddleName(Guid.Parse(userId), middlename);
-            return Ok("Updated successfully");
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _usersService.UpdateMiddleName(Guid.Parse(userId), middlename);
+                return Ok("Updated successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            
         }
 
         [HttpPut("update-lastname")]
         public async Task<IActionResult> UpdateLastName(string lastname)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _usersService.UpdateLastName(Guid.Parse(userId), lastname);
-            return Ok("Updated successfully");
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _usersService.UpdateLastName(Guid.Parse(userId), lastname);
+                return Ok("Updated successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            
         }
 
         [HttpPut("update-email")]
         public async Task<IActionResult> UpdateEmail(string email)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _usersService.UpdateEmail(Guid.Parse(userId), email);
-            return Ok("Updated successfully");
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _usersService.UpdateEmail(Guid.Parse(userId), email);
+                return Ok("Updated successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            
         }
     }
 }

@@ -59,6 +59,10 @@ namespace CCSA_ChatApp.Db.Repositories
                 await _session.UpdateAsync(currentUser);
                 await Commit();
             }
+            else
+            {
+                throw new Exception("User not found");
+            }
         }
 
         public override async Task UpdateLastName(Guid userId, string lastName)
@@ -70,6 +74,10 @@ namespace CCSA_ChatApp.Db.Repositories
                 await _session.UpdateAsync(currentUser);
                 await Commit();
             }
+            else
+            {
+                throw new Exception("User not found");
+            }
         }
 
         public override async Task UpdateMiddleName(Guid userId, string middleName)
@@ -80,6 +88,10 @@ namespace CCSA_ChatApp.Db.Repositories
                 currentUser.MiddleName = middleName;
                 await _session.UpdateAsync(currentUser);
                 await Commit();
+            }
+            else
+            {
+                throw new Exception("User not found");
             }
         }
 
@@ -119,6 +131,10 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                await  _session.DeleteAsync(currentUser);
                 await Commit();
+            }
+            else
+            {
+                throw new Exception("User not found");
             }
         }
 

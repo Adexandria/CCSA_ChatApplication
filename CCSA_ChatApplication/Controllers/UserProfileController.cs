@@ -28,36 +28,44 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserProfile()
         {
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            string fullname = User.FindFirstValue(ClaimTypes.Name);
-            
-            UserDTO currentUser = await _userService.GetUserById(Guid.Parse(userId));
-            
-            var currentUsers = _userService.GetUsers(fullname);
+                string fullname = User.FindFirstValue(ClaimTypes.Name);
 
-            var userProfile = currentUser.Adapt<UserProfileDTO>(MappingService.UserProfileMappingService());
-            
-            userProfile.Contacts = currentUsers.ToList();
-            
-            userProfile.Adapt(currentUser);
+                UserDTO currentUser = await _userService.GetUserById(Guid.Parse(userId));
 
-            userProfile.GroupChats = _groupChatService.GetAll(Guid.Parse(userId)).ToList();
+                var currentUsers = _userService.GetUsers(fullname);
 
-            return Ok(userProfile);
+                var userProfile = currentUser.Adapt<UserProfileDTO>(MappingService.UserProfileMappingService());
+
+                userProfile.Contacts = currentUsers.ToList();
+
+                userProfile.Adapt(currentUser);
+
+                userProfile.GroupChats = _groupChatService.GetAll(Guid.Parse(userId)).ToList();
+
+                return Ok(userProfile);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+            
             
         }
 
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserprofileByUsername(string username)
         {
+
             var userProfile = _userProfileService.GetUserProfileByUsername(username).Adapt<UserProfilesDTO>();
             if (userProfile is null)
             {
                 return NotFound("This user doesn't exist");
             }
-
             return Ok(userProfile);
         }
 
@@ -77,25 +85,52 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPut("update-country")]
         public async Task<IActionResult> UpdateCountry(Country country)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _userProfileService.UpdateCountry(Guid.Parse(userId), country);
-            return Ok("Updated successfully");
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _userProfileService.UpdateCountry(Guid.Parse(userId), country);
+                return Ok("Updated successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+  
         }
 
         [HttpPut("update-picture")]
         public async Task<IActionResult> UpdatePicture(IFormFile picture)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _userProfileService.UpdateUserPicture(picture, Guid.Parse(userId));
-            return Ok("Updated successfully");
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _userProfileService.UpdateUserPicture(picture, Guid.Parse(userId));
+                return Ok("Updated successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            
         }
 
         [HttpDelete("delete-picture")]
         public async Task<IActionResult> RemovePicture()
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _userProfileService.DeleteUserPicture(Guid.Parse(userId));
-            return Ok("Removed successfully");
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _userProfileService.DeleteUserPicture(Guid.Parse(userId));
+                return Ok("Removed successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            
         }
     }
 }

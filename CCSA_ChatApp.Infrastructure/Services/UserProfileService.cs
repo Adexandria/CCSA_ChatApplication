@@ -24,19 +24,19 @@ namespace CCSA_ChatApp.Infrastructure.Services
             _userProfileRepository.DeleteUserProfileById(userProfileId);
         }
 
+        
         public UserProfileDTO GetUserProfileById(Guid userProfileId)
         {
             var userProfile = _userProfileRepository.GetUserProfileById(userProfileId);
             var mappedUserProfile = userProfile.Adapt<UserProfileDTO>();
-            /*mappedUserProfile.Picture = ConvertFronByteToString(userProfile.Picture);*/
             return mappedUserProfile;
         }
 
+        
         public UserProfileDTO GetUserProfileByUsername(string username)
         {
             var userProfile = _userProfileRepository.GetUserProfileByUsername(username);
             var mappedUserProfile = userProfile.Adapt<UserProfileDTO>();
-            /*mappedUserProfile.Picture = ConvertFronByteToString(userProfile.Picture);*/
             return mappedUserProfile;
         }
 
@@ -48,6 +48,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 userProfile.Country = country;
                 await _userProfileRepository.Update(userProfile);
             }
+            else
+            {
+                throw new Exception("User profile not found");
+            }
         }
 
         public async Task UpdateUsername(Guid profileId, string username)
@@ -58,21 +62,40 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 userProfile.Username = username;
                 await _userProfileRepository.Update(userProfile);
             }
+            else
+            {
+                throw new Exception("User profile not found");
+            }
         }
 
         public async Task UpdateUserPicture(IFormFile picture, Guid userId)
         {
             var user = _userProfileRepository.GetUserProfileById(userId);
-            var image = ConvertFromImageToByte(picture);
-            user.Picture = image;
-            await _userProfileRepository.Update(user);
+            if (user is not null)
+            {
+                var image = ConvertFromImageToByte(picture);
+                user.Picture = image;
+                await _userProfileRepository.Update(user);
+            }
+            else
+            {
+                throw new Exception("User not found");
+            }
+ 
         }
 
         public async Task DeleteUserPicture(Guid userId)
         {
             var user = _userProfileRepository.GetUserProfileById(userId);
-            user.Picture = null;
-            await _userProfileRepository.Update(user);
+            if(user is not null)
+            {
+                user.Picture = null;
+                await _userProfileRepository.Update(user);
+            }
+            else
+            {
+                throw new Exception("User profile not found");
+            }
         }
 
 

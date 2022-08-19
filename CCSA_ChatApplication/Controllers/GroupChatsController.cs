@@ -42,7 +42,7 @@ namespace CCSA_ChatApplication.Controllers
             
             IList<List<UsersDTO>> members = _authService.GetRoles(groupNames);
 
-           MappingService.MapUserToGroupMembers(groupChats, members);
+            MappingService.MapUserToGroupMembers(groupChats, members);
             
             return Ok(groupChats);
         }
