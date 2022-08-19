@@ -35,7 +35,7 @@ namespace CCSA_ChatApplication.Controllers
 
         }
 
-        [Authorize/*(Roles = "GroupUser")*/]
+        [Authorize(Policy = "GroupUser")]
         [HttpPost("groupName")]
         public async Task<IActionResult> SendMessageToGroup([FromBody] string text, string groupName)
         {

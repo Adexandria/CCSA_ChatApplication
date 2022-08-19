@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GroupChatsController : ControllerBase
@@ -59,8 +60,12 @@ namespace CCSA_ChatApplication.Controllers
                 
                 await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin" , User = currentUser});
                 
+                await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}User", User = currentUser });
+
                 var token = await _tokenCredential.GenerateToken(currentUser);
                 
+                await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
+
                 return Ok(new { token});
             }
             catch (Exception ex)
@@ -86,8 +91,8 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("Group not found");
             }
-            
-            await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
+
+            await _authService.AddUserRole(new UserRole { Role = $"{groupChat.GroupName}User", User = currentUser });
             return Ok("Added Successfully");
         }
         
@@ -160,13 +165,20 @@ namespace CCSA_ChatApplication.Controllers
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpDelete("{groupName}")]
-        public async Task<IActionResult> DeleteGroupChatById(string groupName)
+        public async Task<IActionResult> DeleteGroupChat(string groupName)
         {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+            if (currentUser is null)
+            {
+                return NotFound("User doesn't exist");
+            }
             var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound();
             }
+            await _authService.RemoveUsersGroupRole(groupName);
             await _groupChatService.DeleteGroupChatById(groupChat.GroupId);
             return Ok("Successful");
         }
@@ -186,8 +198,8 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("Group not found");
             }
-            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
-            return Ok("Added Successfully");
+            await _authService.RemoveUserRole(currentUser.UserId, groupName);
+            return Ok("Removed Successfully");
         }
 
         [HttpDelete("{groupName}/remove-user")]
@@ -204,8 +216,9 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("Group not found");
             }
-            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
-            return Ok("Added Successfully");
+            await _authService.RemoveUserRole(currentUser.UserId, groupName);
+            return Ok("Removed Successfully");
         }
+
     }
 }
