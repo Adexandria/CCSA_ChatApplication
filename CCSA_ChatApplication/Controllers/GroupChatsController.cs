@@ -32,9 +32,17 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet]
         public IActionResult GetGroupChats()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var groupChats = _groupChatService.GetAll(Guid.Parse(userId));
-            return Ok(groupChats);
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var groupChats = _groupChatService.GetAll(Guid.Parse(userId));
+                return Ok(groupChats);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest("Please log in");
+            }
         }
 
         [HttpPost("create")]
@@ -74,21 +82,29 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPost("{groupName}/add-user")]
         public async Task<IActionResult> AddUserToGroup(string groupName, string username)
         {
-            var currentUser = _userService.GetUserByUsername(username).Result.Adapt<User>();
-            if (currentUser is null)
+            try
             {
-                return NotFound("User doesn't exist");
+                var currentUser = _userService.GetUserByUsername(username).Result.Adapt<User>();
+                if (currentUser is null)
+                {
+                    return NotFound("User doesn't exist");
 
+                }
+
+                var groupChat =  _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                if (groupChat is null)
+                {
+                    return NotFound("Group not found");
+                }
+
+                await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
+                return Ok("Added Successfully");
             }
-
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
-            if (groupChat is null)
+            catch (Exception e)
             {
-                return NotFound("Group not found");
-            }
 
-            await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
-            return Ok("Added Successfully");
+                return BadRequest(e.Message);
+            }
         }
 
 
@@ -99,10 +115,10 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
-                if (groupChat is null)
-                {
-                    return NotFound();
-                }
+                //if (groupChat is null)
+                //{
+                //    return NotFound();
+                //}
                 await _groupChatService.UpdateGroupPicture(picture, groupChat);
                 return Ok("Updated Successfully");
             }
