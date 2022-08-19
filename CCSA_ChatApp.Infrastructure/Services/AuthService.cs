@@ -29,6 +29,16 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return mappedRole;
         }
 
+        public async Task RemoveUserRole(Guid userId,string groupName)
+        {
+            await _auth.RemoveUserRole(userId, groupName);
+        }
+
+        public async Task RemoveUsersGroupRole(string groupName)
+        {
+            await _auth.RemoveUsersGroupRole(groupName);
+        }
+
         public async Task SaveRefreshToken(RefreshToken token)
         {
             await _auth.SaveRefreshToken(token);
