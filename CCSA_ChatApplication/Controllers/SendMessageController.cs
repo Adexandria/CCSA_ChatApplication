@@ -42,7 +42,7 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var group = await _groupChatService.GetGroupChatByUsername(groupName);
+                var group = await _groupChatService.GetGroupChatByName(groupName);
                 if(group is null)
                 {
                     return BadRequest("Group does not exist");
