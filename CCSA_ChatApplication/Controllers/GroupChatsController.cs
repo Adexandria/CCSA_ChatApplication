@@ -41,7 +41,7 @@ namespace CCSA_ChatApplication.Controllers
             catch (Exception e)
             {
 
-                return BadRequest("Please log in");
+                return BadRequest("Please log in with your correct token");
             }
         }
 
