@@ -16,7 +16,6 @@ namespace CCSA_ChatApp.Db.Mappings
             Map(x => x.Password);
             HasOne(s=>s.Profile).PropertyRef(s=>s.User);
             HasMany(user => user.Histories).Cascade.Delete().Inverse();
-            HasManyToMany(user => user.GroupChats).Cascade.Delete().Table("GroupChatMember");
 
         }
     }
