@@ -9,10 +9,10 @@ namespace CCSA_ChatApp.Db.Mappings
         {
             Table("MessageHistories");
             Id(hist => hist.HistoryId).GeneratedBy.Guid();
-            References(hist => hist.Sender).Cascade.Delete().Not.Nullable();
-            References(hist => hist.Receiver).Cascade.Delete();
-            References(hist => hist.Message).Cascade.Delete().Unique();
-            References(hist => hist.GroupChatUser).Cascade.Delete();
+            References(hist => hist.Sender).Cascade.All();
+            References(hist => hist.Receiver).Cascade.All();
+            References(hist => hist.Message);
+            References(hist => hist.GroupChatUser).Cascade.All();
         }
     }
 }

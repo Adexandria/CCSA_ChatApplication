@@ -15,7 +15,7 @@ namespace CCSA_ChatApp.Db.Mappings
             Map(user => user.Email);
             Map(x => x.Password);
             HasOne(s=>s.Profile).PropertyRef(s=>s.User);
-            HasMany(user => user.Histories).Cascade.Delete().Inverse();
+            HasMany(user => user.Histories);
 
         }
     }
