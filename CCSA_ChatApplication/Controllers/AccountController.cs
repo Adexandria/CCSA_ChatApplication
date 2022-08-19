@@ -59,9 +59,10 @@ namespace CCSA_ChatApplication.Controllers
             
             //Save user profile
             await _userProfileService.CreateExistingUserProfile(userProfile);
-            
-            
-            return Ok($"Welcome {userProfile.Username}");
+
+            var token = await _tokenCredential.GenerateToken(user);
+            var refreshToken = await _tokenCredential.GenerateRefreshToken(user);
+            return Ok(new TokenDTO { AccessToken = token, RefreshToken = refreshToken.Token });
         }
 
         [AllowAnonymous]
