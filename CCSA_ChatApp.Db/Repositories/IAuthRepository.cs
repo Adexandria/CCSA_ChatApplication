@@ -11,6 +11,8 @@ namespace CCSA_ChatApp.Db.Repositories
     {
         public abstract Task AddUserRole(UserRole role);
         public abstract IEnumerable<UserRole> GetUserRole(Guid id);
+        public abstract Task RemoveUserRole(Guid userId,string groupName);
+        public abstract Task RemoveUsersGroupRole(string groupName);
         public abstract Task SaveRefreshToken(RefreshToken token);
         public abstract Task<RefreshToken> GetExistingToken(Guid userId, string refreshToken);
 
