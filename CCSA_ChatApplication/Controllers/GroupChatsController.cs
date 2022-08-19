@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Authentication.Services;
 using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
+using CCSA_ChatApp.Domain.DTOs.UserDTOs;
 using CCSA_ChatApp.Domain.Models;
 using CCSA_ChatApp.Infrastructure.Services;
 using Mapster;
@@ -28,13 +29,21 @@ namespace CCSA_ChatApplication.Controllers
         public IAuth _authService { get; }
         public ITokenCredential _tokenCredential { get; }
         public IUserService _userService { get; }
-
+        
 
         [HttpGet]
         public IActionResult GetGroupChats()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var groupChats = _groupChatService.GetAll(Guid.Parse(userId));
+            string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            List<GroupChatsDTO> groupChats = _groupChatService.GetAll(Guid.Parse(userId)).ToList();
+            
+            string[] groupNames = groupChats.Select(s => s.GroupName).ToArray();
+            
+            IList<List<UsersDTO>> members = _authService.GetRoles(groupNames);
+
+           MappingService.MapUserToGroupMembers(groupChats, members);
+            
             return Ok(groupChats);
         }
 
@@ -45,7 +54,7 @@ namespace CCSA_ChatApplication.Controllers
             {
                 
                 var currentGroup = _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
-                if(currentGroup != null)
+                if(currentGroup == null)
                 {
                     return BadRequest("GroupName already exist");
                 }
@@ -68,10 +77,29 @@ namespace CCSA_ChatApplication.Controllers
                 await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}User", User = currentUser });
 
                 var token = await _tokenCredential.GenerateToken(currentUser);
-                
-                await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
 
                 return Ok(new { token});
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "GroupAdmin")]
+        [HttpPost("add-admin")]
+        public async Task<IActionResult> AddAdmin(string groupName, string username)
+        {
+            try
+            {
+                var user =  _userService.GetUserByUsername(username).Result.Adapt<User>();
+                if (user == null)
+                {
+                    return BadRequest("User does not exist");
+                }
+                await _authService.AddUserRole(new UserRole { Role = $"{groupName}Admin", User = user });
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -96,7 +124,7 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("Group not found");
             }
-
+            await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
             await _authService.AddUserRole(new UserRole { Role = $"{groupChat.GroupName}User", User = currentUser });
             return Ok("Added Successfully");
         }
@@ -205,10 +233,11 @@ namespace CCSA_ChatApplication.Controllers
                 return NotFound("Group not found");
             }
             await _authService.RemoveUserRole(currentUser.UserId, groupName);
+            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
             return Ok("Removed Successfully");
         }
 
-        [HttpDelete("{groupName}/remove-user")]
+        [HttpDelete("{groupName}/remove")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -223,6 +252,7 @@ namespace CCSA_ChatApplication.Controllers
                 return NotFound("Group not found");
             }
             await _authService.RemoveUserRole(currentUser.UserId, groupName);
+            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
             return Ok("Removed Successfully");
         }
 

@@ -24,6 +24,12 @@ namespace CCSA_ChatApp.Db.Repositories
             return token;
         }
 
+        public override IEnumerable<User> GetUser(string groupName)
+        {
+            var user = _session.Query<UserRole>().Where(x => x.Role.Contains(groupName)).Select(s=>s.User);
+            return user.Distinct();
+        }
+
         public override IEnumerable<UserRole> GetUserRole(Guid id)
         {
             var role = _session.Query<UserRole>().Where(x => x.User.UserId == id);

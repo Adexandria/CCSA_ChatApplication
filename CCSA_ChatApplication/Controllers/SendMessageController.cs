@@ -36,7 +36,7 @@ namespace CCSA_ChatApplication.Controllers
         }
 
         [Authorize(Policy = "GroupUser")]
-        [HttpPost("groupName")]
+        [HttpPost("{groupName}")]
         public async Task<IActionResult> SendMessageToGroup([FromBody] string text, string groupName)
         {
             try

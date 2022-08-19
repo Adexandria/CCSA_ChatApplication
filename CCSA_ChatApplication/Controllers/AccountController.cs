@@ -61,8 +61,7 @@ namespace CCSA_ChatApplication.Controllers
             await _userProfileService.CreateExistingUserProfile(userProfile);
 
             var token = await _tokenCredential.GenerateToken(user);
-            var refreshToken = await _tokenCredential.GenerateRefreshToken(user);
-            return Ok(new TokenDTO { AccessToken = token, RefreshToken = refreshToken.Token });
+            return Ok(new TokenDTO { AccessToken = token });
         }
 
         [AllowAnonymous]
@@ -80,7 +79,7 @@ namespace CCSA_ChatApplication.Controllers
             }
             return BadRequest("Username or password incorrect");
         }
-
+/*
         [AllowAnonymous]
         [HttpPost("refresh-token")]
         public async Task<IActionResult> GenerateAccessToken(string refreshToken)
@@ -93,7 +92,7 @@ namespace CCSA_ChatApplication.Controllers
                 return Ok(token);
             }
             return Unauthorized();
-        }
+        }*/
 
         [HttpGet("password-reset")]
         public async Task<IActionResult> GeneratePasswordResetToken()

@@ -8,5 +8,6 @@ namespace CCSA_ChatApp.Domain.DTOs.GroupChatDTOs
         public string GroupName { get; set; }
         public string GroupDescription { get; set; }
         public UsersDTO CreatedBy { get; set; }
+        public List<UsersDTO> Members { get; set; }
     }
 }

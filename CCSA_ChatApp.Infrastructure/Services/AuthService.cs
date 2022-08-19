@@ -22,6 +22,18 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return await _auth.GetExistingToken(userId,refreshToken);
         }
 
+        public IList<List<UsersDTO>> GetRoles(string[] names)
+        {
+            List<List<UsersDTO>> users = new();
+
+            foreach (var name in names)
+            {
+                users.Add(GetUser(name));
+            }
+            return users;
+        }
+       
+
         public IEnumerable<UserRoleDTO> GetUserRole(Guid id)
         {
             var role = _auth.GetUserRole(id);
@@ -42,6 +54,12 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public async Task SaveRefreshToken(RefreshToken token)
         {
             await _auth.SaveRefreshToken(token);
+        }
+
+        private List<UsersDTO> GetUser(string name)
+        {
+            var users = _auth.GetUser(name).Adapt<IEnumerable<UsersDTO>>(MappingService.UsersMappingService());
+            return users.ToList();
         }
     }
 }
