@@ -16,9 +16,18 @@ namespace CCSA_ChatApp.Infrastructure.Services
 
         public async Task CreateGroupChat(GroupChat group)
         {
-            var currentUser = group.CreatedBy;
-            group.Members.Add(currentUser);
-            await _groupChatRepository.Create(group);
+            try
+            {
+                var currentUser = group.CreatedBy;
+                group.Members.Add(currentUser);
+                await _groupChatRepository.Create(group);
+            }
+            catch
+            {
+                throw new Exception("Bad Request");
+            }
+            
+            
         }
 
 

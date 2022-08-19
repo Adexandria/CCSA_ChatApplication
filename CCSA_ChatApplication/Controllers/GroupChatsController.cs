@@ -40,62 +40,53 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateGroupChat([FromForm] GroupChatCreateDTO newGroupChat)
         {
-            try
+            var currentGroup = _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
+            if (currentGroup != null)
             {
-                
-                var currentGroup = _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
-                if(currentGroup != null)
-                {
-                    return BadRequest("GroupName already exist");
-                }
-                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                
-                User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-                
-                var image = _groupChatService.ConvertFromImageToByte(newGroupChat.GroupPicture);
-                
-                GroupChat groupChat = newGroupChat.Adapt<GroupChat>();
-
-                groupChat.Picture = image;
-                
-                groupChat.CreatedBy = currentUser;
-                
-                await _groupChatService.CreateGroupChat(groupChat);
-                
-                await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin" , User = currentUser});
-                
-                var token = await _tokenCredential.GenerateToken(currentUser);
-                
-                return Ok(new { token});
+                return BadRequest("GroupName already exist");
             }
-            catch (Exception ex)
-            {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                return BadRequest(ex.Message);
-            }
+            User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+
+            var image = _groupChatService.ConvertFromImageToByte(newGroupChat.GroupPicture);
+
+            GroupChat groupChat = newGroupChat.Adapt<GroupChat>();
+
+            groupChat.Picture = image;
+
+            groupChat.CreatedBy = currentUser;
+
+            await _groupChatService.CreateGroupChat(groupChat);
+
+            await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin", User = currentUser });
+
+            var token = await _tokenCredential.GenerateToken(currentUser);
+
+            return Ok(new { token });
         }
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpPost("{groupName}/add-user")]
-        public async Task<IActionResult> AddUserToGroup(string groupName,string username)
+        public async Task<IActionResult> AddUserToGroup(string groupName, string username)
         {
-            var currentUser =  _userService.GetUserByUsername(username).Result.Adapt<User>();
-            if(currentUser is null)
+            var currentUser = _userService.GetUserByUsername(username).Result.Adapt<User>();
+            if (currentUser is null)
             {
                 return NotFound("User doesn't exist");
-                
+
             }
-            
+
             var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound("Group not found");
             }
-            
+
             await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
             return Ok("Added Successfully");
         }
-        
+
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpPut("{groupName}/update-picture")]
@@ -117,7 +108,7 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpPut("{groupName}/update-name")]
@@ -139,7 +130,7 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpPut("{groupName}/update-description")]
@@ -161,7 +152,7 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpDelete("{groupName}")]
@@ -175,11 +166,11 @@ namespace CCSA_ChatApplication.Controllers
             await _groupChatService.DeleteGroupChatById(groupChat.GroupId);
             return Ok("Successful");
         }
-        
+
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpDelete("{groupName}/remove-user")]
-        public async Task<IActionResult> RemoveUserFromGroupChat(string groupName,string username)
+        public async Task<IActionResult> RemoveUserFromGroupChat(string groupName, string username)
         {
             var currentUser = _userService.GetUserByUsername(username).Result.Adapt<User>();
             if (currentUser is null)
