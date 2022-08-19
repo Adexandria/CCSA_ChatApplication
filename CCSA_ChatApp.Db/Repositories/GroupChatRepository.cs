@@ -22,9 +22,9 @@ namespace CCSA_ChatApp.Db.Repositories
             var groupChat = await _session.Query<GroupChat>().FirstOrDefaultAsync(x => x.GroupId == groupChatId);
             return groupChat;
         }
-        public async Task<GroupChat> GetGroupChatByUsername(string username)
+        public async Task<GroupChat> GetGroupChatByName(string name)
         {
-            var groupChat = await _session.Query<GroupChat>().Where(x => x.GroupName == username).FirstOrDefaultAsync();
+            var groupChat = await _session.Query<GroupChat>().Where(x => x.GroupName == name).FirstOrDefaultAsync();
             return groupChat;
         }
 
@@ -65,12 +65,6 @@ namespace CCSA_ChatApp.Db.Repositories
             var groupChat = _session.Query<GroupChat>().Where(x => x.CreatedBy.UserId == userId);
             return groupChat;
 
-        }
-
-        public GroupChat GetGroupChatByName(string name)
-        {
-            var groupName = _session.Query<GroupChat>().FirstOrDefault(x => x.GroupName == name);
-            return groupName;
         }
     }
 }

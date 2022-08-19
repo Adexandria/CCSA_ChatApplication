@@ -11,7 +11,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         Task DeleteGroupChatById(Guid groupId);
         IEnumerable<GroupChatsDTO> GetAll(Guid userId);
         Task<GroupChatDTO> GetGroupChat(Guid groupId);
-        Task<GroupChatDTO> GetGroupChatByUsername(string username);
+        Task<GroupChatDTO> GetGroupChatByName(string name);
         Task UpdateGroupName(Guid groupId, string name);
         Task UpdateGroupDescription(Guid groupId, string description);
         Task UpdateGroupPicture(IFormFile picture, GroupChat group);
@@ -19,6 +19,5 @@ namespace CCSA_ChatApp.Infrastructure.Services
         Task RemoveUserToGroup(Guid groupId, User currentUser);
         Task DeleteGroupPicture(GroupChat group);
         byte[] ConvertFromImageToByte(IFormFile picture);
-        GroupChatDTO GetGroupChatByName(string name);
     }
 }

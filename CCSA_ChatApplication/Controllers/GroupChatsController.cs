@@ -86,7 +86,7 @@ namespace CCSA_ChatApplication.Controllers
                 
             }
             
-            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound("Group not found");
@@ -103,7 +103,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -125,7 +125,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -147,7 +147,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -167,7 +167,7 @@ namespace CCSA_ChatApplication.Controllers
         [HttpDelete("{groupName}")]
         public async Task<IActionResult> DeleteGroupChatById(string groupName)
         {
-            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound();
@@ -186,7 +186,7 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound("Group not found");
@@ -204,7 +204,7 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChatByUsername(groupName).Result.Adapt<GroupChat>();
+            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
             if (groupChat is null)
             {
                 return NotFound("Group not found");
