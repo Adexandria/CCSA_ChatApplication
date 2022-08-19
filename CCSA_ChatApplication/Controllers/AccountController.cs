@@ -75,7 +75,7 @@ namespace CCSA_ChatApplication.Controllers
                 var user = mappedUser.Adapt<User>();
                 var token = await  _tokenCredential.GenerateToken(user);
                 var refreshToken = await _tokenCredential.GenerateRefreshToken(user);
-                return Ok(new TokenDTO { AccessToken = token,RefreshToken = refreshToken.Token});
+                return Ok(new TokenDTO { AccessToken = token});
             }
             return BadRequest("Username or password incorrect");
         }
