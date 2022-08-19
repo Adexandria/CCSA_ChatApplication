@@ -126,12 +126,18 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
-                if (groupChat is null)
+                var currentGroupName = _groupChatService.GetGroupChatByName(groupName);
+                if(currentGroupName is not null)
                 {
-                    return NotFound();
+                    if (groupChat is null)
+                    {
+                        return NotFound();
+                    }
+                    await _groupChatService.UpdateGroupName(groupChat.GroupId, name);
+                    return Ok("Updated Successfully");
                 }
-                await _groupChatService.UpdateGroupName(groupChat.GroupId, name);
-                return Ok("Updated Successfully");
+                return BadRequest("GroupName already exist");
+
             }
             catch (Exception ex)
             {
@@ -161,7 +167,7 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpDelete("{groupName}")]
