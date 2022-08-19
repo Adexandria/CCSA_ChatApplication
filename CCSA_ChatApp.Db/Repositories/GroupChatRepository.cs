@@ -44,7 +44,7 @@ namespace CCSA_ChatApp.Db.Repositories
             if (groupChat != null)
             {
                 groupChat.Members.Add(currentUser);
-                await _session.SaveAsync(groupChat);
+                await _session.UpdateAsync(groupChat);
                 Commit();
             }
         }
@@ -55,7 +55,7 @@ namespace CCSA_ChatApp.Db.Repositories
             if (groupChat != null)
             {
                 groupChat.Members.Remove(currentUser);
-                await _session.SaveAsync(groupChat);
+                await _session.UpdateAsync(groupChat);
                 Commit();
             }
         }
