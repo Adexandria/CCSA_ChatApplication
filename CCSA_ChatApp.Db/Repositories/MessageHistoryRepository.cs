@@ -13,6 +13,7 @@ namespace CCSA_ChatApp.Db.Repositories
         public async Task CreateMessageHistory(Message message, MessageHistory messageHistory)
         {
             messageHistory.Message = message;
+            messageHistory.HistoryId = Guid.NewGuid();
             await _session.SaveAsync(messageHistory);
             await Commit();
         }

@@ -29,10 +29,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return mappedgroupChats;
         }
 
-        public async Task<GroupChatDTO> GetGroupChat(Guid groupId)
+        public async Task<GroupChat> GetGroupChat(Guid groupId)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
-            return currentGroupChat.Adapt<GroupChatDTO>();
+            return currentGroupChat;
         }
         
         public async Task UpdateGroupDescription(Guid groupId,string description)
@@ -97,10 +97,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
            await _groupChatRepository.DeleteGroupChat(groupId);
         }
         
-        public async Task<GroupChatDTO> GetGroupChatByName(string username)
+        public async Task<GroupChat> GetGroupChatByName(string username)
         {
            var groupChat =  await _groupChatRepository.GetGroupChatByName(username);
-            return groupChat.Adapt<GroupChatDTO>();
+            return groupChat;
         }
     }
 }

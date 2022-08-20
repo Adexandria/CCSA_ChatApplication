@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Authentication.Services;
 using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
+using CCSA_ChatApp.Domain.DTOs.UserDTOs;
 using CCSA_ChatApp.Domain.Models;
 using CCSA_ChatApp.Infrastructure.Services;
 using Mapster;
@@ -10,6 +11,7 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GroupChatsController : ControllerBase
@@ -27,13 +29,21 @@ namespace CCSA_ChatApplication.Controllers
         public IAuth _authService { get; }
         public ITokenCredential _tokenCredential { get; }
         public IUserService _userService { get; }
-
+        
 
         [HttpGet]
         public IActionResult GetGroupChats()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var groupChats = _groupChatService.GetAll(Guid.Parse(userId));
+            string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            List<GroupChatsDTO> groupChats = _groupChatService.GetAll(Guid.Parse(userId)).ToList();
+            
+            string[] groupNames = groupChats.Select(s => s.GroupName).ToArray();
+            
+            IList<List<UsersDTO>> members = _authService.GetRoles(groupNames);
+
+           MappingService.MapUserToGroupMembers(groupChats, members);
+            
             return Ok(groupChats);
         }
 
@@ -64,9 +74,32 @@ namespace CCSA_ChatApplication.Controllers
                 
                 await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}Admin" , User = currentUser});
                 
+                await _authService.AddUserRole(new UserRole { Role = $"{newGroupChat.GroupName}User", User = currentUser });
+
                 var token = await _tokenCredential.GenerateToken(currentUser);
-                
+
                 return Ok(new { token});
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "GroupAdmin")]
+        [HttpPost("add-admin")]
+        public async Task<IActionResult> AddAdmin(string groupName, string username)
+        {
+            try
+            {
+                var user = await _userService.GetUserByUsername(username);
+                if (user == null)
+                {
+                    return BadRequest("User does not exist");
+                }
+                await _authService.AddUserRole(new UserRole { Role = $"{groupName}Admin", User = user });
+                return Ok($"Added {username} as an admin");
             }
             catch (Exception ex)
             {
@@ -79,20 +112,20 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPost("{groupName}/add-user")]
         public async Task<IActionResult> AddUserToGroup(string groupName,string username)
         {
-            var currentUser =  _userService.GetUserByUsername(username).Result.Adapt<User>();
+            var currentUser =  await _userService.GetUserByUsername(username);
             if(currentUser is null)
             {
                 return NotFound("User doesn't exist");
                 
             }
             
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound("Group not found");
             }
-            
             await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
+            await _authService.AddUserRole(new UserRole { Role = $"{groupChat.GroupName}User", User = currentUser });
             return Ok("Added Successfully");
         }
         
@@ -103,7 +136,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -125,7 +158,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -147,7 +180,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -165,13 +198,21 @@ namespace CCSA_ChatApplication.Controllers
 
         [Authorize(Policy = "GroupAdmin")]
         [HttpDelete("{groupName}")]
-        public async Task<IActionResult> DeleteGroupChatById(string groupName)
+        public async Task<IActionResult> DeleteGroupChat(string groupName)
         {
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+            if (currentUser is null)
+            {
+                return NotFound("User doesn't exist");
+            }
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound();
             }
+            await _authService.RemoveUsersGroupRole(groupName);
             await _groupChatService.DeleteGroupChatById(groupChat.GroupId);
             return Ok("Successful");
         }
@@ -181,21 +222,22 @@ namespace CCSA_ChatApplication.Controllers
         [HttpDelete("{groupName}/remove-user")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName,string username)
         {
-            var currentUser = _userService.GetUserByUsername(username).Result.Adapt<User>();
+            var currentUser = await _userService.GetUserByUsername(username);
             if (currentUser is null)
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound("Group not found");
             }
+            await _authService.RemoveUserRole(currentUser.UserId, groupName);
             await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
-            return Ok("Added Successfully");
+            return Ok("Removed Successfully");
         }
 
-        [HttpDelete("{groupName}/remove-user")]
+        [HttpDelete("{groupName}/remove")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -204,13 +246,15 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound("Group not found");
             }
+            await _authService.RemoveUserRole(currentUser.UserId, groupName);
             await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
-            return Ok("Added Successfully");
+            return Ok("Removed Successfully");
         }
+
     }
 }

@@ -37,6 +37,7 @@ AuthenticationService.ConfigureServices(builder.Configuration, builder.Services)
 builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("GroupAdmin", policy => policy.Requirements.Add(new AdminRequirement("Admin")));
+    opt.AddPolicy("GroupUser", policy => policy.Requirements.Add(new AdminRequirement("User")));
 });
 builder.Services.AddSwaggerGen(c =>
 {

@@ -22,6 +22,19 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return await _auth.GetExistingToken(userId,refreshToken);
         }
 
+        
+        public IList<List<UsersDTO>> GetRoles(string[] names)
+        {
+            List<List<UsersDTO>> users = new();
+
+            foreach (var name in names)
+            {
+                users.Add(GetUser(name));
+            }
+            return users;
+        }
+       
+
         public IEnumerable<UserRoleDTO> GetUserRole(Guid id)
         {
             var role = _auth.GetUserRole(id);
@@ -29,9 +42,36 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return mappedRole;
         }
 
+        public async Task RemoveUserRole(Guid userId,string groupName)
+        {
+            await _auth.RemoveUserRole(userId, groupName);
+        }
+
+        public async Task RemoveUsersGroupRole(string groupName)
+        {
+            await _auth.RemoveUsersGroupRole(groupName);
+        }
+
         public async Task SaveRefreshToken(RefreshToken token)
         {
             await _auth.SaveRefreshToken(token);
+        }
+
+        public async Task UpdateGroupRoles(string groupName, string updateGroupName)
+        {
+            var roles = _auth.GetUserRoles(groupName);
+            foreach (var role in roles)
+            {
+                role.Role.Replace(groupName, updateGroupName);
+                await _auth.UpdateUserGroupRole(role);
+            }
+
+        }
+
+        private List<UsersDTO> GetUser(string name)
+        {
+            var users = _auth.GetUser(name).Adapt<IEnumerable<UsersDTO>>(MappingService.UsersMappingService());
+            return users.ToList();
         }
     }
 }
