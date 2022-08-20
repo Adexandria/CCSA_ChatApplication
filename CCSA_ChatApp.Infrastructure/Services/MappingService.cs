@@ -26,8 +26,8 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 .Map(dest => dest.MiddleName, src => src.MiddleName)
                 .Map(dest => dest.LastName, src => src.LastName)
                 .Map(dest => dest.Email, src => src.Email)
-               /*// .Map(dest => dest.GroupChats, src => src.GroupChats)
-                .Map(dest => dest.UserProfile, src => src.Profile)*/
+                .Map(dest => dest.GroupChats, src => src.GroupChats)
+                .Map(dest => dest.UserProfile, src => src.Profile)
                 .Config;
         }
 

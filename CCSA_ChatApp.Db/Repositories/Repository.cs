@@ -40,6 +40,7 @@ namespace CCSA_ChatApp.Db.Repositories
                 {
                     _session.Flush();
                     await transction.CommitAsync();
+                    _session.Dispose();
                 }
                 return true;
             }

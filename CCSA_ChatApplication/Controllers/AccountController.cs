@@ -74,9 +74,7 @@ namespace CCSA_ChatApplication.Controllers
                 
                 if (verifyPassword)
                 {
-                    var mappedUser = await _userService.GetUserByUsername(newUser.UserName);
-
-                    var user = mappedUser.Adapt<User>();
+                    var user = await _userService.GetUserByUsername(newUser.UserName);
 
                     var token = await _tokenCredential.GenerateToken(user);
 
