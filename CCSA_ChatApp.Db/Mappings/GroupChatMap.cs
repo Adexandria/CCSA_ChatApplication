@@ -11,7 +11,7 @@ namespace CCSA_ChatApp.Db.Mappings
             Map(s => s.GroupName);
             Map(s => s.GroupDescription);
             Map(s => s.CreatedDate);
-            References(s=>s.CreatedBy).Cascade.Merge();
+            References(s=>s.CreatedBy);
             Map(s => s.Picture).Length(int.MaxValue);
             HasManyToMany(s => s.Members);
             HasMany(s => s.ChatHistory);

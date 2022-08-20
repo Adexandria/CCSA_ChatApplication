@@ -10,7 +10,7 @@ namespace CCSA_ChatApp.Db.Mappings
             Id(x => x.TokenId).GeneratedBy.GuidComb();
             Map(x => x.Token);
             Map(x => x.ExpiryDate);
-            References(x => x.User).Cascade.All();
+            References(x => x.User).Cascade.Delete();
         }
     }
 }

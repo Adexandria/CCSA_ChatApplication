@@ -55,7 +55,7 @@ namespace CCSA_ChatApplication.Controllers
             }
         }
 
-        [HttpPut("update-middelname")]
+        [HttpPut("update-middlename")]
         public async Task<IActionResult> UpdateMiddleName(string middlename)
         {
             try
