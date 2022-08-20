@@ -29,10 +29,14 @@ namespace CCSA_ChatApp.Db.Repositories
         public void DeleteUserProfileById(Guid userProfileId)
         {
             var userProfile = GetUserProfileById(userProfileId);
-            if (userProfileId != null)
+            if (userProfile != null)
             {
                 _session.Delete(userProfileId);
                 Commit();
+            }
+            else
+            {
+                throw new Exception("User profile not found");
             }
         }
     }

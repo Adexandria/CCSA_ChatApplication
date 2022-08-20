@@ -15,8 +15,8 @@ namespace CCSA_ChatApp.Authentication.Services
             }
             var authContext = context.Resource as HttpContext;
             var groupPath = authContext.Request.Path.Value;
-            var groupName = groupPath.Split('/');
-            var validName= groupRole.FirstOrDefault(s => s.Contains(groupName[3]));
+            var groupName = groupPath.Split('/')[3];
+            var validName = groupRole.FirstOrDefault(s => s.Contains(groupName));
             if (validName is not null)
             {
               context.Succeed(requirement);

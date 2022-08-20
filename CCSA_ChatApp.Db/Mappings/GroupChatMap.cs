@@ -13,7 +13,7 @@ namespace CCSA_ChatApp.Db.Mappings
             Map(s => s.CreatedDate);
             References(s=>s.CreatedBy);
             Map(s => s.Picture).Length(int.MaxValue);
-            HasManyToMany(s => s.Members).Cascade.Delete().Inverse().Table("GroupChatMember");
+            HasManyToMany(s => s.Members);
             HasMany(s => s.ChatHistory);
 
         }
