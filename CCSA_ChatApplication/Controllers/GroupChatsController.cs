@@ -95,7 +95,7 @@ namespace CCSA_ChatApplication.Controllers
                 if (groupChat is null)
                 {
                     return NotFound("Group not found");
-                }
+                } 
 
                 await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
                 return Ok("Added Successfully");
