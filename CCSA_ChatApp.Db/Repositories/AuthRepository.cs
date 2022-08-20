@@ -24,15 +24,53 @@ namespace CCSA_ChatApp.Db.Repositories
             return token;
         }
 
+        public override IEnumerable<User> GetUser(string groupName)
+        {
+            var user = _session.Query<UserRole>().Where(x => x.Role.Contains(groupName)).Select(s=>s.User);
+            return user.Distinct();
+        }
+
         public override IEnumerable<UserRole> GetUserRole(Guid id)
         {
             var role = _session.Query<UserRole>().Where(x => x.User.UserId == id);
             return role;
         }
 
+        public override IEnumerable<UserRole> GetUserRoles(string groupName)
+        {
+            var roles = _session.Query<UserRole>().Where(x => x.Role.Contains(groupName));
+            return roles;
+        }
+
+        public override async Task RemoveUserRole(Guid userId, string groupName)
+        {
+            var roles = _session.Query<UserRole>().Where(s => s.User.UserId == userId && s.Role.Contains(groupName));
+            foreach (var role in roles)
+            {
+                await RemoveExistingRole(role);
+            }
+
+        }
+
+        public override async Task RemoveUsersGroupRole(string groupName)
+        {
+            var roles = _session.Query<UserRole>().Where(s => s.Role.Contains(groupName));
+            foreach (var role in roles)
+            {
+                await RemoveExistingRole(role);
+            }
+        }
+
+
         public override async Task SaveRefreshToken(RefreshToken token)
         {
             await _session.SaveAsync(token);
+            await Commit();
+        }
+
+        public override async Task UpdateUserGroupRole(UserRole role)
+        {
+            await _session.UpdateAsync(role);
             await Commit();
         }
 
@@ -47,6 +85,19 @@ namespace CCSA_ChatApp.Db.Repositories
             {
 
                 throw;
+            }
+        }
+
+        private async Task RemoveExistingRole(UserRole role)
+        {
+            if (role is not null)
+            {
+                await _session.DeleteAsync(role);
+                await Commit();
+            }
+            else
+            {
+                throw new Exception("No group role associated with this user");
             }
         }
     }

@@ -27,7 +27,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 .Map(dest => dest.LastName, src => src.LastName)
                 .Map(dest => dest.Email, src => src.Email)
                 .Map(dest => dest.GroupChats, src => src.GroupChats)
-                .Map(dest => dest.UserProfile.Username, src => src.Profile)
+                .Map(dest => dest.UserProfile, src => src.Profile)
                 .Config;
         }
 
@@ -51,9 +51,35 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public static TypeAdapterConfig GroupMappingService()
         {
             return TypeAdapterConfig<GroupChat, GroupChatsDTO>.NewConfig()
-                .Map(d=>d.CreatedBy.FullName, src => $"{src.CreatedBy.FirstName} {src.CreatedBy.MiddleName} {src.CreatedBy.LastName}")
-                .Map(d=>d.CreatedBy.Email,s=>s.CreatedBy.Email)
+                .Map(d => d.CreatedBy.FullName, src => $"{src.CreatedBy.FirstName} {src.CreatedBy.MiddleName} {src.CreatedBy.LastName}")
+                .Map(d => d.CreatedBy.Email, s => s.CreatedBy.Email)
                 .Config;
+        }
+
+
+        public static void MapUserToGroupMembers(List<GroupChatsDTO> groupChats, IList<List<UsersDTO>> users)
+        {
+            int left = 0;
+            int right = groupChats.Count;
+            while(left < right)
+            {
+                //groupChats[left].Members.RemoveAt(0);
+                Map(groupChats[left], 0, users[left]);
+                left++;
+            }
+        }
+
+        private static void Map(GroupChatsDTO groupChat,int left, List<UsersDTO> users)
+        {
+
+            if (left < users.Count && users[left] != groupChat.CreatedBy)
+            {
+                groupChat.Members[left].FullName = users[left].FullName;
+                left++;
+               Map(groupChat, left, users);
+               
+            }
+           
         }
     }
 }
