@@ -43,10 +43,10 @@ namespace CCSA_ChatApplication.Controllers
                 MappingService.MapUserToGroupMembers(groupChats, members);
                 return Ok(groupChats);
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return BadRequest("Please log in with your correct token");
+                return BadRequest(e.Message);
             }
         }
 
@@ -77,10 +77,10 @@ namespace CCSA_ChatApplication.Controllers
 
                 return Ok(new { token });
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return BadRequest("please log in your valid token");
+                return BadRequest(e.Message);
             }
         }
 

@@ -16,25 +16,20 @@ namespace CCSA_ChatApp.Infrastructure.Services
 
         public async Task CreateGroupChat(GroupChat group)
         {
-            try
-            {
-                var currentUser = group.CreatedBy;
-                group.Members.Add(currentUser);
-                await _groupChatRepository.Create(group);
-            }
-            catch
-            {
-                throw new Exception("Bad Request");
-            }
-            
-            
+            var currentUser = group.CreatedBy;
+            group.Members.Add(currentUser);
+            await _groupChatRepository.Create(group);
         }
 
 
         public IEnumerable<GroupChatsDTO> GetAll(Guid userId)
         {
             var groupChats = _groupChatRepository.GetAllGroupChatsByUserId(userId);
-            var  mappedgroupChats = groupChats.Adapt<IEnumerable<GroupChatsDTO>>(MappingService.GroupMappingService());
+            if (groupChats == null)
+            {
+                throw new Exception($"No Group associated with {userId}");
+            }
+            var mappedgroupChats = groupChats.Adapt<IEnumerable<GroupChatsDTO>>(MappingService.GroupMappingService());
             return mappedgroupChats;
         }
 
@@ -43,8 +38,8 @@ namespace CCSA_ChatApp.Infrastructure.Services
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             return currentGroupChat;
         }
-        
-        public async Task UpdateGroupDescription(Guid groupId,string description)
+
+        public async Task UpdateGroupDescription(Guid groupId, string description)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if (currentGroupChat is not null)
@@ -53,8 +48,8 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 await _groupChatRepository.Update(currentGroupChat);
             }
         }
-        
-        public async Task UpdateGroupName(Guid groupId,string name)
+
+        public async Task UpdateGroupName(Guid groupId, string name)
         {
             GroupChat currentGroupChat = await _groupChatRepository.GetGroupChatById(groupId);
             if (currentGroupChat is not null)
@@ -67,10 +62,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             var image = ConvertFromImageToByte(picture);
             group.Picture = image;
-           await  _groupChatRepository.Update(group);
+            await _groupChatRepository.Update(group);
         }
 
-        
+
         public async Task DeleteGroupPicture(GroupChat group)
         {
             group.Picture = null;
@@ -86,7 +81,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             await _groupChatRepository.RemoveUserToGroup(groupId, currentUser);
         }
-        
+
         public byte[] ConvertFromImageToByte(IFormFile picture)
         {
             if (picture.Length > 0)
@@ -103,19 +98,19 @@ namespace CCSA_ChatApp.Infrastructure.Services
 
         public async Task DeleteGroupChatById(Guid groupId)
         {
-           await _groupChatRepository.DeleteGroupChat(groupId);
+            await _groupChatRepository.DeleteGroupChat(groupId);
         }
-        
+
         public async Task<GroupChat> GetGroupChatByName(string name)
         {
-           var groupChat =  await _groupChatRepository.GetGroupChatByName(name);
+            var groupChat = await _groupChatRepository.GetGroupChatByName(name);
             if (groupChat != null)
             {
                 throw new Exception("Group Name Has been used");
             }
 
             return groupChat;
- 
+
         }
     }
 }
