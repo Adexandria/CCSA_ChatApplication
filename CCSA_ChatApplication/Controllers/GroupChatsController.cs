@@ -113,16 +113,16 @@ namespace CCSA_ChatApplication.Controllers
             {
 
                 var currentUser = await _userService.GetUserByUsername(username);
-                if (currentUser is null)
-                {
-                    return NotFound("User doesn't exist");
-                }
+                //if (currentUser is null)
+                //{
+                //    return NotFound("User doesn't exist");
+                //}
 
                 var groupChat = await _groupChatService.GetGroupChatByName(groupName);
-                if (groupChat is null)
-                {
-                    return NotFound("Group not found");
-                }
+                //if (groupChat is null)
+                //{
+                //    return NotFound("Group not found");
+                //}
 
                 await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
                 await _authService.AddUserRole(new UserRole { Role = $"{groupChat.GroupName}User", User = currentUser });
