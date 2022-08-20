@@ -24,7 +24,7 @@ namespace CCSA_ChatApp.Db.Repositories
         }
         public async Task<GroupChat> GetGroupChatByName(string name)
         {
-            var groupChat = await _session.Query<GroupChat>().Where(x => x.GroupName == name).FirstOrDefaultAsync();
+            var groupChat = await _session.Query<GroupChat>().Where(x => x.GroupName.ToLower() == name.ToLower()).FirstOrDefaultAsync();
             return groupChat;
         }
 

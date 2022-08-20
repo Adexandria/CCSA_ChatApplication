@@ -36,6 +36,31 @@ namespace CCSA_ChatApp.Db.Repositories
             return role;
         }
 
+        public override IEnumerable<UserRole> GetUserRoles(string groupName)
+        {
+            var roles = _session.Query<UserRole>().Where(x => x.Role.Contains(groupName));
+            return roles;
+        }
+
+        public override async Task RemoveUserRole(Guid userId, string groupName)
+        {
+            var roles = _session.Query<UserRole>().Where(s => s.User.UserId == userId && s.Role.Contains(groupName));
+            foreach (var role in roles)
+            {
+                await RemoveExistingRole(role);
+            }
+
+        }
+
+        public override async Task RemoveUsersGroupRole(string groupName)
+        {
+            var roles = _session.Query<UserRole>().Where(s => s.Role.Contains(groupName));
+            foreach (var role in roles)
+            {
+                await RemoveExistingRole(role);
+            }
+        }
+
         public override async Task RemoveUserRole(Guid userId,string groupName)
         {
             var roles = _session.Query<UserRole>().Where(s => s.User.UserId == userId && s.Role.Contains(groupName));
@@ -61,7 +86,12 @@ namespace CCSA_ChatApp.Db.Repositories
             await Commit();
         }
 
-        
+        public override async Task UpdateUserGroupRole(UserRole role)
+        {
+            await _session.UpdateAsync(role);
+            await Commit();
+        }
+
         private async Task Commit()
         {
             try
