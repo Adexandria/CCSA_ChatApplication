@@ -43,10 +43,10 @@ namespace CCSA_ChatApplication.Controllers
                 MappingService.MapUserToGroupMembers(groupChats, members);
                 return Ok(groupChats);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
 
-                return BadRequest(e.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -77,10 +77,10 @@ namespace CCSA_ChatApplication.Controllers
 
                 return Ok(new { token });
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
 
-                return BadRequest(e.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -111,26 +111,15 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-
                 var currentUser = await _userService.GetUserByUsername(username);
-                //if (currentUser is null)
-                //{
-                //    return NotFound("User doesn't exist");
-                //}
-
                 var groupChat = await _groupChatService.GetGroupChatByName(groupName);
-                //if (groupChat is null)
-                //{
-                //    return NotFound("Group not found");
-                //}
-
                 await _groupChatService.AddUserToGroup(groupChat.GroupId, currentUser);
                 await _authService.AddUserRole(new UserRole { Role = $"{groupChat.GroupName}User", User = currentUser });
                 return Ok("Added Successfully");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(e.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -142,10 +131,6 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var groupChat =await  _groupChatService.GetGroupChatByName(groupName);
-                if (groupChat is null)
-                {
-                    return NotFound();
-                }
                 await _groupChatService.UpdateGroupPicture(picture, groupChat);
                 return Ok("Updated Successfully");
             }
@@ -163,10 +148,6 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var groupChat = await _groupChatService.GetGroupChatByName(groupName);
-                if (groupChat is null)
-                {
-                    return NotFound();
-                }
                 await _groupChatService.UpdateGroupName(groupChat.GroupId, name);
                 return Ok("Updated Successfully");
             }
@@ -205,20 +186,19 @@ namespace CCSA_ChatApplication.Controllers
         public async Task<IActionResult> DeleteGroupChat(string groupName)
         {
 
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-            if (currentUser is null)
+            try
             {
-                return NotFound("User doesn't exist");
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
+                await _authService.RemoveUsersGroupRole(groupName);
+                await _groupChatService.DeleteGroupChatById(groupChat.GroupId);
+                return Ok("Successful");
             }
-            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
-            if (groupChat is null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex.Message);
             }
-            await _authService.RemoveUsersGroupRole(groupName);
-            await _groupChatService.DeleteGroupChatById(groupChat.GroupId);
-            return Ok("Successful");
         }
 
 
@@ -226,38 +206,38 @@ namespace CCSA_ChatApplication.Controllers
         [HttpDelete("{groupName}/remove-user")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName, string username)
         {
-            var currentUser = await _userService.GetUserByUsername(username);
-            if (currentUser is null)
+            try
             {
-                return NotFound("User doesn't exist");
+                var currentUser = await _userService.GetUserByUsername(username);
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
+                await _authService.RemoveUserRole(currentUser.UserId, groupName);
+                await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
+                return Ok("Removed Successfully");
             }
-            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
-            if (groupChat is null)
+            catch (Exception ex)
             {
-                return NotFound("Group not found");
+                return BadRequest(ex.Message);
             }
-            await _authService.RemoveUserRole(currentUser.UserId, groupName);
-            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
-            return Ok("Removed Successfully");
         }
 
         [HttpDelete("{groupName}/remove")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName)
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-            if (currentUser is null)
+            try
             {
-                return NotFound("User doesn't exist");
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
+
+                await _authService.RemoveUserRole(currentUser.UserId, groupName);
+                await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
+                return Ok("Removed Successfully");
             }
-            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
-            if (groupChat is null)
+            catch (Exception ex)
             {
-                return NotFound("Group not found");
+                return BadRequest(ex.Message);
             }
-            await _authService.RemoveUserRole(currentUser.UserId, groupName);
-            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
-            return Ok("Removed Successfully");
         }
 
     }
