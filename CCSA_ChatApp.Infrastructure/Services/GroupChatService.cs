@@ -27,7 +27,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             var groupChats = _groupChatRepository.GetAllGroupChatsByUserId(userId);
             if (groupChats == null)
             {
-                throw new Exception($"No Group associated with {userId}");
+                throw new Exception("Group doest exist");
             }
             var mappedgroupChats = groupChats.Adapt<IEnumerable<GroupChatsDTO>>(MappingService.GroupMappingService());
             return mappedgroupChats;
