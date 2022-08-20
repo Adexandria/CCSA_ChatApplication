@@ -27,18 +27,10 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPost("username")]
         public async Task<IActionResult> SendMessage([FromBody] string text, string username)
         {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {
-                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                
-                var sender =  _userService.GetUserById(new Guid(userId)).Result.Adapt<User>();
-                
-                var reciever = await _userService.GetUserByUsername(username);
-                
-                var message = await _messageService.SendMessage(text);
-                
-                await _messageHistoryService.CreateMessageHistory(message, sender, reciever,null);
-                
+                await _messageService.SendMessage(text, new Guid(userId), username);
                 return Ok("Message sent");
             }
             catch (Exception ex)
@@ -48,27 +40,20 @@ namespace CCSA_ChatApplication.Controllers
 
         }
 
-        [Authorize(Policy = "GroupUser")]
+        [Authorize/*(Roles = "GroupUser")*/]
         [HttpPost("{groupName}")]
         public async Task<IActionResult> SendMessageToGroup([FromBody] string text, string groupName)
         {
             try
             {
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                
-                var group =  _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
-                
-                var sender = _userService.GetUserById(new Guid(userId)).Result.Adapt<User>();
-                
+                var group = await _groupChatService.GetGroupChatByName(groupName);
                 if (group is null)
                 {
                     return BadRequest("Group does not exist");
                 }
-           
-                var message = await _messageService.SendMessage(text);
-                
-                await _messageHistoryService.CreateMessageHistory(message, sender,null, group);
-                
+
+                await _messageService.SendMessageToGroup(text, Guid.Parse(userId), group.GroupId);
                 return Ok("Message sent");
             }
             catch (Exception ex)
@@ -76,8 +61,6 @@ namespace CCSA_ChatApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
         [HttpPut("{messageId}")]
         public async Task<IActionResult> UpdateMessageById([FromBody] string text, Guid messageId)
         {
