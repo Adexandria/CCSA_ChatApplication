@@ -12,22 +12,25 @@ namespace CCSA_ChatApp.Infrastructure.Services
     public class MessageHistoryService : IMessageHistoryService
     {
         private readonly MessageHistoryRepository _messageHistoryRepo;
-        public MessageHistoryService(MessageHistoryRepository messageHistoryRepository)
+        private readonly MessageRepository _messageRepository;
+
+        public MessageHistoryService(MessageHistoryRepository messageHistoryRepository, MessageRepository messageRepository)
         {
             _messageHistoryRepo = messageHistoryRepository;
+            _messageRepository = messageRepository;
         }
 
-        public async Task CreateMessageHistory(Message message,User sender,User reciever,GroupChat groupChat)
+        public async Task SendMessage(string text, Guid senderId, string receiverUsername)
         {
-            MessageHistory messageHistory = new MessageHistory
-            {
-                Sender = sender,
-                Message = message,
-                Receiver = reciever,
-                GroupChatUser = groupChat
-            };
-            await _messageHistoryRepo.CreateMessageHistory(messageHistory);
-            
+            var message = new Message { TextMessage = text, MessageCreated = DateTime.Now };
+            await _messageRepository.CreateMessage(message, senderId, receiverUsername);
+
+        }
+
+        public async Task SendMessageToGroup(string text, Guid senderId, Guid groupId)
+        {
+            var message = new Message { TextMessage = text, MessageCreated = DateTime.Now };
+            await _messageRepository.CreateMessageForGroup(message, senderId, groupId);
         }
 
         public IEnumerable<MessageDTO> FetchGroupChatMessagesByGroupId(Guid groupId)

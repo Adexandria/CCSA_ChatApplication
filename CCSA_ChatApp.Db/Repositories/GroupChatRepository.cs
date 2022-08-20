@@ -54,8 +54,7 @@ namespace CCSA_ChatApp.Db.Repositories
             var groupChat = await GetGroupChatById(groupChatId);
             if (groupChat != null)
             {
-                var x = groupChat.Members.Where(s=>s.UserId == currentUser.UserId).FirstOrDefault();
-                currentUser = x;
+                currentUser = groupChat.Members.Where(s=>s.UserId == currentUser.UserId).FirstOrDefault(); 
                 groupChat.Members.Remove(currentUser);
                 await _session.UpdateAsync(groupChat);
                 Commit();

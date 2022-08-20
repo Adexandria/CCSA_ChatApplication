@@ -10,12 +10,13 @@ namespace CCSA_ChatApp.Db.Repositories
 
         }
 
-        public async Task CreateMessageHistory(MessageHistory messageHistory)
+        public async Task CreateMessageHistory(Message message, MessageHistory messageHistory)
         {
+            messageHistory.Message = message;
             await _session.SaveAsync(messageHistory);
             await Commit();
         }
-
+        
         public IEnumerable<MessageHistory> GetMessageHistoryBySenderId(Guid senderId)
         {
             var messageHistory =  _session.Query<MessageHistory>().Where(m => m.Sender.UserId == senderId);
