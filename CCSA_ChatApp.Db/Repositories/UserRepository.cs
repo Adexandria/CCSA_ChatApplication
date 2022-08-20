@@ -43,10 +43,15 @@ namespace CCSA_ChatApp.Db.Repositories
         public override async Task UpdateEmail(Guid userId,string email)
         {
             User currentUser = await GetUserById(userId);
+            if(currentUser is not null) 
             {
                 currentUser.Email = email;
                 await _session.UpdateAsync(currentUser);
                 await Commit();
+            }
+            else
+            {
+                throw new Exception("User not found");
             }
         }
 
@@ -59,6 +64,10 @@ namespace CCSA_ChatApp.Db.Repositories
                 await _session.UpdateAsync(currentUser);
                 await Commit();
             }
+            else
+            {
+                throw new Exception("User not found");
+            }
         }
 
         public override async Task UpdateLastName(Guid userId, string lastName)
@@ -70,6 +79,10 @@ namespace CCSA_ChatApp.Db.Repositories
                 await _session.UpdateAsync(currentUser);
                 await Commit();
             }
+            else
+            {
+                throw new Exception("User not found");
+            }
         }
 
         public override async Task UpdateMiddleName(Guid userId, string middleName)
@@ -80,6 +93,10 @@ namespace CCSA_ChatApp.Db.Repositories
                 currentUser.MiddleName = middleName;
                 await _session.UpdateAsync(currentUser);
                 await Commit();
+            }
+            else
+            {
+                throw new Exception("User not found");
             }
         }
 
@@ -96,7 +113,7 @@ namespace CCSA_ChatApp.Db.Repositories
             }
             else
             {
-                throw new Exception("Password not updated");
+                throw new Exception("User not found");
             }
 
         }
@@ -119,6 +136,10 @@ namespace CCSA_ChatApp.Db.Repositories
             {
                await  _session.DeleteAsync(currentUser);
                 await Commit();
+            }
+            else
+            {
+                throw new Exception("User not found");
             }
         }
 

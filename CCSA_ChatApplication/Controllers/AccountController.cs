@@ -12,6 +12,7 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -71,10 +72,8 @@ namespace CCSA_ChatApplication.Controllers
             var verifyPassword = await _userService.VerifyPassword(newUser.UserName,newUser.Password);
             if (verifyPassword)
             {
-                var mappedUser = await _userService.GetUserByUsername(newUser.UserName);
-                var user = mappedUser.Adapt<User>();
+                var user = await _userService.GetUserByUsername(newUser.UserName);
                 var token = await  _tokenCredential.GenerateToken(user);
-                var refreshToken = await _tokenCredential.GenerateRefreshToken(user);
                 return Ok(new TokenDTO { AccessToken = token});
             }
             return BadRequest("Username or password incorrect");
@@ -97,12 +96,23 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet("password-reset")]
         public async Task<IActionResult> GeneratePasswordResetToken()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var token =  _tokenCredential.GeneratePasswordResetToken(Guid.Parse(userId));
-            return Ok(token);
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var token = _tokenCredential.GeneratePasswordResetToken(Guid.Parse(userId));
+
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
         }
 
-       [HttpPut("password-reset")]
+        [HttpPut("password-reset")]
         public async Task<IActionResult> ResetPassword(string token,PasswordDTO passwordReset)
         {
             try
@@ -128,9 +138,20 @@ namespace CCSA_ChatApplication.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAccount()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _userService.DeleteByUserId(Guid.Parse(userId));
-            return Ok("Account deleted");
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                await _userService.DeleteByUserId(Guid.Parse(userId));
+
+                return Ok("Account deleted");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 }

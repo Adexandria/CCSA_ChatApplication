@@ -61,24 +61,6 @@ namespace CCSA_ChatApp.Db.Repositories
             }
         }
 
-        public override async Task RemoveUserRole(Guid userId,string groupName)
-        {
-            var roles = _session.Query<UserRole>().Where(s => s.User.UserId == userId && s.Role.Contains(groupName));
-            foreach (var role in roles)
-            {
-                await RemoveExistingRole(role);
-            }
-            
-        }
-
-        public override async Task RemoveUsersGroupRole(string groupName)
-        {
-            var roles = _session.Query<UserRole>().Where(s =>s.Role.Contains(groupName));
-            foreach (var role in roles)
-            {
-                await RemoveExistingRole(role);
-            }
-        }
 
         public override async Task SaveRefreshToken(RefreshToken token)
         {

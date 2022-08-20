@@ -54,7 +54,7 @@ namespace CCSA_ChatApplication.Controllers
             {
                 
                 var currentGroup = _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
-                if(currentGroup == null)
+                if(currentGroup != null)
                 {
                     return BadRequest("GroupName already exist");
                 }
@@ -93,13 +93,13 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var user =  _userService.GetUserByUsername(username).Result.Adapt<User>();
+                var user = await _userService.GetUserByUsername(username);
                 if (user == null)
                 {
                     return BadRequest("User does not exist");
                 }
                 await _authService.AddUserRole(new UserRole { Role = $"{groupName}Admin", User = user });
-                return Ok();
+                return Ok($"Added {username} as an admin");
             }
             catch (Exception ex)
             {
@@ -112,14 +112,14 @@ namespace CCSA_ChatApplication.Controllers
         [HttpPost("{groupName}/add-user")]
         public async Task<IActionResult> AddUserToGroup(string groupName,string username)
         {
-            var currentUser =  _userService.GetUserByUsername(username).Result.Adapt<User>();
+            var currentUser =  await _userService.GetUserByUsername(username);
             if(currentUser is null)
             {
                 return NotFound("User doesn't exist");
                 
             }
             
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound("Group not found");
@@ -136,7 +136,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -158,7 +158,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -180,7 +180,7 @@ namespace CCSA_ChatApplication.Controllers
         {
             try
             {
-                var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                var groupChat = await _groupChatService.GetGroupChatByName(groupName);
                 if (groupChat is null)
                 {
                     return NotFound();
@@ -207,7 +207,7 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound();
@@ -222,12 +222,12 @@ namespace CCSA_ChatApplication.Controllers
         [HttpDelete("{groupName}/remove-user")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName,string username)
         {
-            var currentUser = _userService.GetUserByUsername(username).Result.Adapt<User>();
+            var currentUser = await _userService.GetUserByUsername(username);
             if (currentUser is null)
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound("Group not found");
@@ -246,7 +246,7 @@ namespace CCSA_ChatApplication.Controllers
             {
                 return NotFound("User doesn't exist");
             }
-            var groupChat = _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
             if (groupChat is null)
             {
                 return NotFound("Group not found");

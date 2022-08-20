@@ -22,6 +22,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return await _auth.GetExistingToken(userId,refreshToken);
         }
 
+        
         public IList<List<UsersDTO>> GetRoles(string[] names)
         {
             List<List<UsersDTO>> users = new();
@@ -54,6 +55,17 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public async Task SaveRefreshToken(RefreshToken token)
         {
             await _auth.SaveRefreshToken(token);
+        }
+
+        public async Task UpdateGroupRoles(string groupName, string updateGroupName)
+        {
+            var roles = _auth.GetUserRoles(groupName);
+            foreach (var role in roles)
+            {
+                role.Role.Replace(groupName, updateGroupName);
+                await _auth.UpdateUserGroupRole(role);
+            }
+
         }
 
         private List<UsersDTO> GetUser(string name)
