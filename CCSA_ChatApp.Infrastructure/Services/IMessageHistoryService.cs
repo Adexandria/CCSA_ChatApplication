@@ -10,8 +10,6 @@ namespace CCSA_ChatApp.Infrastructure.Services
 {
     public interface IMessageHistoryService
     {
-        Task SendMessage(string text, Guid senderId, string receiverUsername);
-        Task SendMessageToGroup(string text, Guid senderId, Guid groupChatId);
         IEnumerable<MessageDTO> FetchMessagesBySenderId(Guid senderId);
         IEnumerable<MessageDTO> FetchMessagesByReceiverUsername(string recieverUsername);
         IEnumerable<MessageDTO> FetchGroupChatMessagesByGroupId(Guid groupId);

@@ -20,19 +20,6 @@ namespace CCSA_ChatApp.Infrastructure.Services
             _messageRepository = messageRepository;
         }
 
-        public async Task SendMessage(string text, Guid senderId, string receiverUsername)
-        {
-            var message = new Message { TextMessage = text, MessageCreated = DateTime.Now };
-            await _messageRepository.CreateMessage(message, senderId, receiverUsername);
-
-        }
-
-        public async Task SendMessageToGroup(string text, Guid senderId, Guid groupId)
-        {
-            var message = new Message { TextMessage = text, MessageCreated = DateTime.Now };
-            await _messageRepository.CreateMessageForGroup(message, senderId, groupId);
-        }
-
         public IEnumerable<MessageDTO> FetchGroupChatMessagesByGroupId(Guid groupId)
         {
            var histories = _messageHistoryRepo.GetMessageHistoryByGroupId(groupId);
