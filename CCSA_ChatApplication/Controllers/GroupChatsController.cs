@@ -71,10 +71,10 @@ namespace CCSA_ChatApplication.Controllers
 
                 return Ok(new { token });
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
-                return BadRequest(e.Message);
+                return BadRequest("please log in your valid token");
             }
         }
 
