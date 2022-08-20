@@ -37,7 +37,7 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public override async Task<User> GetUserByUsername(string username)
         {
-            var user = await _session.Query<User>().FirstOrDefaultAsync(s=>s.Profile.Username == username);
+            var user = await _session.Query<User>().FirstOrDefaultAsync(s=>s.Profile.Username.ToLower() == username.ToLower());
             return user;
         }
         public override async Task UpdateEmail(Guid userId,string email)

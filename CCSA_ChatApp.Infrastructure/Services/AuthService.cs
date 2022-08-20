@@ -56,6 +56,17 @@ namespace CCSA_ChatApp.Infrastructure.Services
             await _auth.SaveRefreshToken(token);
         }
 
+        public async Task UpdateGroupRoles(string groupName,string updateGroupName)
+        {
+            var roles = _auth.GetUserRoles(groupName);
+            foreach (var role in roles)
+            {
+                role.Role.Replace(groupName, updateGroupName);
+                await _auth.UpdateUserGroupRole(role);
+            }
+           
+        }
+
         private List<UsersDTO> GetUser(string name)
         {
             var users = _auth.GetUser(name).Adapt<IEnumerable<UsersDTO>>(MappingService.UsersMappingService());

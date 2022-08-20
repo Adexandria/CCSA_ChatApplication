@@ -1,6 +1,7 @@
-﻿using CCSA_ChatApp.Infrastructure.Services;
+﻿using CCSA_ChatApp.Domain.Models;
+using CCSA_ChatApp.Infrastructure.Services;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -13,19 +14,31 @@ namespace CCSA_ChatApplication.Controllers
     {
         private readonly IMessageService _messageService;
         private readonly IGroupChatService _groupChatService;
-        public SendMessageController(IMessageService messageService, IGroupChatService groupChatService)
+        private readonly IUserService _userService;
+        private readonly IMessageHistoryService _messageHistoryService;
+        public SendMessageController(IMessageService messageService, IGroupChatService groupChatService, IUserService userService, IMessageHistoryService messageHistoryService)
         {
             _messageService = messageService;
             _groupChatService = groupChatService;
+            _userService = userService;
+            _messageHistoryService = messageHistoryService;
         }
 
         [HttpPost("username")]
         public async Task<IActionResult> SendMessage([FromBody] string text, string username)
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {
-                await _messageService.SendMessage(text, new Guid(userId), username);
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                var sender =  _userService.GetUserById(new Guid(userId)).Result.Adapt<User>();
+                
+                var reciever = await _userService.GetUserByUsername(username);
+                
+                var message = await _messageService.SendMessage(text);
+                
+                await _messageHistoryService.CreateMessageHistory(message, sender, reciever,null);
+                
                 return Ok("Message sent");
             }
             catch (Exception ex)
@@ -42,13 +55,20 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var group = await _groupChatService.GetGroupChatByName(groupName);
-                if(group is null)
+                
+                var group =  _groupChatService.GetGroupChatByName(groupName).Result.Adapt<GroupChat>();
+                
+                var sender = _userService.GetUserById(new Guid(userId)).Result.Adapt<User>();
+                
+                if (group is null)
                 {
                     return BadRequest("Group does not exist");
                 }
            
-                await _messageService.SendMessageToGroup(text, Guid.Parse(userId), group.GroupId);
+                var message = await _messageService.SendMessage(text);
+                
+                await _messageHistoryService.CreateMessageHistory(message, sender,null, group);
+                
                 return Ok("Message sent");
             }
             catch (Exception ex)

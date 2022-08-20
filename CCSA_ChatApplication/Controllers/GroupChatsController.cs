@@ -39,11 +39,11 @@ namespace CCSA_ChatApplication.Controllers
             List<GroupChatsDTO> groupChats = _groupChatService.GetAll(Guid.Parse(userId)).ToList();
             
             string[] groupNames = groupChats.Select(s => s.GroupName).ToArray();
-            
+
             IList<List<UsersDTO>> members = _authService.GetRoles(groupNames);
 
             MappingService.MapUserToGroupMembers(groupChats, members);
-            
+
             return Ok(groupChats);
         }
 
@@ -88,16 +88,18 @@ namespace CCSA_ChatApplication.Controllers
         }
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpPost("add-admin")]
+        [HttpPost("{groupName}/add-admin")]
         public async Task<IActionResult> AddAdmin(string groupName, string username)
         {
             try
             {
                 var user =  _userService.GetUserByUsername(username).Result.Adapt<User>();
+                
                 if (user == null)
                 {
-                    return BadRequest("User does not exist");
+                    return NotFound("User does not exist");
                 }
+                
                 await _authService.AddUserRole(new UserRole { Role = $"{groupName}Admin", User = user });
                 return Ok();
             }
@@ -163,6 +165,7 @@ namespace CCSA_ChatApplication.Controllers
                 {
                     return NotFound();
                 }
+                await _authService.UpdateGroupRoles(groupName, name);
                 await _groupChatService.UpdateGroupName(groupChat.GroupId, name);
                 return Ok("Updated Successfully");
             }

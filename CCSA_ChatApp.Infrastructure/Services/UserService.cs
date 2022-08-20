@@ -15,9 +15,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
         }
         public IEnumerable<UsersDTO> GetUsers(string fullname)
         {
-                IEnumerable<User> users = _userRepository.GetUsers;
-                var mappedUser = users.Adapt<IEnumerable<UsersDTO>>(UsersMappingService());
-                return mappedUser.Where(s => s.FullName != fullname);
+           IEnumerable<User> users = _userRepository.GetUsers;
+           var mappedUser = users.Adapt<IEnumerable<UsersDTO>>(MappingService.UsersMappingService());
+           return mappedUser.Where(s => s.FullName != fullname);
         }
 
         public async Task CreateUser(User user)
@@ -33,15 +33,14 @@ namespace CCSA_ChatApp.Infrastructure.Services
            {
                 throw new Exception("User not found");
            }
-           UserDTO mappedUser = user.Adapt<UserDTO>(UserProfileMappingService());
+           UserDTO mappedUser = user.Adapt<UserDTO>(MappingService.UserMappingService());
            return mappedUser;
         }
 
-        public async Task<UserDTO> GetUserByUsername(string username)
+        public async Task<User> GetUserByUsername(string username)
         {
             User user = await _userRepository.GetUserByUsername(username);
-            UserDTO mappedUser = user.Adapt<UserDTO>(UserProfileMappingService());
-            return mappedUser;
+            return user;
         }
         public async Task UpdateEmail(Guid userId,string email)
         {
@@ -78,23 +77,5 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return await _userRepository.VerifyPassword(username,password);
         }
 
-
-        private static TypeAdapterConfig UsersMappingService()
-        {
-            return TypeAdapterConfig<User, UsersDTO>.NewConfig().
-                Map(dest => dest.FullName, src => $"{src.FirstName} {src.MiddleName} {src.LastName}").Config;
-        }
-
-        private static TypeAdapterConfig UserProfileMappingService()
-        {
-            return TypeAdapterConfig<User, UserDTO>.NewConfig().
-                Map(dest => dest.FirstName, src => src.FirstName)
-                .Map(dest => dest.MiddleName, src => src.MiddleName)
-                .Map(dest => dest.LastName, src => src.LastName)
-                .Map(dest => dest.Email, src => src.Email)
-                .Map(dest => dest.GroupChats, src => src.GroupChats)
-                .Map(dest => dest.UserProfile, src => src.Profile)
-                .Config;
-        }
     }
 }

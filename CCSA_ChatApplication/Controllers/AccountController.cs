@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace CCSA_ChatApplication.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -70,6 +71,7 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var verifyPassword = await _userService.VerifyPassword(newUser.UserName, newUser.Password);
+                
                 if (verifyPassword)
                 {
                     var mappedUser = await _userService.GetUserByUsername(newUser.UserName);
@@ -88,20 +90,8 @@ namespace CCSA_ChatApplication.Controllers
             }
 
         }
-/*
-        [AllowAnonymous]
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> GenerateAccessToken(string refreshToken)
-        {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user =  _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-            var token = await _tokenCredential.GenerateToken(user,refreshToken);
-            if (token is not null)
-            {
-                return Ok(token);
-            }
-            return Unauthorized();
-        }*/
+
+        
 
         [HttpGet("password-reset")]
         public async Task<IActionResult> GeneratePasswordResetToken()
@@ -155,7 +145,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 await _userService.DeleteByUserId(Guid.Parse(userId));
+                
                 return Ok("Account deleted");
             }
             catch (Exception ex)

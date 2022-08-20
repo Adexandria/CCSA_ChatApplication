@@ -24,7 +24,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string name = User.FindFirstValue(ClaimTypes.Name);
+
                 IEnumerable<UsersDTO> contacts = _usersService.GetUsers(name);
+                
                 return Ok(contacts);
             }
             catch (Exception ex)
@@ -41,7 +43,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 await _usersService.UpdateFirstName(Guid.Parse(userId), firstName);
+                
                 return Ok("Updated successfully");
             }
             catch (Exception ex)
@@ -58,7 +62,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 await _usersService.UpdateMiddleName(Guid.Parse(userId), middlename);
+                
                 return Ok("Updated successfully");
             }
             catch (Exception ex)
@@ -75,7 +81,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 await _usersService.UpdateLastName(Guid.Parse(userId), lastname);
+                
                 return Ok("Updated successfully");
             }
             catch (Exception ex)
@@ -92,7 +100,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 await _usersService.UpdateEmail(Guid.Parse(userId), email);
+                
                 return Ok("Updated successfully");
             }
             catch (Exception ex)

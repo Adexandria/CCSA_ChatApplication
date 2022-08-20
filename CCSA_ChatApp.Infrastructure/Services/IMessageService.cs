@@ -10,8 +10,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
 {
     public interface IMessageService
     {
-        Task SendMessage(string text, Guid senderId, string receiverUsername);
-        Task SendMessageToGroup(string text, Guid senderId, Guid groupChatId);
+        Task<Message> SendMessage(string text);
         Task UpdateMessageById(string text, Guid messageId);
         Task DeleteMessageByMessageId(Guid messageId);
         

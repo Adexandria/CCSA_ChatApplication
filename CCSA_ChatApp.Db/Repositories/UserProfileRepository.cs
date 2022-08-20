@@ -22,14 +22,14 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public UserProfile GetUserProfileByUsername(string username)
         {
-            var userProfile = _session.Query<UserProfile>().FirstOrDefault(x => x.Username == username);
+            var userProfile = _session.Query<UserProfile>().FirstOrDefault(x => x.Username.ToLower() == username.ToLower());
             return userProfile;
         }
 
         public void DeleteUserProfileById(Guid userProfileId)
         {
             var userProfile = GetUserProfileById(userProfileId);
-            if (userProfileId != null)
+            if (userProfile != null)
             {
                 _session.Delete(userProfileId);
                 Commit();

@@ -25,7 +25,7 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public async Task Update(T obj)
         {
-            await _session.MergeAsync(obj);
+            await _session.UpdateAsync(obj);
             await Commit();
         }
         

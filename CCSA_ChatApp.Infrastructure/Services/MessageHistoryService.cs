@@ -1,5 +1,6 @@
 ﻿using CCSA_ChatApp.Db.Repositories;
 using CCSA_ChatApp.Domain.DTOs.MessageDTOs;
+using CCSA_ChatApp.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,20 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             _messageHistoryRepo = messageHistoryRepository;
         }
+
+        public async Task CreateMessageHistory(Message message,User sender,User reciever,GroupChat groupChat)
+        {
+            MessageHistory messageHistory = new MessageHistory
+            {
+                Sender = sender,
+                Message = message,
+                Receiver = reciever,
+                GroupChatUser = groupChat
+            };
+            await _messageHistoryRepo.CreateMessageHistory(messageHistory);
+            
+        }
+
         public IEnumerable<MessageDTO> FetchGroupChatMessagesByGroupId(Guid groupId)
         {
            var histories = _messageHistoryRepo.GetMessageHistoryByGroupId(groupId);

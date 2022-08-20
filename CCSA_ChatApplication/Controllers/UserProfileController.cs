@@ -42,8 +42,6 @@ namespace CCSA_ChatApplication.Controllers
 
                 userProfile.Contacts = currentUsers.ToList();
 
-                userProfile.Adapt(currentUser);
-
                 userProfile.GroupChats = _groupChatService.GetAll(Guid.Parse(userId)).ToList();
 
                 return Ok(userProfile);
@@ -60,26 +58,50 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserprofileByUsername(string username)
         {
-
-            var userProfile = _userProfileService.GetUserProfileByUsername(username).Adapt<UserProfilesDTO>();
-            if (userProfile is null)
+            try
             {
-                return NotFound("This user doesn't exist");
+                var userProfile = _userProfileService.GetUserProfileByUsername(username).Adapt<UserProfilesDTO>();
+
+                if (userProfile is null)
+                {
+                    return NotFound("This user doesn't exist");
+                }
+
+                return Ok(userProfile);
             }
-            return Ok(userProfile);
+            catch (Exception ex)
+            {
+
+               return BadRequest(ex.Message);
+            }
+
+            
         }
 
         [HttpPut("update-username")]
         public async Task<IActionResult> UpdateUsername(string username)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUser =  _userProfileService.GetUserProfileByUsername(username);
-            if (currentUser is null)
+            try
             {
-                _userProfileService.UpdateUsername(Guid.Parse(userId), username);
-                return Ok("Updated successfully");
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                var currentUser = _userProfileService.GetUserProfileByUsername(username);
+                
+                if (currentUser is null)
+                {
+                    _userProfileService.UpdateUsername(Guid.Parse(userId), username);
+                    return Ok("Updated successfully");
+                }
+                
+                return BadRequest("This username is already taken");
             }
-            return BadRequest("This username is already taken");
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+            
+           
         }
 
         [HttpPut("update-country")]
@@ -88,7 +110,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 await _userProfileService.UpdateCountry(Guid.Parse(userId), country);
+                
                 return Ok("Updated successfully");
             }
             catch (Exception ex)
@@ -105,7 +129,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 await _userProfileService.UpdateUserPicture(picture, Guid.Parse(userId));
+                
                 return Ok("Updated successfully");
             }
             catch (Exception ex)
@@ -122,7 +148,9 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
                 await _userProfileService.DeleteUserPicture(Guid.Parse(userId));
+                
                 return Ok("Removed successfully");
             }
             catch (Exception ex)
