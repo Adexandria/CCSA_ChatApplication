@@ -30,10 +30,10 @@ namespace CCSA_ChatApp.Db.Repositories
             return messageHistory;
         }
 
-        public IEnumerable<MessageHistory> GetMessageHistoryByRetrieverUsername(string username)
+        public IEnumerable<MessageHistory> GetMessageHistoryByRetrieverUsername(string sender,string username)
         {
-            var messageHistory1 = _session.Query<MessageHistory>().OrderBy(s=>s.Sender);
-            var messageHistory = _session.Query<MessageHistory>().Where(m => m.Receiver.Profile.Username == username);
+            var messageHistory1 = _session.Query<MessageHistory>().OrderBy(s=>s.Message.MessageCreated);
+            var messageHistory = _session.Query<MessageHistory>().Where(m => m.Receiver.Profile.Username == username && m.Sender.Profile.Username== sender);
             return messageHistory;
         }
 

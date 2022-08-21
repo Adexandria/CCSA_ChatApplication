@@ -1,4 +1,5 @@
-﻿using CCSA_ChatApp.Infrastructure.Services;
+﻿using CCSA_ChatApp.Domain.DTOs.MessageDTOs;
+using CCSA_ChatApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -38,7 +39,15 @@ namespace CCSA_ChatApplication.Controllers
         [HttpGet("user")]
         public IActionResult FetchMessagesByReceiverUsername(string username)
         {
-            var messages = _messageHistoryService.FetchMessagesByReceiverUsername(username);
+            var name = this.User.FindAll(ClaimTypes.Name).Select(s=>s.Value).Skip(1).First();
+            var senderMessages = _messageHistoryService.FetchMessagesByReceiverUsername(name,username).ToList();
+            var receiverMessages = _messageHistoryService.FetchMessagesByReceiverUsername(username, name).ToList();
+            List<List<RetrieveMessageDTO>> messages = new()
+            {
+                senderMessages,
+                receiverMessages
+            };
+            MappingService.MapMessages(messages);
             return Ok(messages);
         }
         

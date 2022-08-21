@@ -10,7 +10,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
     public interface IMessageHistoryService
     {
         IEnumerable<RetrieveMessageDTO> FetchMessagesBySenderId(Guid senderId);
-        IEnumerable<RetrieveMessageDTO> FetchMessagesByReceiverUsername(string recieverUsername);
+        IEnumerable<RetrieveMessageDTO> FetchMessagesByReceiverUsername(string sender,string recieverUsername);
         IEnumerable<RetrieveMessageDTO> FetchGroupChatMessagesByGroupName(string groupName);
     }
 }

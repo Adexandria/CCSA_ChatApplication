@@ -11,6 +11,7 @@ namespace CCSA_ChatApp.Domain.DTOs.MessageDTOs
         public Guid MessageId { get; set; }
         public string TextMessage { get; set; }
         public DateTime MessageCreated { get; set; }
+        public string Sender { get; set; }
         public string RecieverUsername { get; set; }
         public string GroupName { get; set; }
 

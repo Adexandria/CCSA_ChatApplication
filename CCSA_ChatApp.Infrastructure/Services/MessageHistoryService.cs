@@ -32,9 +32,9 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return messages;
         }
 
-        public IEnumerable<RetrieveMessageDTO> FetchMessagesByReceiverUsername(string receiverUsername)
+        public IEnumerable<RetrieveMessageDTO> FetchMessagesByReceiverUsername(string sender,string receiverUsername)
         {
-            var histories = _messageHistoryRepo.GetMessageHistoryByRetrieverUsername(receiverUsername);
+            var histories = _messageHistoryRepo.GetMessageHistoryByRetrieverUsername(sender,receiverUsername);
             var messages = new List<RetrieveMessageDTO>();
             foreach (var history in histories)
             {
@@ -44,12 +44,13 @@ namespace CCSA_ChatApp.Infrastructure.Services
                         MessageId = history.Message.MessageId,
                         MessageCreated = history.Message.MessageCreated,
                         TextMessage = history.Message.TextMessage,
+                        Sender = history.Sender.Profile.Username,
                         RecieverUsername = receiverUsername
                     });
             }
             return messages;
         }
-
+        
         public IEnumerable<RetrieveMessageDTO> FetchMessagesBySenderId(Guid senderId)
         {
             var histories = _messageHistoryRepo.GetMessageHistoryBySenderId(senderId);
@@ -60,12 +61,14 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 {
                     MessageId = history.Message.MessageId,
                     MessageCreated = history.Message.MessageCreated,
-                    TextMessage = history.Message.TextMessage
+                    TextMessage = history.Message.TextMessage,
+                    Sender= history.Sender.Profile.Username
                 };
                 if(history.Receiver != null)
                     message.RecieverUsername = history.Receiver.Profile.Username;
                 if(history.GroupChatUser != null)
                     message.GroupName = history.GroupChatUser.GroupName;
+                
                     messages.Add(message);
                
             }
