@@ -88,7 +88,7 @@ namespace CCSA_ChatApplication.Controllers
         }
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpPost("add-admin")]
+        [HttpPost("{groupName}/add-admin")]
         public async Task<IActionResult> AddAdmin(string groupName, string username)
         {
             try
@@ -98,8 +98,13 @@ namespace CCSA_ChatApplication.Controllers
                 {
                     return BadRequest("User does not exist");
                 }
-                await _authService.AddUserRole(new UserRole { Role = $"{groupName}Admin", User = user });
-                return Ok($"Added {username} as an admin");
+                bool isMember = _authService.GetUserRole(groupName,user.UserId);
+                if (isMember)
+                {
+                    await _authService.AddUserRole(new UserRole { Role = $"{groupName}Admin", User = user });
+                    return Ok($"Added {username} as an admin");
+                }                
+                return BadRequest("User is not a member of this group");
             }
             catch (Exception ex)
             {

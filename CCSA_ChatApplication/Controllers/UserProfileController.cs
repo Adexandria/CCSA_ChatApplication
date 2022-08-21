@@ -38,7 +38,7 @@ namespace CCSA_ChatApplication.Controllers
 
                 var currentUsers = _userService.GetUsers(fullname);
 
-                var userProfile = currentUser.Adapt<UserProfileDTO>(MappingService.UsersProfileMappingService());
+                var userProfile = currentUser.Adapt<UserProfileDTO>(MappingService.UserProfileMappingService());
 
                 userProfile.Contacts = currentUsers.ToList();
 

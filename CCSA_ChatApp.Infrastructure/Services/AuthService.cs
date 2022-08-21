@@ -22,14 +22,13 @@ namespace CCSA_ChatApp.Infrastructure.Services
             return await _auth.GetExistingToken(userId,refreshToken);
         }
 
-        
         public IList<List<UsersDTO>> GetRoles(string[] names)
         {
             List<List<UsersDTO>> users = new();
 
             foreach (var name in names)
             {
-                users.Add(GetUser(name));
+                users.Add(GetRole(name));
             }
             return users;
         }
@@ -67,11 +66,25 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
 
         }
+        public bool GetUserRole(string groupName, Guid userId)
+        {
+            var users = _auth.GetUser(groupName);
+            foreach (var user in users)
+            {
+                if(user.UserId == userId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-        private List<UsersDTO> GetUser(string name)
+        private List<UsersDTO> GetRole(string name)
         {
             var users = _auth.GetUser(name).Adapt<IEnumerable<UsersDTO>>(MappingService.UsersMappingService());
             return users.ToList();
         }
+
+       
     }
 }
