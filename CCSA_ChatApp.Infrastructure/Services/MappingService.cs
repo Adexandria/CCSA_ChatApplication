@@ -1,4 +1,5 @@
 ﻿using CCSA_ChatApp.Domain.DTOs.GroupChatDTOs;
+using CCSA_ChatApp.Domain.DTOs.MessageDTOs;
 using CCSA_ChatApp.Domain.DTOs.UserDTOs;
 using CCSA_ChatApp.Domain.DTOs.UserProfileDTOs;
 using CCSA_ChatApp.Domain.Models;
@@ -83,6 +84,28 @@ namespace CCSA_ChatApp.Infrastructure.Services
            
         }
 
-        
+        public static void MapMessages(List<List<RetrieveMessageDTO>> messages)
+        {
+            int left = 0;
+            int right = messages.Count;
+            while (left < right)
+            {
+                MapMessage(messages[left],0);
+                left++;
+            }
+        }
+
+        private static void MapMessage(List<RetrieveMessageDTO> messages, int left)
+        {
+            if(left < messages.Count - 1)
+            {
+                if(messages[left].MessageCreated < messages[left++].MessageCreated)
+                {
+                    messages[left] = messages[left++];
+                }
+                left++;
+                MapMessage(messages, left);
+            }
+        }
     }
 }

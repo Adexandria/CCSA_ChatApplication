@@ -100,6 +100,7 @@ namespace CCSA_ChatApp.Authentication.Services
                 claims.Add(new Claim(ClaimTypes.Role, item.Role));
             }
             claims.Add(new Claim(ClaimTypes.Name, $"{currentUser.FirstName} {currentUser.MiddleName} {currentUser.LastName}"));
+            claims.Add(new Claim(ClaimTypes.Name, currentUser.Profile.Username));
             claims.Add(new Claim(ClaimTypes.Email, currentUser.Email));
             claims.Add(new Claim(ClaimTypes.NameIdentifier,$"{currentUser.UserId}"));
             return claims;
