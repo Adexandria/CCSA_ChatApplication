@@ -40,6 +40,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public async Task<User> GetUserByUsername(string username)
         {
             User user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new Exception("User doesnt exist");
+            }
             return user;
         }
         public async Task UpdateEmail(Guid userId,string email)
