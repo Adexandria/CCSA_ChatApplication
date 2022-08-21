@@ -91,10 +91,6 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 var user = await _userService.GetUserByUsername(username);
-                if (user == null)
-                {
-                    return BadRequest("User does not exist");
-                }
                 await _authService.AddUserRole(new UserRole { Role = $"{groupName}Admin", User = user });
                 return Ok($"Added {username} as an admin");
             }
