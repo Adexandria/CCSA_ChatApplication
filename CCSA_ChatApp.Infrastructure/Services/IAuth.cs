@@ -13,6 +13,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         Task AddUserRole(UserRole role);
         IEnumerable<UserRoleDTO> GetUserRole(Guid id);
         IList<List<UsersDTO>> GetRoles(string[] names);
+        bool GetUserRole(string groupName,Guid userId);
         Task UpdateGroupRoles(string groupName, string updateGroupName);
 
         Task RemoveUserRole(Guid userId,string groupName);

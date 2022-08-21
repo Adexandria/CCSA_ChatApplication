@@ -69,6 +69,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
         }
 
+
         private static void Map(GroupChatsDTO groupChat,int left, List<UsersDTO> users)
         {
 
@@ -81,5 +82,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             }
            
         }
+
+        
     }
 }
