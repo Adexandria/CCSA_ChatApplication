@@ -25,11 +25,11 @@ namespace CCSA_ChatApplication.Controllers
         }
 
        
-        [HttpGet("{groupId}")]
-        public IActionResult FetchGroupChatMessagesByGroupId(Guid groupId)
+        [HttpGet("{groupName}")]
+        public IActionResult FetchGroupChatMessagesByGroupName(string groupName)
         {
             
-            var messages = _messageHistoryService.FetchGroupChatMessagesByGroupId(groupId);
+            var messages = _messageHistoryService.FetchGroupChatMessagesByGroupName(groupName);
             return Ok(messages);
         }
         

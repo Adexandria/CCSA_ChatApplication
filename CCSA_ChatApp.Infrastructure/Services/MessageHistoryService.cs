@@ -15,52 +15,59 @@ namespace CCSA_ChatApp.Infrastructure.Services
         {
             _messageHistoryRepo = messageHistoryRepository;
         }
-        public IEnumerable<MessageDTO> FetchGroupChatMessagesByGroupId(Guid groupId)
+        public IEnumerable<RetrieveMessageDTO> FetchGroupChatMessagesByGroupName(string groupName)
         {
-           var histories = _messageHistoryRepo.GetMessageHistoryByGroupId(groupId);
-            var messages = new List<MessageDTO>();
+           var histories = _messageHistoryRepo.GetMessageHistoryByGroupName(groupName);
+            var messages = new List<RetrieveMessageDTO>();
             foreach (var history in histories)
             {
                 messages.Add(
-                    new MessageDTO { 
+                    new RetrieveMessageDTO { 
                         MessageId = history.Message.MessageId,
                         MessageCreated = history.Message.MessageCreated, 
-                        TextMessage = history.Message.TextMessage 
+                        TextMessage = history.Message.TextMessage,
+                        GroupName = groupName
                     });
             }
             return messages;
         }
 
-        public IEnumerable<MessageDTO> FetchMessagesByReceiverUsername(string receiverUsername)
+        public IEnumerable<RetrieveMessageDTO> FetchMessagesByReceiverUsername(string receiverUsername)
         {
             var histories = _messageHistoryRepo.GetMessageHistoryByRetrieverUsername(receiverUsername);
-            var messages = new List<MessageDTO>();
+            var messages = new List<RetrieveMessageDTO>();
             foreach (var history in histories)
             {
                 messages.Add(
-                    new MessageDTO
+                    new RetrieveMessageDTO
                     {
                         MessageId = history.Message.MessageId,
                         MessageCreated = history.Message.MessageCreated,
-                        TextMessage = history.Message.TextMessage
+                        TextMessage = history.Message.TextMessage,
+                        RecieverUsername = receiverUsername
                     });
             }
             return messages;
         }
 
-        public IEnumerable<MessageDTO> FetchMessagesBySenderId(Guid senderId)
+        public IEnumerable<RetrieveMessageDTO> FetchMessagesBySenderId(Guid senderId)
         {
             var histories = _messageHistoryRepo.GetMessageHistoryBySenderId(senderId);
-            var messages = new List<MessageDTO>();
+            var messages = new List<RetrieveMessageDTO>();
             foreach (var history in histories)
             {
-                messages.Add(
-                    new MessageDTO
-                    {
-                        MessageId = history.Message.MessageId,
-                        MessageCreated = history.Message.MessageCreated,
-                        TextMessage = history.Message.TextMessage
-                    });
+                var message = new RetrieveMessageDTO
+                {
+                    MessageId = history.Message.MessageId,
+                    MessageCreated = history.Message.MessageCreated,
+                    TextMessage = history.Message.TextMessage
+                };
+                if(history.Receiver != null)
+                    message.RecieverUsername = history.Receiver.Profile.Username;
+                if(history.GroupChatUser != null)
+                    message.GroupName = history.GroupChatUser.GroupName;
+                    messages.Add(message);
+               
             }
             return messages;
         }

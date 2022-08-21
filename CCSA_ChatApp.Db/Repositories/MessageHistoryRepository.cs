@@ -24,9 +24,9 @@ namespace CCSA_ChatApp.Db.Repositories
             return messageHistory;
         }
 
-        public IEnumerable<MessageHistory> GetMessageHistoryByGroupId(Guid groupId)
+        public IEnumerable<MessageHistory> GetMessageHistoryByGroupName(string groupName)
         {
-            var messageHistory = _session.Query<MessageHistory>().Where(m => m.GroupChatUser.GroupId == groupId);
+            var messageHistory = _session.Query<MessageHistory>().Where(m => m.GroupChatUser.GroupName == groupName);
             return messageHistory;
         }
 
