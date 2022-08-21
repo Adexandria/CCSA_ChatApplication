@@ -10,10 +10,10 @@ namespace CCSA_ChatApp.Domain.DTOs.UserProfileDTOs
         public string LastName { get; set; }
         public string Email { get; set; }
         public List<UsersDTO> Contacts { get; set; }
-        public virtual string Country { get; set; }
+        public  string Country { get; set; }
         public List<GroupChatsDTO> GroupChats { get; set; }
-        public virtual string Username { get; set; }
-        public virtual string Picture { get; set; }
+        public  string Username { get; set; }
+        public  byte[] Picture { get; set; }
         
     }
 }

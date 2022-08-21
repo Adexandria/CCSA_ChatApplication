@@ -57,11 +57,14 @@ namespace CCSA_ChatApplication.Controllers
             await _userService.CreateUser(user);
 
             userProfile.User = user;
-            
+
+            user.Profile = new UserProfile { Username = newUser.Username };
+
             //Save user profile
             await _userProfileService.CreateExistingUserProfile(userProfile);
 
             var token = await _tokenCredential.GenerateToken(user);
+
             return Ok(new TokenDTO { AccessToken = token });
         }
 

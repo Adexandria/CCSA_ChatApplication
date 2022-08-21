@@ -42,13 +42,8 @@ namespace CCSA_ChatApplication.Controllers
             var name = this.User.FindAll(ClaimTypes.Name).Select(s=>s.Value).Skip(1).First();
             var senderMessages = _messageHistoryService.FetchMessagesByReceiverUsername(name,username).ToList();
             var receiverMessages = _messageHistoryService.FetchMessagesByReceiverUsername(username, name).ToList();
-            List<List<RetrieveMessageDTO>> messages = new()
-            {
-                senderMessages,
-                receiverMessages
-            };
-            MappingService.MapMessages(messages);
-            return Ok(messages);
+            var result = senderMessages.Union(receiverMessages).OrderBy(s => s.MessageCreated);
+            return Ok(result);
         }
         
        

@@ -60,7 +60,7 @@ namespace CCSA_ChatApplication.Controllers
                 }
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 
-                User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
+                User currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>(MappingService.UserDTOMappingService());
                 
                 var image = _groupChatService.ConvertFromImageToByte(newGroupChat.GroupPicture);
                 

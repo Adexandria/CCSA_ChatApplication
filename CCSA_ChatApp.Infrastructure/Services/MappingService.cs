@@ -32,6 +32,18 @@ namespace CCSA_ChatApp.Infrastructure.Services
                 .Config;
         }
 
+        public static TypeAdapterConfig UserDTOMappingService()
+        {
+            return TypeAdapterConfig<UserDTO, User>.NewConfig().
+                Map(dest => dest.FirstName, src => src.FirstName)
+                .Map(dest => dest.MiddleName, src => src.MiddleName)
+                .Map(dest => dest.LastName, src => src.LastName)
+                .Map(dest => dest.Email, src => src.Email)
+                .Map(dest => dest.GroupChats, src => src.GroupChats)
+                .Map(dest => dest.Profile, src => src.UserProfile)
+                .Config;
+        }
+
         public static TypeAdapterConfig UserProfileMappingService()
         {
             return TypeAdapterConfig<UserDTO, UserProfileDTO>.NewConfig()
@@ -87,10 +99,10 @@ namespace CCSA_ChatApp.Infrastructure.Services
         public static void MapMessages(List<List<RetrieveMessageDTO>> messages)
         {
             int left = 0;
-            int right = messages.Count;
+            int right = messages.Count - 1;
             while (left < right)
             {
-                MapMessage(messages[left],0);
+               
                 left++;
             }
         }
