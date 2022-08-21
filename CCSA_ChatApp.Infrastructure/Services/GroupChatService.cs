@@ -73,7 +73,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
             await _groupChatRepository.AddUserToGroup(groupId, currentUser);
         }
 
-        public async Task RemoveUserToGroup(Guid groupId, User currentUser)
+        public async Task RemoveUserFromGroup(Guid groupId, User currentUser)
         {
             await _groupChatRepository.RemoveUserToGroup(groupId, currentUser);
         }

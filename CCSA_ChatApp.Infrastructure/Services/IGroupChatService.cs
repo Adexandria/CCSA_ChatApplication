@@ -16,7 +16,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
         Task UpdateGroupDescription(Guid groupId, string description);
         Task UpdateGroupPicture(IFormFile picture, GroupChat group);
         Task AddUserToGroup(Guid groupId, User currentUser);
-        Task RemoveUserToGroup(Guid groupId, User currentUser);
+        Task RemoveUserFromGroup(Guid groupId, User currentUser);
         Task DeleteGroupPicture(GroupChat group);
         byte[] ConvertFromImageToByte(IFormFile picture);
     }

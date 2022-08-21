@@ -202,28 +202,6 @@ namespace CCSA_ChatApplication.Controllers
         
 
         [Authorize(Policy = "GroupAdmin")]
-        [HttpDelete("{groupName}")]
-        public async Task<IActionResult> DeleteGroupChat(string groupName)
-        {
-
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUser = _userService.GetUserById(Guid.Parse(userId)).Result.Adapt<User>();
-            if (currentUser is null)
-            {
-                return NotFound("User doesn't exist");
-            }
-            var groupChat = await _groupChatService.GetGroupChatByName(groupName);
-            if (groupChat is null)
-            {
-                return NotFound();
-            }
-            await _authService.RemoveUsersGroupRole(groupName);
-            await _groupChatService.DeleteGroupChatById(groupChat.GroupId);
-            return Ok("Successful");
-        }
-        
-
-        [Authorize(Policy = "GroupAdmin")]
         [HttpDelete("{groupName}/remove-user")]
         public async Task<IActionResult> RemoveUserFromGroupChat(string groupName,string username)
         {
@@ -238,7 +216,7 @@ namespace CCSA_ChatApplication.Controllers
                 return NotFound("Group not found");
             }
             await _authService.RemoveUserRole(currentUser.UserId, groupName);
-            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
+            await _groupChatService.RemoveUserFromGroup(groupChat.GroupId, currentUser);
             return Ok("Removed Successfully");
         }
 
@@ -257,7 +235,7 @@ namespace CCSA_ChatApplication.Controllers
                 return NotFound("Group not found");
             }
             await _authService.RemoveUserRole(currentUser.UserId, groupName);
-            await _groupChatService.RemoveUserToGroup(groupChat.GroupId, currentUser);
+            await _groupChatService.RemoveUserFromGroup(groupChat.GroupId, currentUser);
             return Ok("Removed Successfully");
         }
 
