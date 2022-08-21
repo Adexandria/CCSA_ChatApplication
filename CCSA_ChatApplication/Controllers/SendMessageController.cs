@@ -73,11 +73,11 @@ namespace CCSA_ChatApplication.Controllers
         }
 
 
-        [HttpDelete("{messageId}")]
-        public async Task<IActionResult> DeleteMessageByMessageId(Guid messageId)
-        {
-            await _messageService.DeleteMessageByMessageId(messageId);
-            return Ok("Message has been deleted successfully");
-        }
+        //[HttpDelete("{messageId}")]
+        //public async Task<IActionResult> DeleteMessageByMessageId(Guid messageId)
+        //{
+        //    await _messageService.DeleteMessageByMessageId(messageId);
+        //    return Ok("Message has been deleted successfully");
+        //}
     }
 }

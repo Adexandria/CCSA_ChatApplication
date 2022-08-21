@@ -53,7 +53,7 @@ namespace CCSA_ChatApplication.Controllers
             try
             {
                 
-                var currentGroup = _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
+                var currentGroup = await _groupChatService.GetGroupChatByName(newGroupChat.GroupName);
                 if(currentGroup != null)
                 {
                     return BadRequest("GroupName already exist");
