@@ -26,7 +26,7 @@ namespace CCSA_ChatApp.Db.Repositories
 
         public IEnumerable<MessageHistory> GetMessageHistoryByGroupName(string groupName)
         {
-            var messageHistory = _session.Query<MessageHistory>().Where(m => m.GroupChatUser.GroupName == groupName);
+            var messageHistory = _session.Query<MessageHistory>().Where(m => m.GroupChatUser.GroupName == groupName).OrderBy(s=>s.Message.MessageCreated);
             return messageHistory;
         }
 

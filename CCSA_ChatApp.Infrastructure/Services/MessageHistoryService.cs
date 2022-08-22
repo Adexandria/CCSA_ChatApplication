@@ -26,6 +26,7 @@ namespace CCSA_ChatApp.Infrastructure.Services
                         MessageId = history.Message.MessageId,
                         MessageCreated = history.Message.MessageCreated, 
                         TextMessage = history.Message.TextMessage,
+                        Sender = history.Sender.Profile.Username,
                         GroupName = groupName
                     });
             }
